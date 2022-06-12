@@ -3,6 +3,7 @@ require('dotenv').config();
 const cors = require("cors");
 const app = express();
 
+const db = require('./app/config/db.config');
 // setting headers for CORS errors
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
