@@ -9,7 +9,7 @@ const auth = require('../middleware/auth');
  * that match the request (read one, read all, create etc...)
  */
 
-router.post('/signup', password, userCtrl.signup);
+router.post('/signup', userCtrl.signup);
 router.post('/login', userCtrl.login);
 router.get('/logout', userCtrl.logout);
 router.get('/', auth, userCtrl.readUser);
