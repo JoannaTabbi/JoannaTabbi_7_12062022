@@ -16,31 +16,17 @@ const postSchema = new mongoose.Schema({
     imageUrl: {
         type: String
     },
-    videoUrl: {
-        type: String
-    },
-    votes: {
+    like: {
         type: Number
     },
-    usersVoted: [{
+    usersLiked: [{
         type: String,
         ref: "User"
     }],
-    comments: {
-        type: [{
-            commenterId: {
-                type: String,
-                ref: "User"
-            },
-            commenterPseudo: {
-                type: String,
-                ref: "User"
-            },
-            text: String,
-            timestamp: Number
-        }],
-        required: true
-    },
+    comments: [{
+        type: String,
+        ref: "Comment"
+    }],
     reports: {
         type: Number,
         default: 0

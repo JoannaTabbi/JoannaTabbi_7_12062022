@@ -13,13 +13,12 @@ router.post('/signup', userCtrl.signup);
 router.post('/login', userCtrl.login);
 router.get('/logout', userCtrl.logout);
 router.get('/', auth, userCtrl.readUser);
+router.get('/users', auth, userCtrl.readAllUsers);
 router.get('/export', auth, userCtrl.exportData);
 router.put('/', auth, userCtrl.updateUser);
 router.delete('/', auth, userCtrl.deleteUser);
 router.patch('/:id/follow', auth, userCtrl.follow);
 router.patch('/:id/unfollow', auth, userCtrl.unfollow);
-router.patch("/:id/subscribe", auth, userCtrl.subscribe);
-router.patch("/:id/unsubscribe", auth, userCtrl.unsubscribe);
 router.post('/:id/report', auth, userCtrl.reportUser);
 
 module.exports = router;

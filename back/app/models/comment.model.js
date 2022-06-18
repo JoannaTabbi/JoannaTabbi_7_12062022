@@ -1,32 +1,36 @@
 const mongoose = require('mongoose');
 
-//create the schema for the community
+//create the schema for the post
 
-const communitySchema = new mongoose.Schema({
-    title: {
-        type: String,
-        required: true,
-        trim: true 
-    },
-    creatorId: {
+const commentSchema = new mongoose.Schema({
+    userId: {
         type: String,
         ref: "User",
         required: true
     },
-    description: {
+    userName: {
+        type: String,
+        ref: "User",
+        required: true
+    },
+    message: {
         type: String,
         trim: true,
         maxlength: 500
     },
-    iconUrl: {
+    imageUrl: {
         type: String
     },
-    subscriptions: {
+    like: {
         type: Number
     },
-    subscribers: [{
+    usersLiked: [{
         type: String,
         ref: "User"
+    }],
+    comments: [{
+        type: String,
+        ref: "Comment"
     }],
     reports: {
         type: Number,
@@ -40,4 +44,4 @@ const communitySchema = new mongoose.Schema({
     timestamps: true
 })
 
-module.exports = mongoose.model("Community", communitySchema);
+module.exports = mongoose.model("Comment", commentSchema);
