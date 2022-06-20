@@ -70,50 +70,46 @@ exports.signup = (req, res, next) => {
  * in the Users collection, then checks if the password given matches the one assigned 
  * to the user in database. If correct, returns userId and a token.
  */
-exports.login = (req, res, next) => {
+ exports.login = (req, res, next) => {
     const emailEncrypted = encryptMail(req.body.email);
     User.findOne({
-            email: emailEncrypted
-        })
-        .then((user) => {
-            if (!user) {
-                console.log(emailEncrypted)
-                return res.status(401).json({
-                    error: "User not found"
-                });
+        email: emailEncrypted
+      })
+      .then((user) => {
+        if (!user) {
+          return res.status(401).json({
+            error: "User not found"
+          });
+        }
+        user.email = decryptMail(user.email)
+        bcrypt
+          .compare(req.body.password, user.password)
+          .then((valid) => {
+            if (!valid) {
+              return res.status(401).json({
+                error: "Incorrect password"
+              });
             }
-            bcrypt
-                .compare(req.body.password, user.password)
-                .then((valid) => {
-                    if (!valid) {
-                        return res.status(401).json({
-                            error: "Incorrect password"
-                        });
-                    };
-                    res.cookie( 
-                        'jwt', 
-                        jwt.sign({ // creating a token for the new session; 
-                            userId: user._id // the method takes two arguments : 
-                        }, // a response object and
-                        process.env.TOKEN_SECRET, { // a secret key
-                            expiresIn: '24h'
-                        }), {
-                            httpOnly: true, 
-                        maxAge
-                        });
-                    res.status(200).json({
-                        userId: user._id,
-                        User: user
-                    });
-                })
-                .catch((error) => res.status(500).json({
-                    error
-                }));
-        })
-        .catch((error) => res.status(500).json({
+            res.status(200).json({
+              userId: user._id,
+              token: jwt.sign({ // creating a token for the new session; 
+                  userId: user._id // the method takes two arguments : 
+                }, // a response object and
+                process.env.TOKEN_SECRET, { // a secret key
+                  expiresIn: '24h'
+                }
+              ),
+              User: user
+            });
+          })
+          .catch((error) => res.status(500).json({
             error
-        }));
-};
+          }));
+      })
+      .catch((error) => res.status(500).json({
+        error
+      }));
+  };
 /**
  * logs out the user. His session is over and the token is invalidated.
  */
@@ -132,7 +128,7 @@ exports.readAllUsers = (req, res, next) => {
                 });
             } else if (!user.isAdmin) {
                 res.status(403).json({
-                    error: new Error("You're not authorized to access this data!")
+                    error: "You're not authorized to access this data!"
                 })
             } else {
                 User.find()
@@ -274,9 +270,87 @@ exports.deleteUser = (req, res, next) => {
         }));
 }
 
-exports.follow = (req, res, next) => {}
+exports.follow = (req, res, next) => {
+    User.findById(req.params.id)
+    .then((userToFollow) => {
+        if (!userToFollow.followers.includes(req.auth.userId)) {
+            User.findByIdAndUpdate(
+                    req.params.id, {
+                    $push: {
+                        followers: req.auth.userId
+                    }
+                }, {
+                    new: true,
+                    upsert: true
+                })
+                .then(() => {
+                    User.findByIdAndUpdate(req.auth.userId,  {
+                        $push: {
+                            following: req.params.id
+                        }
+                    }, {
+                        new: true,
+                        upsert: true
+                    })
+                    .then((userFollowing) => res.status(200).json(userFollowing))
+                    .catch((error) => res.status({error}))
+                })
+                .catch((error) => res.status(400).json({
+                    error
+                }))
+        } else {
+            res
+                .status(200)
+                .json({
+                    message: "You already follow this user"
+                });
+        }
+    })
+    .catch((error) => res.status(400).json({
+        error
+    }))
+}
 
-exports.unfollow = (req, res, next) => {}
+exports.unfollow = (req, res, next) => {
+    User.findById(req.params.id)
+    .then((userToUnfollow) => {
+        if (userToUnfollow.followers.includes(req.auth.userId)) {
+            User.findByIdAndUpdate(
+                    req.params.id, {
+                    $pull: {
+                        followers: req.auth.userId
+                    }
+                }, {
+                    new: true,
+                    upsert: true
+                })
+                .then(() => {
+                    User.findByIdAndUpdate(req.auth.userId,  {
+                        $pull: {
+                            following: req.params.id
+                        }
+                    }, {
+                        new: true,
+                        upsert: true
+                    })
+                    .then((userFollowing) => res.status(200).json(userFollowing))
+                    .catch((error) => res.status({error}))
+                })
+                .catch((error) => res.status(400).json({
+                    error
+                }))
+        } else {
+            res
+                .status(200)
+                .json({
+                    message: "You do not follow this user"
+                });
+        }
+    })
+    .catch((error) => res.status(400).json({
+        error
+    }))
+}
 
 /**
  * Reports a user for an id given. 
@@ -286,33 +360,34 @@ exports.unfollow = (req, res, next) => {}
  */
 exports.reportUser = (req, res, next) => {
     User.findById(req.params.id)
-        .then((user) => {
-            if (!user.usersWhoReported.includes(req.auth.userId)) {
-                User.findByIdAndUpdate({
-                        _id: req.params.id
-                    }, {
-                        $inc: {
-                            reports: 1
-                        },
-                        $push: {
-                            usersWhoReported: req.auth.userId
-                        }
-                    }, {
-                        new: true
-                    })
-                    .then((userUpdated) => res.status(200).json(
-                        userUpdated
-                    ))
-                    .catch((error) => res.status(400).json({
-                        error
-                    }))
-            } else {
-                res
-                    .status(200)
-                    .json({
-                        message: "User already reported"
-                    });
-            }
-        })
+    .then((user) => {
+        if (!user.usersWhoReported.includes(req.auth.userId)) {
+            User.findByIdAndUpdate({
+                    _id: req.params.id
+                }, {
+                    $inc: {
+                        reports: 1
+                    },
+                    $push: {
+                        usersWhoReported: req.auth.userId
+                    }
+                }, {
+                    new: true,
+                    upsert: true
+                })
+                .then((userUpdated) => res.status(200).json(
+                    userUpdated
+                ))
+                .catch((error) => res.status(400).json({
+                    error
+                }))
+        } else {
+            res
+                .status(200)
+                .json({
+                    message: "User already reported"
+                });
+        }
+    })
         .catch()
 }
