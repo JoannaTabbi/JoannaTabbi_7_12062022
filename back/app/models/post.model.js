@@ -11,12 +11,13 @@ const postSchema = new mongoose.Schema({
     message: {
         type: String,
         trim: true,
-        maxlength: 500
+        maxlength: 500,
+        required: true
     },
     imageUrl: {
         type: String
     },
-    like: {
+    likes: {
         type: Number
     },
     usersLiked: [{

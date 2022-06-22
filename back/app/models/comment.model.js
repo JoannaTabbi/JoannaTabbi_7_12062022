@@ -21,7 +21,7 @@ const commentSchema = new mongoose.Schema({
     imageUrl: {
         type: String
     },
-    like: {
+    likes: {
         type: Number
     },
     usersLiked: [{
