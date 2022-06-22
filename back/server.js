@@ -34,7 +34,7 @@ app.get("/", (req, res) => {
   res.json({ message: "Bienvenue sur le réseau social groupomania" });
 });
 app.use('/api', router);
-app.use("/uploads/profile", express.static(path.join(__dirname, "avatar")));
+//app.use("/uploads/profile", express.static(path.join(__dirname, "avatar")));
 //app.use("/uploads/postPhoto", express.static(path.join(__dirname, "postPhoto")));
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
