@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const uniqueValidator = require("mongoose-unique-validator");
-//const { isEmail } = require('validator');
+const { isEmail } = require('validator');
 
 /**
  * setting the schema for a user
@@ -34,9 +34,9 @@ const userSchema = new mongoose.Schema({
         type: String,
         maxlength: 1024  
     },
-    iconUrl: {
+    avatarUrl: {
         type: String,
-        default: 'images/defaultIcon.png'
+        default: '/uploads/profile/defaultIcon.png'
     },
     followers: [{
         type: String,

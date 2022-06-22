@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
 const cryptoJS = require('crypto-js');
 require('dotenv').config();
+const fs = require('fs');
 
 /**
  * encrypts the user's email 
@@ -34,7 +35,6 @@ function decryptMail(encryptedContent) {
     return decrypted.toString(cryptoJS.enc.Utf8);
 };
 
-
 /**
  * Register a new user. 
  * the password is securised with hash (bcrypt module) and
@@ -55,13 +55,9 @@ exports.signup = (req, res, next) => {
                 .then((user) => res.status(201).json(
                     user
                 ))
-                .catch((error) => res.status(400).json({
-                    error
-                }));
+                .catch((error) => res.status(400).json(error));
         })
-        .catch((error) => res.status(500).json({
-            error
-        }));
+        .catch((error) => res.status(500).json(error));
 };
 
 /**
@@ -70,51 +66,75 @@ exports.signup = (req, res, next) => {
  * in the Users collection, then checks if the password given matches the one assigned 
  * to the user in database. If correct, returns userId and a token.
  */
- exports.login = (req, res, next) => {
+exports.login = (req, res, next) => {
     const emailEncrypted = encryptMail(req.body.email);
     User.findOne({
-        email: emailEncrypted
-      })
-      .then((user) => {
-        if (!user) {
-          return res.status(401).json({
-            error: "User not found"
-          });
-        }
-        user.email = decryptMail(user.email)
-        bcrypt
-          .compare(req.body.password, user.password)
-          .then((valid) => {
-            if (!valid) {
-              return res.status(401).json({
-                error: "Incorrect password"
-              });
+            email: emailEncrypted
+        })
+        .then((user) => {
+            if (!user) {
+                return res.status(401).json({
+                    error: "User not found"
+                });
             }
-            res.status(200).json({
-              userId: user._id,
-              token: jwt.sign({ // creating a token for the new session; 
-                  userId: user._id // the method takes two arguments : 
-                }, // a response object and
-                process.env.TOKEN_SECRET, { // a secret key
-                  expiresIn: '24h'
-                }
-              ),
-              User: user
-            });
-          })
-          .catch((error) => res.status(500).json({
-            error
-          }));
-      })
-      .catch((error) => res.status(500).json({
-        error
-      }));
-  };
+            user.email = decryptMail(user.email)
+            bcrypt
+                .compare(req.body.password, user.password)
+                .then((valid) => {
+                    if (!valid) {
+                        return res.status(401).json({
+                            error: "Incorrect password"
+                        });
+                    }
+                    const createToken = (id) => {
+                        return jwt.sign({ // creating a token for the new session; 
+                                userId: user._id // the method takes two arguments : 
+                            }, // a response object and
+                            process.env.TOKEN_SECRET, { // a secret key
+                                expiresIn: '24h'
+                            }
+                        );
+                    };
+                    const maxAge = 1 * 60 * 60 * 1000;
+                    const token = createToken(user._id);
+                    res.cookie('jwt', token, {
+                        httpOnly: true,
+                        maxAge
+                    });
+                    res.status(200).json({
+                        userId: user._id,
+                        User: user
+                    });
+                })
+                .catch((error) => res.status(500).json({
+                    error: "valid token"
+                }));
+        })
+        .catch((error) => res.status(500).json({
+            error: "findOne"
+        }));
+};
 /**
  * logs out the user. His session is over and the token is invalidated.
  */
 exports.logout = (req, res, next) => {
+    User.findById(req.auth.userId)
+        .then((user) => {
+            if (!user) {
+                res.status(404).json({
+                    error: new Error("User not found!")
+                });
+            } else {
+                res.cookie('jwt', '', {
+                    maxAge: 1
+                });
+                //res.redirect('/');
+                res.status(200).json({
+                    message: "user logged out successfully"
+                });
+            }
 
+        })
 };
 /**
  * reads the data for all users; accessible only for isAdmin.
@@ -135,9 +155,7 @@ exports.readAllUsers = (req, res, next) => {
                     .then((users) => {
                         users = users.map((user) => {
                             user.email = decryptMail(user.email); // decrypts user's email  
-                            user.imageUrl = `${req.protocol}://${req.get("host")}${
-            user.imageUrl
-            }`;
+                            user.avatarUrl = `${req.protocol}://${req.get("host")}${user.avatarUrl}`;
                             return {
                                 ...user._doc
                             };
@@ -165,16 +183,15 @@ exports.readUser = (req, res, next) => {
         .then((user) => {
             if (!user) {
                 res.status(404).json({
-                    error: new Error("User not found!")
+                    error: "User not found!"
                 });
             } else {
                 user.email = decryptMail(user.email); // decrypts user's email
+                user.avatarUrl = `${req.protocol}://${req.get("host")}${user.avatarUrl}`;
                 res.status(200).json(user);
             }
         })
-        .catch((error) => res.status(404).json({
-            error
-        }));
+        .catch((error) => res.status(404).json(error));
 }
 
 /**
@@ -186,7 +203,7 @@ exports.exportData = (req, res, next) => {
         .then((user) => {
             if (!user) {
                 res.status(404).json({
-                    error: new Error("User not found!")
+                    error: "User not found!"
                 });
             } else {
                 user.email = decryptMail(user.email); // decrypts user's email
@@ -210,9 +227,7 @@ exports.updateUser = (req, res, next) => {
     User.findById(req.auth.userId)
         .then((user) => {
             if (!user) {
-                res.status(404).json({
-                    error: new Error("User not found!")
-                });
+                res.status(404).json(error);
             } else {
                 User.findByIdAndUpdate({
                         _id: req.auth.userId
@@ -228,15 +243,13 @@ exports.updateUser = (req, res, next) => {
                         userUpdated
                     ))
                     .catch((error) => {
-                        res.status(400).json({
-                            error: error
-                        });
+                        res.status(400).json(error);
                     });
             }
         })
-        .catch((error) => res.status(404).json({
+        .catch((error) => res.status(404).json(
             error
-        }));
+        ));
 }
 
 /**
@@ -272,84 +285,88 @@ exports.deleteUser = (req, res, next) => {
 
 exports.follow = (req, res, next) => {
     User.findById(req.params.id)
-    .then((userToFollow) => {
-        if (!userToFollow.followers.includes(req.auth.userId)) {
-            User.findByIdAndUpdate(
-                    req.params.id, {
-                    $push: {
-                        followers: req.auth.userId
-                    }
-                }, {
-                    new: true,
-                    upsert: true
-                })
-                .then(() => {
-                    User.findByIdAndUpdate(req.auth.userId,  {
-                        $push: {
-                            following: req.params.id
-                        }
-                    }, {
-                        new: true,
-                        upsert: true
+        .then((userToFollow) => {
+            if (!userToFollow.followers.includes(req.auth.userId)) {
+                User.findByIdAndUpdate(
+                        req.params.id, {
+                            $push: {
+                                followers: req.auth.userId
+                            }
+                        }, {
+                            new: true,
+                            upsert: true,
+                            setDefaultsOnInsert: true
+                        })
+                    .then(() => {
+                        User.findByIdAndUpdate(req.auth.userId, {
+                                $push: {
+                                    following: req.params.id
+                                }
+                            }, {
+                                new: true,
+                                upsert: true,
+                                setDefaultsOnInsert: true
+                            })
+                            .then((userFollowing) => res.status(200).json(userFollowing))
+                            .catch((error) => res.status({
+                                error
+                            }))
                     })
-                    .then((userFollowing) => res.status(200).json(userFollowing))
-                    .catch((error) => res.status({error}))
-                })
-                .catch((error) => res.status(400).json({
-                    error
-                }))
-        } else {
-            res
-                .status(200)
-                .json({
-                    message: "You already follow this user"
-                });
-        }
-    })
-    .catch((error) => res.status(400).json({
-        error
-    }))
+                    .catch((error) => res.status(400).json({
+                        error
+                    }))
+            } else {
+                res
+                    .status(200)
+                    .json({
+                        message: "You already follow this user"
+                    });
+            }
+        })
+        .catch((error) => res.status(400).json({
+            error
+        }))
 }
 
 exports.unfollow = (req, res, next) => {
     User.findById(req.params.id)
-    .then((userToUnfollow) => {
-        if (userToUnfollow.followers.includes(req.auth.userId)) {
-            User.findByIdAndUpdate(
-                    req.params.id, {
-                    $pull: {
-                        followers: req.auth.userId
-                    }
-                }, {
-                    new: true,
-                    upsert: true
-                })
-                .then(() => {
-                    User.findByIdAndUpdate(req.auth.userId,  {
-                        $pull: {
-                            following: req.params.id
-                        }
-                    }, {
-                        new: true,
-                        upsert: true
+        .then((userToUnfollow) => {
+            if (userToUnfollow.followers.includes(req.auth.userId)) {
+                User.findByIdAndUpdate(
+                        req.params.id, {
+                            $pull: {
+                                followers: req.auth.userId
+                            }
+                        }, {
+                            new: true,
+                            upsert: true,
+                            setDefaultsOnInsert: true
+                        })
+                    .then(() => {
+                        User.findByIdAndUpdate(req.auth.userId, {
+                                $pull: {
+                                    following: req.params.id
+                                }
+                            }, {
+                                new: true,
+                                upsert: true,
+                                setDefaultsOnInsert: true
+                            })
+                            .then((userFollowing) => res.status(200).json(userFollowing))
+                            .catch((error) => res.status(400).json(error))
                     })
-                    .then((userFollowing) => res.status(200).json(userFollowing))
-                    .catch((error) => res.status({error}))
-                })
-                .catch((error) => res.status(400).json({
-                    error
-                }))
-        } else {
-            res
-                .status(200)
-                .json({
-                    message: "You do not follow this user"
-                });
-        }
-    })
-    .catch((error) => res.status(400).json({
-        error
-    }))
+                    .catch((error) => res.status(400).json(
+                        error
+                    ))
+            } else {
+                res
+                    .status(200)
+                    .json({
+                        message: "You do not follow this user"
+                    });
+            }
+        })
+        .catch((error) => res.status(400).json(error))
 }
 
 /**
@@ -360,34 +377,35 @@ exports.unfollow = (req, res, next) => {
  */
 exports.reportUser = (req, res, next) => {
     User.findById(req.params.id)
-    .then((user) => {
-        if (!user.usersWhoReported.includes(req.auth.userId)) {
-            User.findByIdAndUpdate({
-                    _id: req.params.id
-                }, {
-                    $inc: {
-                        reports: 1
-                    },
-                    $push: {
-                        usersWhoReported: req.auth.userId
-                    }
-                }, {
-                    new: true,
-                    upsert: true
-                })
-                .then((userUpdated) => res.status(200).json(
-                    userUpdated
-                ))
-                .catch((error) => res.status(400).json({
-                    error
-                }))
-        } else {
-            res
-                .status(200)
-                .json({
-                    message: "User already reported"
-                });
-        }
-    })
-        .catch()
+        .then((user) => {
+            if (!user.usersWhoReported.includes(req.auth.userId)) {
+                User.findByIdAndUpdate({
+                        _id: req.params.id
+                    }, {
+                        $inc: {
+                            reports: 1
+                        },
+                        $push: {
+                            usersWhoReported: req.auth.userId
+                        }
+                    }, {
+                        new: true,
+                        upsert: true,
+                        setDefaultsOnInsert: true
+                    })
+                    .then((userUpdated) => res.status(200).json(
+                        userUpdated
+                    ))
+                    .catch((error) => res.status(400).json({
+                        error
+                    }))
+            } else {
+                res
+                    .status(200)
+                    .json({
+                        message: "User already reported"
+                    });
+            }
+        })
+        .catch((error) => res.status(400).json(error))
 }
