@@ -1,11 +1,12 @@
 const mongoose = require("mongoose");
 const uniqueValidator = require("mongoose-unique-validator");
+const { isEmail } = require('validator');
 
 /**
  * setting the schema for a user
  */
 const userSchema = new mongoose.Schema({
-    pseudo: {
+    userName: {
         type: String,
         required: true,
         unique: true,
@@ -18,7 +19,7 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true,
         lowercase: true,
-        validate: [isEmail],
+        //validate: [isEmail],
         trim: true
     },
     password: {
@@ -33,9 +34,9 @@ const userSchema = new mongoose.Schema({
         type: String,
         maxlength: 1024  
     },
-    iconUrl: {
+    avatarUrl: {
         type: String,
-        default: 'images/defaultIcon.png'
+        default: '/uploads/profile/defaultIcon.png'
     },
     followers: [{
         type: String,
@@ -44,15 +45,6 @@ const userSchema = new mongoose.Schema({
     following: [{
         type: String,
         default: 0
-    }],
-    votes: [{
-        type: String,
-        default: 0
-    }],
-    communitySubscriptions: [{
-        type: String,
-        default: 0,
-        ref: "Community"
     }],
     reports: {
         type: Number,

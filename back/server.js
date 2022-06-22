@@ -3,6 +3,7 @@ require('dotenv').config();
 const cors = require("cors");
 const app = express();
 const router = require('./app/routes/index.routes');
+const path = require('path');
 
 const db = require('./app/config/db.config');
 // setting headers for CORS errors
@@ -33,6 +34,8 @@ app.get("/", (req, res) => {
   res.json({ message: "Bienvenue sur le réseau social groupomania" });
 });
 app.use('/api', router);
+//app.use("/uploads/profile", express.static(path.join(__dirname, "avatar")));
+//app.use("/uploads/postPhoto", express.static(path.join(__dirname, "postPhoto")));
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
