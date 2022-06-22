@@ -1,7 +1,6 @@
 const User = require("../models/user.model");
 const Post = require("../models/post.model");
 const Comment = require("../models/comment.model");
-const ObjectID = require('mongoose').Types.ObjectId;
 
 
 exports.readOnePost = (req, res, next) => {
@@ -48,7 +47,6 @@ exports.createPost = (req, res, next) => {
         .catch((error) => res.status(400).json({
             error
         }));
-
 }
 
 exports.likePost = (req, res, next) => {

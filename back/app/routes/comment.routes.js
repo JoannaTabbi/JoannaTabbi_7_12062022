@@ -13,7 +13,6 @@ router.get("/:id", auth, commentCtrl.readOneComment);
 router.get("/", auth, commentCtrl.readAllComments);
 router.post("/", auth, commentCtrl.createComment);
 router.post("/:id/like", auth, commentCtrl.likeComment);
-router.post("/:id/comment", auth, commentCtrl.commentComment);
 router.put("/:id", auth, commentCtrl.updateComment);
 router.delete("/:id", auth, commentCtrl.deleteComment);
 router.post('/:id/report', auth, commentCtrl.reportComment);
