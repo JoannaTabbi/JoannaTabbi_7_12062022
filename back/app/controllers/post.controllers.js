@@ -223,3 +223,55 @@ exports.reportPost = (req, res, next) => {
         })
         .catch((error) => res.status(400).json(error))
 }
+
+
+/**
+ * create hateoas links for post
+ */
+ const hateoasLinks = (req, id) => {
+    const URI = `${req.protocol}://${req.get("host") + "/api/posts/"}`;
+    return [
+      {
+        rel: "readOne",
+        title: "ReadOne",
+        href: URI + id,
+        method: "GET"
+      },
+      {
+        rel: "readAll",
+        title: "ReadAll",
+        href: URI,
+        method: "GET"
+      },
+      {
+        rel: "create",
+        title: "Create",
+        href: URI,
+        method: "POST"
+      },
+      {
+        rel: "like",
+        title: "Like",
+        href: URI + id + "/like",
+        method: "POST"
+      },
+      {
+        rel: "update",
+        title: "Update",
+        href: URI + id,
+        method: "PUT"
+      },
+      {
+        rel: "delete",
+        title: "Delete",
+        href: URI + id,
+        method: "DELETE"
+      },
+      {
+        rel: "report",
+        title: "Report",
+        href: URI + id + "/report",
+        method: "POST"
+      }
+    ]
+  }
