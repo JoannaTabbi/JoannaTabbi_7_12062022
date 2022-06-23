@@ -147,20 +147,6 @@ exports.updateComment = (req, res, next) => {
                     error: "Unauthorized request!"
                 });
             } else {
-                /* const postObject = req.file ? {
-                  ...JSON.parse(req.body.post),
-                  imageUrl: `/uploads/postPhotos/${req.file.filename}`
-                } : {
-                  ...req.body
-                };
-                const filename = post.imageUrl.split("/postPhotos/")[1];
-                try {
-                  if (postObject.imageUrl) {
-                    fs.unlinkSync(`uploads/postPhotos/${filename}`)
-                  }
-                } catch (error) {
-                  console.log(error);
-                } */
                 Comment.findByIdAndUpdate({
                         _id: req.params.id
                     }, {

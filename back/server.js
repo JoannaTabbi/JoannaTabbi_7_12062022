@@ -40,8 +40,8 @@ app.get("/", (req, res) => {
   res.json({ message: "Bienvenue sur le réseau social groupomania" });
 });
 app.use('/api', router);
-//app.use("/uploads/profile", express.static(path.join(__dirname, "avatar")));
-//app.use("/uploads/postPhoto", express.static(path.join(__dirname, "postPhoto")));
+// set path to images
+app.use("/images", express.static(path.join(__dirname, "images")));
 
 /**
  * searche for the keys beginning with $ or containing . characters and removes 

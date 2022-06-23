@@ -8,18 +8,10 @@ const commentSchema = new mongoose.Schema({
         ref: "User",
         required: true
     },
-    userName: {
-        type: String,
-        ref: "User",
-        required: true
-    },
     message: {
         type: String,
         trim: true,
         maxlength: 500
-    },
-    imageUrl: {
-        type: String
     },
     likes: {
         type: Number

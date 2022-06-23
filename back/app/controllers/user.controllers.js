@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const cryptoJS = require('crypto-js');
 require('dotenv').config();
 const fs = require('fs');
+const { body, validationResult } = require('express-validator');
 
 /**
  * encrypts the user's email 
@@ -41,6 +42,11 @@ function decryptMail(encryptedContent) {
  * the email is encrypted
  */
 exports.signup = (req, res, next) => {
+    // Finds the validation errors in this request and wraps them in an object with handy functions
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    };
     bcrypt
         .hash(req.body.password, 10)
         .then((hash) => {

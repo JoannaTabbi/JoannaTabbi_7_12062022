@@ -11,8 +11,7 @@ const postSchema = new mongoose.Schema({
     message: {
         type: String,
         trim: true,
-        maxlength: 500,
-        required: true
+        maxlength: 500
     },
     imageUrl: {
         type: String
