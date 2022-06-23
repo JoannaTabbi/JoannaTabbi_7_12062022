@@ -10,7 +10,8 @@ exports.readOnePost = (req, res, next) => {
                 post.imageUrl = `${req.protocol}://${req.get("host")}${post.imageUrl}`
             };
             res.status(200).json(
-                post
+                post,
+                hateoasLinks(req, post._id)
             );
         })
         .catch((error) => res.status(404).json({
@@ -42,7 +43,8 @@ exports.createPost = (req, res, next) => {
     post
         .save()
         .then((newPost) => res.status(201).json(
-            newPost
+            newPost,
+            hateoasLinks(req, newPost._id)
         ))
         .catch((error) => res.status(400).json({
             error
@@ -72,7 +74,8 @@ exports.likePost = (req, res, next) => {
                 setDefaultsOnInsert: true
               })
               .then((postUpdated) => res.status(200).json(
-                postUpdated
+                postUpdated,
+                hateoasLinks(req, postUpdated._id)
                 ))
               .catch((error) => res.status(400).json({
                 error
@@ -104,7 +107,8 @@ exports.likePost = (req, res, next) => {
                 }
               )
               .then((postUpdated) => res.status(200).json(
-                postUpdated
+                postUpdated,
+                hateoasLinks(req, postUpdated._id)
                 ))
               .catch((error) => res.status(400).json({
                 error
@@ -160,7 +164,8 @@ exports.updatePost = (req, res, next) => {
                         setDefaultsOnInsert: true
                     })
                     .then((postUpdated) => res.status(200).json(
-                        postUpdated
+                        postUpdated,
+                        hateoasLinks(req, postUpdated._id)
                     ))
                     .catch((error) => res.status(400).json({
                         error
@@ -208,7 +213,8 @@ exports.reportPost = (req, res, next) => {
                         setDefaultsOnInsert: true
                     })
                     .then((postUpdated) => res.status(200).json(
-                        postUpdated
+                        postUpdated,
+                        hateoasLinks(req, postUpdated._id)
                     ))
                     .catch((error) => res.status(400).json({
                         error
