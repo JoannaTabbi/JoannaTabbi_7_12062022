@@ -72,55 +72,56 @@ exports.signup = (req, res, next) => {
  * in the Users collection, then checks if the password given matches the one assigned 
  * to the user in database. If correct, returns userId and a token.
  */
-exports.login = (req, res, next) => {
+ exports.login = (req, res, next) => {
     const emailEncrypted = encryptMail(req.body.email);
     User.findOne({
-            email: emailEncrypted
-        })
-        .then((user) => {
-            if (!user) {
-                return res.status(401).json({
-                    error: "User not found"
-                });
-            }
-            user.email = decryptMail(user.email)
-            bcrypt
-                .compare(req.body.password, user.password)
-                .then((valid) => {
-                    if (!valid) {
-                        return res.status(401).json({
-                            error: "Incorrect password"
-                        });
-                    }
-                    const createToken = (id) => {
-                        return jwt.sign({ // creating a token for the new session; 
-                                userId: user._id // the method takes two arguments : 
-                            }, // a response object and
-                            process.env.TOKEN_SECRET, { // a secret key
-                                expiresIn: '24h'
-                            }
-                        );
-                    };
-                    const maxAge = 1 * 60 * 60 * 1000;
-                    const token = createToken(user._id);
-                    res.cookie('jwt', token, {
-                        httpOnly: true,
-                        maxAge
-                    });
-                    res.status(200).json({
-                        userId: user._id,
-                        User: user
-                    },
-                    hateoasLinks(req, user._id));
-                })
-                .catch((error) => res.status(500).json({
-                    error: "valid token"
-                }));
-        })
-        .catch((error) => res.status(500).json({
-            error: "findOne"
-        }));
-};
+        email: emailEncrypted
+      })
+      .then((user) => {
+        if (!user) {
+          return res.status(401).json({
+            error: "User not found"
+          });
+        }
+        user.email = decryptMail(user.email)
+        bcrypt
+          .compare(req.body.password, user.password)
+          .then((valid) => {
+            if (!valid) {
+              return res.status(401).json({
+                error: "Incorrect password"
+              });
+            };
+            res.status(200).json({
+                userId: user._id,
+                token: jwt.sign({ // creating a token for the new session; 
+                    userId: user._id // the method takes two arguments : 
+                  }, // a response object and
+                  process.env.TOKEN_SECRET, { // a secret key
+                    expiresIn: 60 * 15
+                  }
+                ),
+                /*refreshToken: jwt.sign({ // creating a token for the new session; 
+                    userId: user._id // the method takes two arguments : 
+                  }, // a response object and
+                  process.env.REFRESH_TOKEN_SECRET, { // a secret key
+                    expiresIn: '24h'
+                  }
+                ), */
+                User: user
+              },
+            hateoasLinks(req, user._id));
+          })
+          .catch((error) => res.status(500).json({
+            error
+          }));
+      })
+      .catch((error) => res.status(500).json({
+        error
+      }));
+  };
+
+
 /**
  * logs out the user. His session is over and the token is invalidated.
  */
@@ -132,9 +133,6 @@ exports.logout = (req, res, next) => {
                     error: new Error("User not found!")
                 });
             } else {
-                res.cookie('jwt', '', {
-                    maxAge: 1
-                });
                 //res.redirect('/');
                 res.status(200).json({
                     message: "user logged out successfully"
