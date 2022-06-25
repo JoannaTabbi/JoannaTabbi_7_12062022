@@ -3,6 +3,9 @@ const Post = require("../models/post.model");
 const Comment = require("../models/comment.model");
 const fs = require("fs");
 
+/**
+ * displays one post
+ */
 exports.readOnePost = (req, res, next) => {
     Post.findById(req.params.id)
         .then((post) => {
@@ -18,6 +21,9 @@ exports.readOnePost = (req, res, next) => {
         );
 };
 
+/**
+ * displays all the posts
+ */
 exports.readAllPosts = (req, res, next) => {
     Post.find()
         .then((posts) => {
@@ -36,6 +42,9 @@ exports.readAllPosts = (req, res, next) => {
         );
 };
 
+/**
+ * creates a new post.
+ */
 exports.createPost = (req, res, next) => {
     if (!req.body.post) {
         return res.status(422).json({
@@ -59,6 +68,14 @@ exports.createPost = (req, res, next) => {
         );
 };
 
+/**
+ * Controls one post's likes. The "like" key value equal to 1 gives 
+ * a like to the chosen post : the "likes" value is incremented and 
+ * the liker's id is added to the userLiked array. 
+ * The "like key value equal to 0 removes the like already given : 
+ * the "likes" value is decremented and the liker's id is removed from 
+ * the usersLiked array. 
+ */
 exports.likePost = (req, res, next) => {
     Post.findById(req.params.id)
         .then((postFound) => {
@@ -136,6 +153,9 @@ exports.likePost = (req, res, next) => {
         );
 };
 
+/**
+ * updates a post for an id given.
+ */
 exports.updatePost = (req, res, next) => {
     Post.findById(req.params.id).then((post) => {
         if (!post) {
@@ -184,6 +204,9 @@ exports.updatePost = (req, res, next) => {
     });
 };
 
+/**
+ * deletes a post for an id given.
+ */
 exports.deletePost = (req, res, next) => {
     Post.findByIdAndDelete(req.params.id)
         .then((post) => {
@@ -206,6 +229,12 @@ exports.deletePost = (req, res, next) => {
         );
 };
 
+/**
+ * Reports a post for an id given. 
+ * The id of the user who reports is added to the usersWhoReported array 
+ * and the value of reports is increased by 1. No change if the id of the user who reports
+ * is already present in the usersWhoReported array.
+ */
 exports.reportPost = (req, res, next) => {
     Post.findById(req.params.id)
         .then((post) => {

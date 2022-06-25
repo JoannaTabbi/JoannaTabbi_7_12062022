@@ -14,7 +14,7 @@ API client e.g. POSTMAN
 
 ## GETTING STARTED
 
-Clone this repository and open it in your code editor. From the root project directory, run *npm install* then *nodemon server*, the server will run on port 3000 (default).  
+Clone this repository and open it in your code editor. Move to the back directory, run *npm install* then *nodemon server*, the server will run on port 3000 (default).  
 Create .env file in the root directory, then copy/paste the content of the .dot.exemple file. Set your own values to the environment variables that it contains.
 
 ## DATABASE

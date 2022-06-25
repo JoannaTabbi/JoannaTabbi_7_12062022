@@ -2,6 +2,10 @@ const User = require("../models/user.model");
 const Post = require("../models/post.model");
 const Comment = require("../models/comment.model");
 
+/**
+ * displays one comment related to a post id given
+ */
+
 exports.readOneComment = (req, res, next) => {
     Comment.findById(req.params.id)
         .then((comment) => {
@@ -17,6 +21,9 @@ exports.readOneComment = (req, res, next) => {
         }));
 }
 
+/**
+ * displays all the comments related to a post id given
+ */
 exports.readAllComments = (req, res, next) => {
     Comment.find()
         .then((comments) => {
@@ -32,6 +39,10 @@ exports.readAllComments = (req, res, next) => {
             error
         })))
 }
+
+/**
+ * creates a new comment related to a post id given
+ */
 
 exports.createComment = (req, res, next) => {
     const comment = new Comment({
@@ -61,6 +72,15 @@ exports.createComment = (req, res, next) => {
             error
         }));
 };
+
+/**
+ * Controls one comment likes. The "like" key value equal to 1 gives 
+ * a like to the chosen comment : the "likes" value is incremented and 
+ * the liker's id is added to the userLiked array. 
+ * The "like key value equal to 0 removes the like already given : 
+ * the "likes" value is decremented and the liker's id is removed from 
+ * the usersLiked array. 
+ */
 
 exports.likeComment = (req, res, next) => {
     Comment.findById(req.params.id)
@@ -135,6 +155,9 @@ exports.likeComment = (req, res, next) => {
     }));
 }
 
+/**
+ * updates one comment related to a post id given
+ */
 exports.updateComment = (req, res, next) => {
     Comment.findById(req.params.id)
         .then((comment) => {
@@ -167,7 +190,9 @@ exports.updateComment = (req, res, next) => {
             }
         });
 }
-
+/**
+ * deletes one comment related to a post id given.
+ */
 exports.deleteComment = (req, res, next) => {
     Comment.findByIdAndDelete(req.params.id)
         .then((comment) => {
@@ -187,7 +212,12 @@ exports.deleteComment = (req, res, next) => {
             error
         }))
 }
-
+/**
+ * Reports a comment for an id given. 
+ * The id of the user who reports is added to the usersWhoReported array 
+ * and the value of reports is increased by 1. No change if the id of the user who reports
+ * is already present in the usersWhoReported array.
+ */
 exports.reportComment = (req, res, next) => {
     Comment.findById(req.params.id)
         .then((comment) => {

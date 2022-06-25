@@ -123,7 +123,8 @@ exports.signup = (req, res, next) => {
 
 
 /**
- * logs out the user. His session is over and the token is invalidated.
+ * logs out the user. His session is closed and the token is invalidated.
+ * The user is redirected to the home page
  */
 exports.logout = (req, res, next) => {
     User.findById(req.auth.userId)

@@ -30,7 +30,7 @@ if (!process.env.MONGO_URI) {
     },
     {
       type: "rotating-file",
-      path: "./logs/mongodb.log",
+      path: "./logs/mongodb.log", // logs will be printed in mongodb.log file
       period: "1d", // daily rotation
       count: 3, // keep 3 back copies
     },
@@ -44,6 +44,7 @@ function serializer(data) {
   return `db.${data.coll}.${data.method}(${query}, ${options});`;
 }
 
+// set the debug option 
 mongoose.set("debug", function (coll, method, query, doc, options) {
   let set = {
     coll: coll,
