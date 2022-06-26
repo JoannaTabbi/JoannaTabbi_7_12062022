@@ -8,6 +8,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 const speedLimiter = require('./app/middleware/speed-limiter');
 const helmet = require('helmet');
 const hateoasLinker = require('express-hateoas-links');
+//const cookieParser = require('cookie-parser');
 
 const db = require('./app/config/db.config');
 // setting headers for CORS errors
@@ -35,6 +36,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // replace standard express res.json with the new version (second param possible)
 app.use(hateoasLinker);
+//middleware for cookies
+//app.use(cookieParser);
 // simple route
 app.get("/", (req, res) => {
   res.json({ message: "Bienvenue sur le réseau social groupomania" });

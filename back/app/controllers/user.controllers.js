@@ -6,7 +6,10 @@ const jwt = require('jsonwebtoken');
 const cryptoJS = require('crypto-js');
 require('dotenv').config();
 const fs = require('fs');
-const { body, validationResult } = require('express-validator');
+const {
+    body,
+    validationResult
+} = require('express-validator');
 
 /**
  * encrypts the user's email 
@@ -45,7 +48,9 @@ exports.signup = (req, res, next) => {
     // Finds the validation errors in this request and wraps them in an object with handy functions
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+        return res.status(400).json({
+            errors: errors.array()
+        });
     };
     bcrypt
         .hash(req.body.password, 10)
@@ -68,80 +73,88 @@ exports.signup = (req, res, next) => {
 
 /**
  * logs the user who's already registered. 
- * This method encrypts the email given in the request and controls if it is present 
- * in the Users collection, then checks if the password given matches the one assigned 
- * to the user in database. If correct, returns userId and a token.
  */
- exports.login = (req, res, next) => {
+exports.login = (req, res, next) => {
+
+    //encrypts the email given in the request and controls if it is present 
+    //in the Users collection
     const emailEncrypted = encryptMail(req.body.email);
     User.findOne({
-        email: emailEncrypted
-      })
-      .then((user) => {
-        if (!user) {
-          return res.status(401).json({
-            error: "User not found"
-          });
-        }
-        user.email = decryptMail(user.email)
-        bcrypt
-          .compare(req.body.password, user.password)
-          .then((valid) => {
-            if (!valid) {
-              return res.status(401).json({
-                error: "Incorrect password"
-              });
-            };
-            res.status(200).json({
-                userId: user._id,
-                token: jwt.sign({ // creating a token for the new session; 
-                    userId: user._id // the method takes two arguments : 
-                  }, // a response object and
-                  process.env.TOKEN_SECRET, { // a secret key
-                    expiresIn: 60 * 15
-                  }
-                ),
-                /*refreshToken: jwt.sign({ // creating a token for the new session; 
-                    userId: user._id // the method takes two arguments : 
-                  }, // a response object and
-                  process.env.REFRESH_TOKEN_SECRET, { // a secret key
-                    expiresIn: '24h'
-                  }
-                ), */
-                User: user
-              },
-            hateoasLinks(req, user._id));
-          })
-          .catch((error) => res.status(500).json({
-            error
-          }));
-      })
-      .catch((error) => res.status(500).json({
-        error
-      }));
-  };
-
-
-/**
- * logs out the user. His session is closed and the token is invalidated.
- * The user is redirected to the home page
- */
-exports.logout = (req, res, next) => {
-    User.findById(req.auth.userId)
+            email: emailEncrypted
+        })
         .then((user) => {
             if (!user) {
-                res.status(404).json({
-                    error: new Error("User not found!")
+                return res.status(401).json({
+                    error: "User not found"
                 });
-            } else {
-                //res.redirect('/');
-                res.status(200).json({
-                    message: "user logged out successfully"
-                });
-            }
-
+            };
+            user.email = decryptMail(user.email);
+            //checks if the password given matches the one assigned 
+            //to the user in database. If correct, returns userId and a token.
+            bcrypt
+                .compare(req.body.password, user.password)
+                .then((valid) => {
+                    if (!valid) {
+                        return res.status(401).json({
+                            error: "Incorrect password"
+                        });
+                    };
+                    // creating a refresh token stored in cookie, that will allow us to regenerate the token once expired; 
+                    res.cookie('jwt', {
+                        refreshToken: jwt.sign({
+                                userId: user._id // the method takes two arguments : 
+                            }, // a response object and
+                            process.env.REFRESH_TOKEN_SECRET, { // a secret key
+                                expiresIn: '24h'
+                            }
+                        )
+                    }, {
+                        httpOnly: true,
+                        maxAge: 24 * 60 * 60
+                    });
+                    res.status(200).json({
+                            userId: user._id,
+                            // creating a token for a new session
+                            token: jwt.sign({
+                                    userId: user._id // the method takes two arguments : 
+                                }, // a response object and
+                                process.env.TOKEN_SECRET, { // a secret key
+                                    expiresIn: 15 * 60 // expires after 15 minutes
+                                }
+                            ),
+                            User: user
+                        },
+                        hateoasLinks(req, user._id));
+                })
+                .catch((error) => res.status(500).json({
+                    error
+                }));
         })
+        .catch((error) => res.status(500).json({
+            error
+        }));
 };
+
+/**
+ * Logs out the user. His refresh token is invalidated.
+ * The user is redirected to the home page.
+ * !!! the client should also delete the access token !!!
+ */
+exports.logout = (req, res, next) => {
+    const cookie = req.cookie;
+    if (!cookie?.jwt) return res.sendStatus(204);
+    User.findById(req.auth.userId)
+        .then(() => {
+            res.clearCookie('jwt', {
+                httpOnly: true
+            });
+            res.redirect('/');
+            res.status(200).json({
+                message: "user logged out successfully"
+            });
+        })
+        .catch((error) => res.status(404).json(error));
+}
 /**
  * reads the data for all users; accessible only for isAdmin.
  */
@@ -183,7 +196,7 @@ exports.readAllUsers = (req, res, next) => {
 /**
  * displays other user's non sensible data : unserName, aboutMe, avatar... 
  */
- exports.readUser = (req, res, next) => {
+exports.readUser = (req, res, next) => {
     User.findById(req.params.id)
         .then((user) => {
             if (!user) {
@@ -192,13 +205,13 @@ exports.readAllUsers = (req, res, next) => {
                 });
             } else {
                 const userFound = {
-                    userName : user.userName,
-                    aboutMe : user.aboutMe,
-                    imageUrl : `${req.protocol}://${req.get("host")}${user.imageUrl}`,
-                    followers : user.followers,
-                    following : user.following
+                    userName: user.userName,
+                    aboutMe: user.aboutMe,
+                    imageUrl: `${req.protocol}://${req.get("host")}${user.imageUrl}`,
+                    followers: user.followers,
+                    following: user.following
                 }
-                
+
                 res.status(200).json(userFound,
                     hateoasLinks(req, userFound._id));
             }
@@ -265,13 +278,30 @@ exports.updateUser = (req, res, next) => {
                 res.status(404).json(error);
             } else {
                 const update = {};
-                // if password is updated
-                if (req.body.password) 
+                // the password is updated
+                if (req.body.password) {
+                    const hash = bcrypt.hash(req.body.password, 10);
+                    update.password = hash;
+                };
+                // the email is updated
+                if (req.body.email) {
+                    console.log(req.body.email.isEmail());
+                    // Finds the validation errors in this request and wraps them 
+                    // in an object with handy functions
+                    const errors = validationResult(req);
+                    if (!errors.isEmpty()) {
+                        return res.status(400).json({
+                            errors: errors.array()
+                        });
+                    }
+                    update.email = encryptMail(req.body.email);
+                }
+
                 User.findByIdAndUpdate({
                         _id: req.auth.userId
                     }, {
                         ...req.body,
-                        email: encryptMail(req.body.email)
+                        update
                     }, {
                         new: true,
                         upsert: true,
@@ -459,50 +489,49 @@ exports.reportUser = (req, res, next) => {
 /**
  * create hateoas links 
  */
- const hateoasLinks = (req, id) => {
+const hateoasLinks = (req, id) => {
     const URI = `${req.protocol}://${req.get("host") + "/api/auth/"}`;
-    return [
-      {
-        rel: "signup",
-        title: "Signup",
-        href: URI + "signup",
-        method: "POST"
-      },
-      {
-        rel: "login",
-        title: "Login",
-        href: URI + "login",
-        method: "POST"
-      },
-      {
-        rel: "read",
-        title: "Read",
-        href: URI,
-        method: "GET"
-      },
-      {
-        rel: "export",
-        title: "Export",
-        href: URI + "export",
-        method: "GET"
-      },
-      {
-        rel: "update",
-        title: "Update",
-        href: URI,
-        method: "PUT"
-      },
-      {
-        rel: "delete",
-        title: "Delete",
-        href: URI,
-        method: "DELETE"
-      },
-      {
-        rel: "report",
-        title: "Report",
-        href: URI + id + "/report",
-        method: "POST"
-      }
+    return [{
+            rel: "signup",
+            title: "Signup",
+            href: URI + "signup",
+            method: "POST"
+        },
+        {
+            rel: "login",
+            title: "Login",
+            href: URI + "login",
+            method: "POST"
+        },
+        {
+            rel: "read",
+            title: "Read",
+            href: URI,
+            method: "GET"
+        },
+        {
+            rel: "export",
+            title: "Export",
+            href: URI + "export",
+            method: "GET"
+        },
+        {
+            rel: "update",
+            title: "Update",
+            href: URI,
+            method: "PUT"
+        },
+        {
+            rel: "delete",
+            title: "Delete",
+            href: URI,
+            method: "DELETE"
+        },
+        {
+            rel: "report",
+            title: "Report",
+            href: URI + id + "/report",
+            method: "POST"
+        }
     ]
-  }
+}

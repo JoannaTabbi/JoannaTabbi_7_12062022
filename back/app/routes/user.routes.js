@@ -3,6 +3,7 @@ const router = express.Router();
 const userCtrl = require('../controllers/user.controllers');
 const multer = require('../middleware/multer-config');
 const auth = require('../middleware/auth');
+const refreshToken = require('../middleware/refreshToken');
 const password = require('../middleware/password');
 const rateLimiter = require('../middleware/rate-limiter');
 const { body, validationResult } = require('express-validator');
@@ -13,7 +14,7 @@ const { body, validationResult } = require('express-validator');
  * that match the request (read one, read all, create etc...)
  */
 
-router.post('/signup', body('email').isEmail(), password, userCtrl.signup);
+router.post('/signup', body('email').isEmail(), password, multer, userCtrl.signup);
 router.post('/login', rateLimiter, userCtrl.login);
 router.get('/logout', auth, userCtrl.logout);
 router.get('/:id', auth, userCtrl.readUser);
@@ -25,5 +26,8 @@ router.delete('/', auth, userCtrl.deleteUser);
 router.patch('/:id/follow', auth, userCtrl.follow);
 router.patch('/:id/unfollow', auth, userCtrl.unfollow);
 router.patch('/:id/report', auth, userCtrl.reportUser);
+
+//refresh token route
+router.post('/token', refreshToken);
 
 module.exports = router;
