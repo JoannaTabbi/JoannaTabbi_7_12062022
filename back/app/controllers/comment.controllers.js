@@ -7,13 +7,14 @@ const Comment = require("../models/comment.model");
  */
 
 exports.readOneComment = (req, res, next) => {
+    
     Comment.findById(req.params.id)
         .then((comment) => {
             if (req.body.imageUrl) {
                 comment.imageUrl = `${req.protocol}://${req.get("host")}${comment.imageUrl}`
             };
             res.status(200).json(
-                comment
+                comment, hateoasLinks(req, comment._id)
             );
         })
         .catch((error) => res.status(404).json({
@@ -65,7 +66,7 @@ exports.createComment = (req, res, next) => {
                   }
                 )
             .then(() => res.status(201).json(
-                newComment))
+                newComment, hateoasLinks(req, newComment._id)))
             .catch()
             })    
         .catch((error) => res.status(400).json({
@@ -105,7 +106,7 @@ exports.likeComment = (req, res, next) => {
                 setDefaultsOnInsert: true
               })
               .then((commentUpdated) => res.status(200).json(
-                commentUpdated
+                commentUpdated, hateoasLinks(req, commentUpdated._id)
                 ))
               .catch((error) => res.status(400).json({
                 error
@@ -137,7 +138,7 @@ exports.likeComment = (req, res, next) => {
                 }
               )
               .then((commentUpdated) => res.status(200).json(
-                commentUpdated
+                commentUpdated, hateoasLinks(req, commentUpdated._id)
                 ))
               .catch((error) => res.status(400).json({
                 error
@@ -182,7 +183,7 @@ exports.updateComment = (req, res, next) => {
                         setDefaultsOnInsert: true
                     })
                     .then((commentUpdated) => res.status(200).json(
-                        commentUpdated
+                        commentUpdated, hateoasLinks(req, commentUpdated._id)
                     ))
                     .catch((error) => res.status(400).json({
                         error
@@ -237,7 +238,7 @@ exports.reportComment = (req, res, next) => {
                         setDefaultsOnInsert: true
                     })
                     .then((commentUpdated) => res.status(200).json(
-                        commentUpdated
+                        commentUpdated, hateoasLinks(req, commentUpdated._id)
                     ))
                     .catch((error) => res.status(400).json({
                         error
@@ -251,4 +252,54 @@ exports.reportComment = (req, res, next) => {
             }
         })
         .catch((error) => res.status(400).json(error))
+};
+
+/**
+ * create hateoas links for comments
+ */
+ const hateoasLinks = (req, id) => {
+    const URI = `${req.protocol}://${req.get("host") + "/api/comments/"}`;
+    return [{
+            rel: "readOne",
+            title: "ReadOne",
+            href: URI + id,
+            method: "GET"
+        },
+        {
+            rel: "readAll",
+            title: "ReadAll",
+            href: URI,
+            method: "GET"
+        },
+        {
+            rel: "create",
+            title: "Create",
+            href: URI,
+            method: "POST"
+        },
+        {
+            rel: "like",
+            title: "Like",
+            href: URI + id + "/like",
+            method: "POST"
+        },
+        {
+            rel: "update",
+            title: "Update",
+            href: URI + id,
+            method: "PUT"
+        },
+        {
+            rel: "delete",
+            title: "Delete",
+            href: URI + id,
+            method: "DELETE"
+        },
+        {
+            rel: "report",
+            title: "Report",
+            href: URI + id + "/report",
+            method: "POST"
+        }
+    ];
 };

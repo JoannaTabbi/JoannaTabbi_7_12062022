@@ -18,10 +18,12 @@
      .is().not().oneOf(['Passw0rd', 'Password123']); // Blacklist these values
  
  module.exports = (req, res, next) => {
-     if (passwordSchema.validate(req.body.password)) {
+     if (!req.body.password) {
+         next();
+     } else if ( passwordSchema.validate(req.body.password)) {
          next();
      } else {
-         const pwdValidError = passwordSchema.validate(req.body.password, {details: true});
+         const pwdValidError = passwordSchema.validate(req.body.password, { details: true });
          return res.status(400).json({
              error: pwdValidError
          })

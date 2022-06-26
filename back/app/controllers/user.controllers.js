@@ -181,11 +181,38 @@ exports.readAllUsers = (req, res, next) => {
 }
 
 /**
+ * displays other user's non sensible data : unserName, aboutMe, avatar... 
+ */
+ exports.readUser = (req, res, next) => {
+    User.findById(req.params.id)
+        .then((user) => {
+            if (!user) {
+                res.status(404).json({
+                    error: "User not found!"
+                });
+            } else {
+                const userFound = {
+                    userName : user.userName,
+                    aboutMe : user.aboutMe,
+                    imageUrl : `${req.protocol}://${req.get("host")}${user.imageUrl}`,
+                    followers : user.followers,
+                    following : user.following
+                }
+                
+                res.status(200).json(userFound,
+                    hateoasLinks(req, userFound._id));
+            }
+        })
+        .catch((error) => res.status(404).json(error));
+}
+
+
+/**
  * displays user's data. The email is decrypted before displaying. 
  * If the user's id does not match the one assigned to the user in Users Colection, 
  * the request is not authorized.
  */
-exports.readUser = (req, res, next) => {
+exports.readOneself = (req, res, next) => {
     User.findById(req.auth.userId)
         .then((user) => {
             if (!user) {
@@ -237,6 +264,9 @@ exports.updateUser = (req, res, next) => {
             if (!user) {
                 res.status(404).json(error);
             } else {
+                const update = {};
+                // if password is updated
+                if (req.body.password) 
                 User.findByIdAndUpdate({
                         _id: req.auth.userId
                     }, {

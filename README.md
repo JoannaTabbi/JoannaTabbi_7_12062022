@@ -67,13 +67,13 @@ The comment routes are available for a post id given.
 
 |name   |method   |URI   |description   |
 |:---|:---|:---|:---|
-|readOneComment   |GET   |/api/:id/comments/:id   |displays one comment   |
-|readAllComments  |GET   |/api/:id/comments/  |displays all the comments   |
-|createComment   |POST   |/api/:id/comments/   |creates a new comment   |
-|likeComment   |POST  |/api/:id/comments/:id/like   |controls one comment likes. The "like" key value equal to 1 gives a like to the chosen comment, equal to 0 removes the like already given.    |
-|updateComment   |PUT   |/api/:id/comments/:id   |updates one comment   |
-|deleteComment   |DELETE   |/api/:id/comments/:id   |deletes one comment   |
-|reportComment   |POST   |/api/:id/comments/:id/report/   |reports abusive content for a comment id given.  | 
+|readOneComment   |GET   |/api/comments/:id   |displays one comment   |
+|readAllComments  |GET   |/api/comments/  |displays all the comments   |
+|createComment   |POST   |/api/comments/   |creates a new comment   |
+|likeComment   |POST  |/api/comments/:id/like   |controls one comment likes. The "like" key value equal to 1 gives a like to the chosen comment, equal to 0 removes the like already given.    |
+|updateComment   |PUT   |/api/comments/:id   |updates one comment   |
+|deleteComment   |DELETE   |/api/comments/:id   |deletes one comment   |
+|reportComment   |POST   |/api/comments/:id/report/   |reports abusive content for a comment id given.  | 
 
 ## FRONT-END
 
