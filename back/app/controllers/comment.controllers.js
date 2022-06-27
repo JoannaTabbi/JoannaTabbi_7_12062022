@@ -26,7 +26,7 @@ exports.readOneComment = (req, res, next) => {
  * displays all the comments related to a post id given
  */
 exports.readAllComments = (req, res, next) => {
-    Comment.find({ postId: req.body.postId })
+    Comment.findById(req.params.id)
         .then((comments) => {
             comments = comments.map((comment => {
                 comment.imageUrl = `${req.protocol}://${req.get("host")}${comment.imageUrl}`;

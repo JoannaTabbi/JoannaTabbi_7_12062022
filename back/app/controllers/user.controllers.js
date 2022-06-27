@@ -45,10 +45,10 @@ exports.signup = (req, res, next) => {
     // validates the email format
     const emailValidated = validator.isEmail(req.body.email);
     if (!emailValidated) {
-        res.status(400).json({
+        return res.status(400).json({
             error: "Invalid email format"
         });
-    } else {
+    } 
         //encrypts password
         bcrypt
             .hash(req.body.password, 10)
@@ -67,7 +67,6 @@ exports.signup = (req, res, next) => {
                     .catch((error) => res.status(400).json(error));
             })
             .catch((error) => res.status(500).json(error));
-    }
 };
 
 /**
@@ -235,15 +234,15 @@ exports.exportData = (req, res, next) => {
  */
 exports.updateUser = (req, res, next) => {
     User.findById(req.auth.userId)
-        .then((user) => {
+        .then( async (user) => {
             if (!user) {
                 res.status(404).json(error);
             } else {
                 const update = req.file? 
-                req.body.user : req.body;
+                JSON.parse(req.body.user) : req.body;
                 // the password is updated
                 if (update.password) {
-                    const hash = bcrypt.hash(update.password, 10); // the password is crypted
+                    const hash = await bcrypt.hash(update.password, 10); // the password is crypted
                     update.password = hash;
                 };
                 // the email is updated
@@ -251,7 +250,7 @@ exports.updateUser = (req, res, next) => {
                     // validates the email format
                     const emailValidated = validator.isEmail(update.email);
                     if (!emailValidated) {
-                        res.status(400).json({
+                        return res.status(400).json({
                             error: "Invalid email format"
                         });
                     } else {
@@ -261,7 +260,7 @@ exports.updateUser = (req, res, next) => {
                 }
                 // check if image file is present
                 const userObject = req.file ? {
-                    ...JSON.parse(update),
+                    ...update,
                     imageUrl: `/images/${req.file.filename}`
                   } : {
                     ...update
@@ -284,7 +283,6 @@ exports.updateUser = (req, res, next) => {
                     })
                     .then((userUpdated) => 
                     {
-                        console.log(userUpdated);
                         res.status(200).json(
                         userUpdated,
                         hateoasLinks(req, userUpdated._id)

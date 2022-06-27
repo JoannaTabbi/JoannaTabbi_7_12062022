@@ -184,10 +184,8 @@ exports.updatePost = (req, res, next) => {
                 console.log(error);
             }
             Post.findByIdAndUpdate(
-                    req.params.id, {
-                    postObject,
-                    _id: req.params.id
-                }, {
+                    req.params.id,
+                    postObject, {
                     new: true,
                     upsert: true,
                     setDefaultsOnInsert: true
