@@ -57,7 +57,7 @@ exports.signup = (req, res, next) => {
                     userName: req.body.userName,
                     email: encryptMail(req.body.email),
                     password: hash,
-                    isAdmin: req.body.isAdmin
+                    isAdmin: req.body.isAdmin  // see front
                 });
                 user
                     .save()
@@ -239,27 +239,29 @@ exports.updateUser = (req, res, next) => {
             if (!user) {
                 res.status(404).json(error);
             } else {
-                const update = req.body;
+                const update = req.file? 
+                req.body.user : req.body;
                 // the password is updated
-                if (req.body.password) {
-                    const hash = bcrypt.hash(req.body.password, 10); // the password is crypted
+                if (update.password) {
+                    const hash = bcrypt.hash(update.password, 10); // the password is crypted
                     update.password = hash;
                 };
                 // the email is updated
-                if (req.body.email) {
+                if (update.email) {
                     // validates the email format
-                    const emailValidated = validator.isEmail(req.body.email);
+                    const emailValidated = validator.isEmail(update.email);
                     if (!emailValidated) {
                         res.status(400).json({
                             error: "Invalid email format"
                         });
                     } else {
-                        update.email = encryptMail(req.body.email); // the email is crypted
+                        update.email = encryptMail(update.email); // the email is crypted
+                        console.log(update.email);
                     }   
                 }
                 // check if image file is present
                 const userObject = req.file ? {
-                    ...JSON.parse(update.user),
+                    ...JSON.parse(update),
                     imageUrl: `/images/${req.file.filename}`
                   } : {
                     ...update
@@ -274,17 +276,19 @@ exports.updateUser = (req, res, next) => {
                   }
                 User.findByIdAndUpdate({
                         _id: req.auth.userId
-                    }, {
-                        userObject
-                    }, {
+                    },
+                        userObject, {
                         new: true,
                         upsert: true,
                         setDefaultsOnInsert: true
                     })
-                    .then((userUpdated) => res.status(200).json(
+                    .then((userUpdated) => 
+                    {
+                        console.log(userUpdated);
+                        res.status(200).json(
                         userUpdated,
                         hateoasLinks(req, userUpdated._id)
-                    ))
+                    )})
                     .catch((error) => {
                         res.status(400).json(error);
                     });
