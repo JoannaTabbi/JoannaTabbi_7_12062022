@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const uniqueValidator = require("mongoose-unique-validator");
-const { isEmail } = require('validator');
 
 /**
  * setting the schema for a user

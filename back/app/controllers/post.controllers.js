@@ -51,8 +51,10 @@ exports.createPost = (req, res, next) => {
             error: "The post is mandatory!"
         });
     };
+    const postObject = JSON.parse(req.body.post);
+    delete postObject._id;
     const post = new Post({
-        ...JSON.parse(req.body.post),
+        ...postObject,
         imageUrl: req.file ? `/images/${req.file.filename}` : "",
         userId: req.auth.userId
     });
@@ -181,11 +183,9 @@ exports.updatePost = (req, res, next) => {
             } catch (error) {
                 console.log(error);
             }
-            Post.findByIdAndUpdate({
-                    _id: req.params.id
-                }, {
+            Post.findByIdAndUpdate(
+                    req.params.id, {
                     postObject,
-                    ...req.body,
                     _id: req.params.id
                 }, {
                     new: true,

@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const Post = require("./post.model");
+const User = require("./user.model");
 
 //create the schema for the post
 
@@ -6,6 +8,11 @@ const commentSchema = new mongoose.Schema({
     userId: {
         type: String,
         ref: "User",
+        required: true
+    },
+    postId: {
+        type: String,
+        ref: "Post",
         required: true
     },
     message: {
@@ -19,10 +26,6 @@ const commentSchema = new mongoose.Schema({
     usersLiked: [{
         type: String,
         ref: "User"
-    }],
-    comments: [{
-        type: String,
-        ref: "Comment"
     }],
     reports: {
         type: Number,

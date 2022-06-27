@@ -6,10 +6,7 @@ const jwt = require('jsonwebtoken');
 const cryptoJS = require('crypto-js');
 require('dotenv').config();
 const fs = require('fs');
-const {
-    body,
-    validationResult
-} = require('express-validator');
+const validator = require('validator');
 
 /**
  * encrypts the user's email 
@@ -45,30 +42,32 @@ function decryptMail(encryptedContent) {
  * the email is encrypted
  */
 exports.signup = (req, res, next) => {
-    // Finds the validation errors in this request and wraps them in an object with handy functions
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({
-            errors: errors.array()
+    // validates the email format
+    const emailValidated = validator.isEmail(req.body.email);
+    if (!emailValidated) {
+        res.status(400).json({
+            error: "Invalid email format"
         });
-    };
-    bcrypt
-        .hash(req.body.password, 10)
-        .then((hash) => {
-            const user = new User({
-                userName: req.body.userName,
-                email: encryptMail(req.body.email),
-                password: hash,
-                isAdmin: req.body.isAdmin
-            });
-            user
-                .save()
-                .then((user) => res.status(201).json(
-                    user
-                ))
-                .catch((error) => res.status(400).json(error));
-        })
-        .catch((error) => res.status(500).json(error));
+    } else {
+        //encrypts password
+        bcrypt
+            .hash(req.body.password, 10)
+            .then((hash) => {
+                const user = new User({
+                    userName: req.body.userName,
+                    email: encryptMail(req.body.email),
+                    password: hash,
+                    isAdmin: req.body.isAdmin
+                });
+                user
+                    .save()
+                    .then((user) => res.status(201).json(
+                        user
+                    ))
+                    .catch((error) => res.status(400).json(error));
+            })
+            .catch((error) => res.status(500).json(error));
+    }
 };
 
 /**
@@ -119,7 +118,7 @@ exports.login = (req, res, next) => {
                                     userId: user._id // the method takes two arguments : 
                                 }, // a response object and
                                 process.env.TOKEN_SECRET, { // a secret key
-                                    expiresIn: 15 * 60 // expires after 15 minutes
+                                    expiresIn: 150 * 60 // expires after 15 minutes
                                 }
                             ),
                             User: user
@@ -154,43 +153,6 @@ exports.logout = (req, res, next) => {
             });
         })
         .catch((error) => res.status(404).json(error));
-}
-/**
- * reads the data for all users; accessible only for isAdmin.
- */
-exports.readAllUsers = (req, res, next) => {
-    User.findById(req.auth.userId)
-        .then((user) => {
-            if (!user) {
-                res.status(404).json({
-                    error: new Error("User not found!")
-                });
-            } else if (!user.isAdmin) {
-                res.status(403).json({
-                    error: "You're not authorized to access this data!"
-                })
-            } else {
-                User.find()
-                    .then((users) => {
-                        users = users.map((user) => {
-                            user.email = decryptMail(user.email); // decrypts user's email  
-                            user.avatarUrl = `${req.protocol}://${req.get("host")}${user.avatarUrl}`;
-                            return {
-                                ...user._doc
-                            };
-                        });
-                        res.status(200).json(users,
-                            hateoasLinks(req, user._id));
-                    })
-                    .catch((error) => res.status(400).json({
-                        error
-                    }));
-            }
-        })
-        .catch((error) => res.status(404).json({
-            error
-        }));
-
 }
 
 /**
@@ -277,31 +239,43 @@ exports.updateUser = (req, res, next) => {
             if (!user) {
                 res.status(404).json(error);
             } else {
-                const update = {};
+                const update = req.body;
                 // the password is updated
                 if (req.body.password) {
-                    const hash = bcrypt.hash(req.body.password, 10);
+                    const hash = bcrypt.hash(req.body.password, 10); // the password is crypted
                     update.password = hash;
                 };
                 // the email is updated
                 if (req.body.email) {
-                    console.log(req.body.email.isEmail());
-                    // Finds the validation errors in this request and wraps them 
-                    // in an object with handy functions
-                    const errors = validationResult(req);
-                    if (!errors.isEmpty()) {
-                        return res.status(400).json({
-                            errors: errors.array()
+                    // validates the email format
+                    const emailValidated = validator.isEmail(req.body.email);
+                    if (!emailValidated) {
+                        res.status(400).json({
+                            error: "Invalid email format"
                         });
-                    }
-                    update.email = encryptMail(req.body.email);
+                    } else {
+                        update.email = encryptMail(req.body.email); // the email is crypted
+                    }   
                 }
-
+                // check if image file is present
+                const userObject = req.file ? {
+                    ...JSON.parse(update.user),
+                    imageUrl: `/images/${req.file.filename}`
+                  } : {
+                    ...update
+                  };
+                  const filename = user.imageUrl.split("/images/")[1];
+                  try {
+                    if (userObject.imageUrl) {
+                      fs.unlinkSync(`images/${filename}`)
+                    }
+                  } catch (error) {
+                    console.log(error);
+                  }
                 User.findByIdAndUpdate({
                         _id: req.auth.userId
                     }, {
-                        ...req.body,
-                        update
+                        userObject
                     }, {
                         new: true,
                         upsert: true,

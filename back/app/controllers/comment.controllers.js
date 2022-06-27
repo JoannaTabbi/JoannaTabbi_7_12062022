@@ -26,7 +26,7 @@ exports.readOneComment = (req, res, next) => {
  * displays all the comments related to a post id given
  */
 exports.readAllComments = (req, res, next) => {
-    Comment.find()
+    Comment.find({ postId: req.body.postId })
         .then((comments) => {
             comments = comments.map((comment => {
                 comment.imageUrl = `${req.protocol}://${req.get("host")}${comment.imageUrl}`;
@@ -48,12 +48,13 @@ exports.readAllComments = (req, res, next) => {
 exports.createComment = (req, res, next) => {
     const comment = new Comment({
         userId: req.auth.userId,
-        message: req.body.message
+        message: req.body.message,
+        postId: req.body.postId
     });
     comment
         .save()
         .then((newComment) => {
-            Post.findByIdAndUpdate(req.params.id,
+            Post.findByIdAndUpdate(postId,
                 {
                     $push: {
                       comments: newComment._id

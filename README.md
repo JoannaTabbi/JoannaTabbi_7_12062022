@@ -1,7 +1,7 @@
 ## GROUPOMANIA SOCIAL NETWORK
 
 Groupomania is a modern internal social network which will allow employees to get to know each other and exchange in a more informal context.
-This project is created as part of the Web Development vocational training by OpenClassrooms. It aimes to authenticate the user and maintain his session, implement securised database and develop a website interface with a front-end framework. 
+This project is created as part of the Web Development vocational training by OpenClassrooms. It particularly aimes to authenticate the user and maintain his session, implement securised database and develop a website interface with a front-end framework, in our case : Vue.js. 
 
 
 ## REQUIREMENTS
@@ -29,9 +29,9 @@ You can test this API with an API client, like POSTMAN or Thunder client which i
 ## DOCUMENTATION
 
 You'll find below the routes that you can test with an API client. Note that the responses contain the HATEOAS links that allow you to directly reach the object related routes.
-The *create*, *like*, *follow* or *report* routes are available to any authenticated user. 
-The *readOneself*, *exportData* and all *update* and *delete* routes are not available to the user who didn't create this data, unless he's an admin.
-Other restrictions are detailed below.  
+The *create*, *like*, *follow*, *unfollow* or *report* routes are available to any authenticated user. 
+The *readOneself*, *exportData* and all *update* and *delete* routes are not available to the user who didn't create this data.
+Finally, for moderation purposes, admin user can modify or change post or comment content.  
 
 ### USER
 
@@ -40,7 +40,7 @@ Other restrictions are detailed below.
 |signup   |POST  |/api/auth/   |register new user   |
 |login   |POST  |/api/auth/   |opens securised session for a user. A token is given in the response   |
 |logout   |DELETE |/api/auth/   |close the user's session, the authentication token is deleted   |
-|readUser   |GET   |/api/auth/:id   |returns user's data. The following information is available to any authenticated user : userName, aboutMe, avatar, posts, following, followers, likes and comments. The sensible data, like email, password, isAdmin and reports given) can exclusively be read by the admin user |
+|readUser   |GET   |/api/auth/:id   |returns user's data. The following information is available to any authenticated user : userName, aboutMe, avatar, posts, following, followers, likes and comments. |
 |readOneself   |GET   |/api/auth/   |returns user's own data   |
 |exportData   |GET   |/api/auth/export/   |prints user's data to a txt document   |
 |updateUser   |PUT   |/api/auth/   |updates user's data   |
@@ -77,4 +77,4 @@ The comment routes are available for a post id given.
 
 ## FRONT-END
 
-Created using the Vue.js framework. 
+Created using the Vue.js framework. (...soon :)) 
