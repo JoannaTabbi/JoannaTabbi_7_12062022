@@ -217,7 +217,12 @@ exports.deletePost = (req, res, next) => {
                     error: "Unauthorized request!"
                 });
             } else {
-                res.status(204).json({});
+                const filename = post.imageUrl.split("/images/")[1];
+                fs.unlink(`images/${filename}`, function (err) {
+                    if (err) throw err;
+                    // if no error, file has been deleted successfully
+                    res.sendStatus(204);
+                });                
             }
         })
         .catch((error) =>

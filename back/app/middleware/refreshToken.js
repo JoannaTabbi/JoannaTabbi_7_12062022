@@ -3,9 +3,9 @@ require('dotenv').config();
 
 module.exports = (req, res) => {
     try {
-        const cookie = req.cookie;
-        if (!cookie?.jwt) return res.sendStatus(401);
-        const refreshToken = cookie.jwt;
+        const cookies = req.cookies;
+        if (!cookies?.jwt) return res.sendStatus(401);
+        const refreshToken = cookies.jwt;
         const decodedRefreshToken = jwt.verify(
             refreshToken,
             process.env.REFRESH_TOKEN_SECRET

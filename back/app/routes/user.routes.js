@@ -26,6 +26,6 @@ router.patch('/:id/unfollow', auth, userCtrl.unfollow);
 router.patch('/:id/report', auth, userCtrl.reportUser);
 
 //refresh token route
-router.post('/token', refreshToken);
+router.post('/token', auth, refreshToken);
 
 module.exports = router;

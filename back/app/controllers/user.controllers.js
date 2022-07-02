@@ -98,15 +98,14 @@ exports.login = (req, res, next) => {
                         });
                     };
                     // creating a refresh token stored in cookie, that will allow us to regenerate the token once expired; 
-                    res.cookie('jwt', {
-                        refreshToken: jwt.sign({
-                                userId: user._id // the method takes two arguments : 
-                            }, // a response object and
-                            process.env.REFRESH_TOKEN_SECRET, { // a secret key
-                                expiresIn: '24h'
-                            }
-                        )
-                    }, {
+                    const refreshToken = jwt.sign({
+                        userId: user._id // the method takes two arguments : 
+                    }, // a response object and
+                    process.env.REFRESH_TOKEN_SECRET, { // a secret key
+                        expiresIn: '24h'
+                    }
+                )
+                    res.cookie('jwt', refreshToken, {
                         httpOnly: true,
                         maxAge: 24 * 60 * 60
                     });
@@ -139,8 +138,8 @@ exports.login = (req, res, next) => {
  * !!! the client should also delete the access token !!!
  */
 exports.logout = (req, res, next) => {
-    const cookie = req.cookie;
-    if (!cookie?.jwt) return res.sendStatus(204);
+    const cookies = req.cookie;
+    if (!cookies?.jwt) return res.sendStatus(204);
     User.findById(req.auth.userId)
         .then(() => {
             res.clearCookie('jwt', {
@@ -268,7 +267,7 @@ exports.updateUser = (req, res, next) => {
                   const filename = user.imageUrl.split("/images/")[1];
                   try {
                     if (userObject.imageUrl) {
-                      fs.unlinkSync(`images/${filename}`)
+                      fs.unlinkSync(`images/${filename}`);
                     }
                   } catch (error) {
                     console.log(error);
@@ -303,24 +302,19 @@ exports.updateUser = (req, res, next) => {
  * is not authorized.
  */
 exports.deleteUser = (req, res, next) => {
-    User.findById(req.auth.userId)
+    User.findByIdAndDelete(req.auth.userId)
         .then((user) => {
             if (!user) {
                 res.status(404).json({
                     error: new Error("User not found!")
                 });
             } else {
-                User.deleteOne({
-                        _id: req.auth.userId
-                    })
-                    .then(() => {
-                        res.status(204).json({})
-                    })
-                    .catch((error) => {
-                        res.status(400).json({
-                            error: error
-                        });
-                    });
+                const filename = user.imageUrl.split("/images/")[1];
+                fs.unlink(`images/${filename}`, function (err) {
+                    if (err) throw err;
+                    // if no error, file has been deleted successfully
+                    res.sendStatus(204);
+                });        
             }
         })
         .catch((error) => res.status(404).json({

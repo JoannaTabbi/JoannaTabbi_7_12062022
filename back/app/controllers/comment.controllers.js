@@ -7,7 +7,7 @@ const Comment = require("../models/comment.model");
  */
 
 exports.readOneComment = (req, res, next) => {
-    
+
     Comment.findById(req.params.id)
         .then((comment) => {
             if (req.body.imageUrl) {
@@ -17,28 +17,18 @@ exports.readOneComment = (req, res, next) => {
                 comment, hateoasLinks(req, comment._id)
             );
         })
-        .catch((error) => res.status(404).json({
-            error
-        }));
+        .catch((error) => res.status(404).json(error));
 }
 
 /**
  * displays all the comments related to a post id given
  */
 exports.readAllComments = (req, res, next) => {
-    Comment.findById(req.params.id)
-        .then((comments) => {
-            comments = comments.map((comment => {
-                comment.imageUrl = `${req.protocol}://${req.get("host")}${comment.imageUrl}`;
-                return {
-                    ...comment._doc
-                };
-            }))
-            res.status(200).json(comments)
+    Comment.find({
+            postId: req.body.postId
         })
-        .catch((error => res.status(404).json({
-            error
-        })))
+        .then((onePostComments) => res.status(200).json(onePostComments))
+        .catch((error) => res.status(404).json(error))
 }
 
 /**
@@ -54,107 +44,97 @@ exports.createComment = (req, res, next) => {
     comment
         .save()
         .then((newComment) => {
-            Post.findByIdAndUpdate(postId,
-                {
+            Post.findByIdAndUpdate(newComment.postId, {
                     $push: {
-                      comments: newComment._id
+                        comments: newComment._id
                     }
-                  }, 
-                  {
+                }, {
                     new: true,
                     upsert: true,
                     setDefaultsOnInsert: true
-                  }
-                )
-            .then(() => res.status(201).json(
-                newComment, hateoasLinks(req, newComment._id)))
-            .catch()
-            })    
-        .catch((error) => res.status(400).json({
-            error
-        }));
+                })
+                .then(() => res.status(201).json(newComment, hateoasLinks(req, newComment._id)))
+                .catch((error) => res.status(400).json(error));
+        })
+        .catch((error) => res.status(400).json(error));
 };
 
 /**
  * Controls one comment likes. The "like" key value equal to 1 gives 
  * a like to the chosen comment : the "likes" value is incremented and 
  * the liker's id is added to the userLiked array. 
- * The "like key value equal to 0 removes the like already given : 
+ * The "like" key value equal to 0 removes the like already given : 
  * the "likes" value is decremented and the liker's id is removed from 
  * the usersLiked array. 
  */
 
 exports.likeComment = (req, res, next) => {
     Comment.findById(req.params.id)
-    .then((commentFound) => {
-      switch (req.body.like) {
-        case 1:
-          if (!commentFound.usersLiked.includes(req.auth.userId)) {
-            Comment.findByIdAndUpdate({
-                _id: req.params.id
-              }, 
-              {
-                $inc: {
-                  likes: 1
-                },
-                $push: {
-                  usersLiked: req.auth.userId
-                }
-              }, 
-              {
-                new: true,
-                upsert: true,
-                setDefaultsOnInsert: true
-              })
-              .then((commentUpdated) => res.status(200).json(
-                commentUpdated, hateoasLinks(req, commentUpdated._id)
-                ))
-              .catch((error) => res.status(400).json({
-                error
-              }));
-          } else {
-            res
-              .status(200)
-              .json({
-                message: "User has already liked this comment"
-              });
-          }
-          break;  
-        case 0:
-            if (commentFound.usersLiked.includes(req.auth.userId)) {
-            Comment.findByIdAndUpdate({
-                  _id: req.params.id
-                },
-                {
-                  $inc: {
-                    likes: -1
-                  },
-                  $pull: {
-                    usersLiked: req.auth.userId
-                  }
-                }, {
-                    new: true,
-                    upsert: true,
-                    setDefaultsOnInsert: true
-                }
-              )
-              .then((commentUpdated) => res.status(200).json(
-                commentUpdated, hateoasLinks(req, commentUpdated._id)
-                ))
-              .catch((error) => res.status(400).json({
-                error
-              }));
-          } else {
-            res.status(200).json({
-              message: "User's like is already reset"
-            })
-          }
-          break;
-      }
-    })
-    .catch((error) => res.status(404).json({
-      error
-    }));
+        .then((commentFound) => {
+            switch (req.body.like) {
+                case 1:
+                    if (!commentFound.usersLiked.includes(req.auth.userId)) {
+                        Comment.findByIdAndUpdate({
+                                _id: req.params.id
+                            }, {
+                                $inc: {
+                                    likes: 1
+                                },
+                                $push: {
+                                    usersLiked: req.auth.userId
+                                }
+                            }, {
+                                new: true,
+                                upsert: true,
+                                setDefaultsOnInsert: true
+                            })
+                            .then((commentUpdated) => res.status(200).json(
+                                commentUpdated, hateoasLinks(req, commentUpdated._id)
+                            ))
+                            .catch((error) => res.status(400).json({
+                                error
+                            }));
+                    } else {
+                        res
+                            .status(200)
+                            .json({
+                                message: "User has already liked this comment"
+                            });
+                    }
+                    break;
+                case 0:
+                    if (commentFound.usersLiked.includes(req.auth.userId)) {
+                        Comment.findByIdAndUpdate({
+                                _id: req.params.id
+                            }, {
+                                $inc: {
+                                    likes: -1
+                                },
+                                $pull: {
+                                    usersLiked: req.auth.userId
+                                }
+                            }, {
+                                new: true,
+                                upsert: true,
+                                setDefaultsOnInsert: true
+                            })
+                            .then((commentUpdated) => res.status(200).json(
+                                commentUpdated, hateoasLinks(req, commentUpdated._id)
+                            ))
+                            .catch((error) => res.status(400).json({
+                                error
+                            }));
+                    } else {
+                        res.status(200).json({
+                            message: "User's like is already reset"
+                        })
+                    }
+                    break;
+            }
+        })
+        .catch((error) => res.status(404).json({
+            error
+        }));
 }
 
 /**
@@ -164,54 +144,78 @@ exports.updateComment = (req, res, next) => {
     Comment.findById(req.params.id)
         .then((comment) => {
             if (!comment) {
-                res.status(404).json({
+                return res.status(404).json({
                     error: "No such comment !"
                 });
-            } else if (comment.userId !== req.auth.userId) {
-                res.status(403).json({
+            };
+            if (comment.userId !== req.auth.userId) {
+                return res.status(403).json({
                     error: "Unauthorized request!"
                 });
-            } else {
-                Comment.findByIdAndUpdate({
-                        _id: req.params.id
-                    }, {
-                        //...postObject,
-                        ...req.body,
-                        _id: req.params.id
+            };
+            Comment.findByIdAndUpdate(
+                    req.params.id, {
+                        message: req.body.message
                     }, {
                         new: true,
                         upsert: true,
                         setDefaultsOnInsert: true
                     })
-                    .then((commentUpdated) => res.status(200).json(
-                        commentUpdated, hateoasLinks(req, commentUpdated._id)
-                    ))
-                    .catch((error) => res.status(400).json({
-                        error
-                    }));
-            }
+                .then((commentUpdated) => res.status(200).json(
+                    commentUpdated, hateoasLinks(req, commentUpdated._id)
+                ))
+                .catch((error) => res.status(400).json(error));
         });
 }
 /**
  * deletes one comment related to a post id given.
  */
 exports.deleteComment = (req, res, next) => {
-    Comment.findByIdAndDelete(req.params.id)
-        .then((comment) => {
-            if (!comment) {
-                res.status(404).json({
-                    error: "No such comment !"
-                });
-            } else if (post.userId !== req.auth.userId) {
-                res.status(403).json({
-                    error: "Unauthorized request!"
-                });
-            } else {
-                res.status(204).json({});
-            }
+    Post.findOne({
+            comments: req.params.id
         })
-        .catch((error) => res.status(500).json({
-            error
+        .then((postFound) => {
+            if (!postFound) {
+                return res.status(404).json({
+                    error: "No such post !"
+                });
+            };
+            Post.findOneAndUpdate(
+                    {_id: postFound._id}, {
+                        $pull: {
+                            comments: req.params.id
+                        }
+                    }, {
+                        new: true,
+                        upsert: true,
+                        setDefaultsOnInsert: true
+                    }
+                )
+                .then(() => {
+                    Comment.findByIdAndDelete(req.params.id)
+                        .then((comment) => {
+                            if (!comment) {
+                                return res.status(404).json({
+                                    error: "No such comment !"
+                                });
+                            };
+                            if (comment.userId !== req.auth.userId) {
+                                return res.status(403).json({
+                                    error: "Unauthorized request!"
+                                });
+                            };
+                            res.sendStatus(204);
+                        })
+                        .catch((error) => res.status(400).json({
+                            error: "comment delete error"
+                        }))
+                })
+                .catch((error) => res.status(400).json({
+                    error: "post update error"
+                }))
+        })
+        .catch((error) => res.status(400).json({
+            error: "post find error"
         }))
 }
 /**
@@ -248,7 +252,7 @@ exports.reportComment = (req, res, next) => {
                 res
                     .status(200)
                     .json({
-                        message: "Post already reported"
+                        message: "Comment already reported"
                     });
             }
         })
@@ -258,7 +262,7 @@ exports.reportComment = (req, res, next) => {
 /**
  * create hateoas links for comments
  */
- const hateoasLinks = (req, id) => {
+const hateoasLinks = (req, id) => {
     const URI = `${req.protocol}://${req.get("host") + "/api/comments/"}`;
     return [{
             rel: "readOne",
