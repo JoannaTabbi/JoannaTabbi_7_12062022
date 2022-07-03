@@ -38,9 +38,9 @@ Finally, for moderation purposes, admin user can modify or change post or commen
 |name   |method   |URI   |description   |
 |:---|:---|:---|:---|
 |signup   |POST  |/api/auth/   |register new user   |
-|login   |POST  |/api/auth/   |opens securised session for a user. A token is given in the response   |
-|logout   |DELETE |/api/auth/   |close the user's session, the authentication token is deleted   |
-|readUser   |GET   |/api/auth/:id   |returns user's data. The following information is available to any authenticated user : userName, aboutMe, avatar, posts, following, followers, likes and comments. |
+|login   |POST  |/api/auth/   |opens securised session for a user. An access token is given in the response and the refresh token stored in cookies.  |
+|logout   |DELETE |/api/auth/   |close the user's session, the refresh token is deleted   |
+|readUser   |GET   |/api/auth/:id   |returns one user's data. The following information is available to any authenticated user : userName, aboutMe, avatar, posts, following, followers, likes and comments. |
 |readOneself   |GET   |/api/auth/   |returns user's own data   |
 |exportData   |GET   |/api/auth/export/   |prints user's data to a txt document   |
 |updateUser   |PUT   |/api/auth/   |updates user's data   |
@@ -56,7 +56,7 @@ Finally, for moderation purposes, admin user can modify or change post or commen
 |readOnePost   |GET   |/api/posts/:id   |displays one post   |
 |readAllPosts  |GET   |/api/posts/   |displays all the posts   |
 |createPost   |POST   |/api/posts/   |creates a new post   |
-|likePost   |POST  |/api/posts/:id/like   |controls one post likes. The "like" key value equal to 1 gives a like to the chosen post, equal to 0 removes the like already given.    |
+|likePost   |POST  |/api/posts/:id/like   |controls one post's likes. The "like" key value equal to 1 gives a like to the chosen post, equal to 0 removes the like already given.    |
 |updatePost   |PUT   |/api/posts/:id   |updates one post   |
 |deletePost   |DELETE   |/api/posts/:id   |deletes one post   |
 |reportPost   |POST   |/api/posts/:id/report/   |reports abusive content for a post id given.  | 
@@ -68,13 +68,13 @@ The comment routes are available for a post id given.
 |name   |method   |URI   |description   |
 |:---|:---|:---|:---|
 |readOneComment   |GET   |/api/comments/:id   |displays one comment   |
-|readAllComments  |GET   |/api/comments/  |displays all the comments   |
-|createComment   |POST   |/api/comments/   |creates a new comment   |
+|readAllComments  |GET   |/api/comments/  |displays all the comments for a postId given.  |
+|createComment   |POST   |/api/comments/   |creates a new comment for a post given. The new comment id is pushed to post's "comments" array.   |
 |likeComment   |POST  |/api/comments/:id/like   |controls one comment likes. The "like" key value equal to 1 gives a like to the chosen comment, equal to 0 removes the like already given.    |
 |updateComment   |PUT   |/api/comments/:id   |updates one comment   |
-|deleteComment   |DELETE   |/api/comments/:id   |deletes one comment   |
+|deleteComment   |DELETE   |/api/comments/:id   |deletes one comment; the id of the deleted comment is removed from the post's "comments" array.  |
 |reportComment   |POST   |/api/comments/:id/report/   |reports abusive content for a comment id given.  | 
 
 ## FRONT-END
 
-Created using the Vue.js framework. (...soon :)) 
+Created using the Vue.js framework. (...coming soon :)) 

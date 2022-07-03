@@ -186,10 +186,10 @@ exports.updatePost = (req, res, next) => {
             Post.findByIdAndUpdate(
                     req.params.id,
                     postObject, {
-                    new: true,
-                    upsert: true,
-                    setDefaultsOnInsert: true
-                })
+                        new: true,
+                        upsert: true,
+                        setDefaultsOnInsert: true
+                    })
                 .then((postUpdated) =>
                     res.status(200).json(postUpdated, hateoasLinks(req, postUpdated._id))
                 )
@@ -209,21 +209,23 @@ exports.deletePost = (req, res, next) => {
     Post.findByIdAndDelete(req.params.id)
         .then((post) => {
             if (!post) {
-                res.status(404).json({
+                return res.status(404).json({
                     error: "No such post !"
                 });
-            } else if (post.userId !== req.auth.userId) {
-                res.status(403).json({
+            }
+            if (post.userId !== req.auth.userId) {
+                return res.status(403).json({
                     error: "Unauthorized request!"
                 });
-            } else {
-                const filename = post.imageUrl.split("/images/")[1];
-                fs.unlink(`images/${filename}`, function (err) {
-                    if (err) throw err;
-                    // if no error, file has been deleted successfully
-                    res.sendStatus(204);
-                });                
             }
+            const filename = post.imageUrl.split("/images/")[1];
+            fs.unlink(`images/${filename}`, function (err) {
+                if (err) throw err;
+                // if no error, file has been deleted successfully
+                Comment.deleteMany({ postId: req.params.id })
+                .then(() => res.sendStatus(204))
+                .catch((error) => res.status(400).json(error))
+            });
         })
         .catch((error) =>
             res.status(500).json({

@@ -206,17 +206,11 @@ exports.deleteComment = (req, res, next) => {
                             };
                             res.sendStatus(204);
                         })
-                        .catch((error) => res.status(400).json({
-                            error: "comment delete error"
-                        }))
+                        .catch((error) => res.status(400).json(error))
                 })
-                .catch((error) => res.status(400).json({
-                    error: "post update error"
-                }))
+                .catch((error) => res.status(400).json(error))
         })
-        .catch((error) => res.status(400).json({
-            error: "post find error"
-        }))
+        .catch((error) => res.status(400).json(error))
 }
 /**
  * Reports a comment for an id given. 
