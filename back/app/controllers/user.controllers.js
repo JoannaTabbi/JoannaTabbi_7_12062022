@@ -138,7 +138,7 @@ exports.login = (req, res, next) => {
  * !!! the client should also delete the access token !!!
  */
 exports.logout = (req, res, next) => {
-    const cookies = req.cookie;
+    const cookies = req.cookies;
     if (!cookies?.jwt) return res.sendStatus(204);
     User.findById(req.auth.userId)
         .then(() => {
