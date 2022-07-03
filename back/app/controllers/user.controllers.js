@@ -142,10 +142,10 @@ exports.logout = (req, res, next) => {
     if (!cookies?.jwt) return res.sendStatus(204);
     User.findById(req.auth.userId)
         .then(() => {
-            res.clearCookie('jwt', {
+            res.clearCookie('jwt', {  //removes refresh token
                 httpOnly: true
             });
-            res.redirect('/');
+            res.redirect('/'); // warning: returns error!
             res.status(200).json({
                 message: "user logged out successfully"
             });

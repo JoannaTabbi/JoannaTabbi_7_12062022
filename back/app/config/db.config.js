@@ -10,13 +10,12 @@ if (!process.env.MONGO_URI) {
  * create bunyan logger 
  */
 
- const log = bunyan.createLogger({
+const log = bunyan.createLogger({
   name: "MongoDB Driver",
   serializers: {
     dbQuery: serializer,
   },
-  streams: [
-    {
+  streams: [{
       stream: process.stdout,
       level: "info",
     },
