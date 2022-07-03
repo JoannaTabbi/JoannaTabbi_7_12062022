@@ -4,6 +4,11 @@ const cors = require("cors");
 const app = express();
 const router = require('./app/routes/index.routes');
 const path = require('path');
+const mongoSanitize = require('express-mongo-sanitize');
+const speedLimiter = require('./app/middleware/speed-limiter');
+const helmet = require('helmet');
+const hateoasLinker = require('express-hateoas-links');
+const cookieParser = require('cookie-parser');
 
 const db = require('./app/config/db.config');
 // setting headers for CORS errors
@@ -29,13 +34,36 @@ app.use(cors(corsOptions));
 app.use(express.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
+// replace standard express res.json with the new version (second param possible)
+app.use(hateoasLinker);
+//middleware for cookies
+app.use(cookieParser());
 // simple route
 app.get("/", (req, res) => {
   res.json({ message: "Bienvenue sur le réseau social groupomania" });
 });
 app.use('/api', router);
-//app.use("/uploads/profile", express.static(path.join(__dirname, "avatar")));
-//app.use("/uploads/postPhoto", express.static(path.join(__dirname, "postPhoto")));
+// set path to images
+app.use("/images", express.static(path.join(__dirname, "images")));
+
+/**
+ * searche for the keys beginning with $ or containing . characters and removes 
+ * these caracters from user-supplied input in the following places:
+ - req.body
+ - req.params
+ - req.headers
+ - req.query
+ */
+ app.use(mongoSanitize());
+
+ //apply speed limiter to all requests
+ app.use(speedLimiter);
+ 
+ /**
+  * set various HTTP headers to secure the app ; see https://helmetjs.github.io/ 
+  * for more details
+  */ 
+ app.use(helmet());
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {

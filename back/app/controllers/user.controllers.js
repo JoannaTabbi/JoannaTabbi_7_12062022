@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const cryptoJS = require('crypto-js');
 require('dotenv').config();
 const fs = require('fs');
+const validator = require('validator');
 
 /**
  * encrypts the user's email 
@@ -41,32 +42,40 @@ function decryptMail(encryptedContent) {
  * the email is encrypted
  */
 exports.signup = (req, res, next) => {
-    bcrypt
-        .hash(req.body.password, 10)
-        .then((hash) => {
-            const user = new User({
-                userName: req.body.userName,
-                email: encryptMail(req.body.email),
-                password: hash,
-                isAdmin: req.body.isAdmin
-            });
-            user
-                .save()
-                .then((user) => res.status(201).json(
-                    user
-                ))
-                .catch((error) => res.status(400).json(error));
-        })
-        .catch((error) => res.status(500).json(error));
+    // validates the email format
+    const emailValidated = validator.isEmail(req.body.email);
+    if (!emailValidated) {
+        return res.status(400).json({
+            error: "Invalid email format"
+        });
+    } 
+        //encrypts password
+        bcrypt
+            .hash(req.body.password, 10)
+            .then((hash) => {
+                const user = new User({
+                    userName: req.body.userName,
+                    email: encryptMail(req.body.email),
+                    password: hash,
+                    isAdmin: req.body.isAdmin  // see front
+                });
+                user
+                    .save()
+                    .then((user) => res.status(201).json(
+                        user
+                    ))
+                    .catch((error) => res.status(400).json(error));
+            })
+            .catch((error) => res.status(500).json(error));
 };
 
 /**
  * logs the user who's already registered. 
- * This method encrypts the email given in the request and controls if it is present 
- * in the Users collection, then checks if the password given matches the one assigned 
- * to the user in database. If correct, returns userId and a token.
  */
 exports.login = (req, res, next) => {
+
+    //encrypts the email given in the request and controls if it is present 
+    //in the Users collection
     const emailEncrypted = encryptMail(req.body.email);
     User.findOne({
             email: emailEncrypted
@@ -76,8 +85,10 @@ exports.login = (req, res, next) => {
                 return res.status(401).json({
                     error: "User not found"
                 });
-            }
-            user.email = decryptMail(user.email)
+            };
+            user.email = decryptMail(user.email);
+            //checks if the password given matches the one assigned 
+            //to the user in database. If correct, returns userId and a token.
             bcrypt
                 .compare(req.body.password, user.password)
                 .then((valid) => {
@@ -85,100 +96,96 @@ exports.login = (req, res, next) => {
                         return res.status(401).json({
                             error: "Incorrect password"
                         });
-                    }
-                    const createToken = (id) => {
-                        return jwt.sign({ // creating a token for the new session; 
-                                userId: user._id // the method takes two arguments : 
-                            }, // a response object and
-                            process.env.TOKEN_SECRET, { // a secret key
-                                expiresIn: '24h'
-                            }
-                        );
                     };
-                    const maxAge = 1 * 60 * 60 * 1000;
-                    const token = createToken(user._id);
-                    res.cookie('jwt', token, {
+                    // creating a refresh token stored in cookie, that will allow us to regenerate the token once expired; 
+                    const refreshToken = jwt.sign({
+                        userId: user._id // the method takes two arguments : 
+                    }, // a response object and
+                    process.env.REFRESH_TOKEN_SECRET, { // a secret key
+                        expiresIn: '24h'
+                    }
+                )
+                    res.cookie('jwt', refreshToken, {
                         httpOnly: true,
-                        maxAge
+                        maxAge: 24 * 60 * 60
                     });
                     res.status(200).json({
-                        userId: user._id,
-                        User: user
-                    });
+                            userId: user._id,
+                            // creating a token for a new session
+                            token: jwt.sign({
+                                    userId: user._id // the method takes two arguments : 
+                                }, // a response object and
+                                process.env.TOKEN_SECRET, { // a secret key
+                                    expiresIn: 150 * 60 // expires after 15 minutes
+                                }
+                            ),
+                            User: user
+                        },
+                        hateoasLinks(req, user._id));
                 })
                 .catch((error) => res.status(500).json({
-                    error: "valid token"
+                    error
                 }));
         })
         .catch((error) => res.status(500).json({
-            error: "findOne"
-        }));
-};
-/**
- * logs out the user. His session is over and the token is invalidated.
- */
-exports.logout = (req, res, next) => {
-    User.findById(req.auth.userId)
-        .then((user) => {
-            if (!user) {
-                res.status(404).json({
-                    error: new Error("User not found!")
-                });
-            } else {
-                res.cookie('jwt', '', {
-                    maxAge: 1
-                });
-                //res.redirect('/');
-                res.status(200).json({
-                    message: "user logged out successfully"
-                });
-            }
-
-        })
-};
-/**
- * reads the data for all users; accessible only for isAdmin.
- */
-exports.readAllUsers = (req, res, next) => {
-    User.findById(req.auth.userId)
-        .then((user) => {
-            if (!user) {
-                res.status(404).json({
-                    error: new Error("User not found!")
-                });
-            } else if (!user.isAdmin) {
-                res.status(403).json({
-                    error: "You're not authorized to access this data!"
-                })
-            } else {
-                User.find()
-                    .then((users) => {
-                        users = users.map((user) => {
-                            user.email = decryptMail(user.email); // decrypts user's email  
-                            user.avatarUrl = `${req.protocol}://${req.get("host")}${user.avatarUrl}`;
-                            return {
-                                ...user._doc
-                            };
-                        });
-                        res.status(200).json(users);
-                    })
-                    .catch((error) => res.status(400).json({
-                        error
-                    }));
-            }
-        })
-        .catch((error) => res.status(404).json({
             error
         }));
+};
 
+/**
+ * Logs out the user. His refresh token is invalidated.
+ * The user is redirected to the home page.
+ * !!! the client should also delete the access token !!!
+ */
+exports.logout = (req, res, next) => {
+    const cookies = req.cookies;
+    if (!cookies?.jwt) return res.sendStatus(204);
+    User.findById(req.auth.userId)
+        .then(() => {
+            res.clearCookie('jwt', {  //removes refresh token
+                httpOnly: true
+            });
+            res.redirect('/'); // warning: returns error!
+            res.status(200).json({
+                message: "user logged out successfully"
+            });
+        })
+        .catch((error) => res.status(404).json(error));
 }
+
+/**
+ * displays other user's non sensible data : unserName, aboutMe, avatar... 
+ */
+exports.readUser = (req, res, next) => {
+    User.findById(req.params.id)
+        .then((user) => {
+            if (!user) {
+                res.status(404).json({
+                    error: "User not found!"
+                });
+            } else {
+                const userFound = {
+                    userName: user.userName,
+                    aboutMe: user.aboutMe,
+                    imageUrl: `${req.protocol}://${req.get("host")}${user.imageUrl}`,
+                    followers: user.followers,
+                    following: user.following
+                }
+
+                res.status(200).json(userFound,
+                    hateoasLinks(req, userFound._id));
+            }
+        })
+        .catch((error) => res.status(404).json(error));
+}
+
 
 /**
  * displays user's data. The email is decrypted before displaying. 
  * If the user's id does not match the one assigned to the user in Users Colection, 
  * the request is not authorized.
  */
-exports.readUser = (req, res, next) => {
+exports.readOneself = (req, res, next) => {
     User.findById(req.auth.userId)
         .then((user) => {
             if (!user) {
@@ -188,7 +195,8 @@ exports.readUser = (req, res, next) => {
             } else {
                 user.email = decryptMail(user.email); // decrypts user's email
                 user.avatarUrl = `${req.protocol}://${req.get("host")}${user.avatarUrl}`;
-                res.status(200).json(user);
+                res.status(200).json(user,
+                    hateoasLinks(req, user._id));
             }
         })
         .catch((error) => res.status(404).json(error));
@@ -225,23 +233,59 @@ exports.exportData = (req, res, next) => {
  */
 exports.updateUser = (req, res, next) => {
     User.findById(req.auth.userId)
-        .then((user) => {
+        .then( async (user) => {
             if (!user) {
                 res.status(404).json(error);
             } else {
+                const update = req.file? 
+                JSON.parse(req.body.user) : req.body;
+                // the password is updated
+                if (update.password) {
+                    const hash = await bcrypt.hash(update.password, 10); // the password is crypted
+                    update.password = hash;
+                };
+                // the email is updated
+                if (update.email) {
+                    // validates the email format
+                    const emailValidated = validator.isEmail(update.email);
+                    if (!emailValidated) {
+                        return res.status(400).json({
+                            error: "Invalid email format"
+                        });
+                    } else {
+                        update.email = encryptMail(update.email); // the email is crypted
+                        console.log(update.email);
+                    }   
+                }
+                // check if image file is present
+                const userObject = req.file ? {
+                    ...update,
+                    imageUrl: `/images/${req.file.filename}`
+                  } : {
+                    ...update
+                  };
+                  const filename = user.imageUrl.split("/images/")[1];
+                  try {
+                    if (userObject.imageUrl) {
+                      fs.unlinkSync(`images/${filename}`);
+                    }
+                  } catch (error) {
+                    console.log(error);
+                  }
                 User.findByIdAndUpdate({
                         _id: req.auth.userId
-                    }, {
-                        ...req.body,
-                        email: encryptMail(req.body.email)
-                    }, {
+                    },
+                        userObject, {
                         new: true,
                         upsert: true,
                         setDefaultsOnInsert: true
                     })
-                    .then((userUpdated) => res.status(200).json(
-                        userUpdated
-                    ))
+                    .then((userUpdated) => 
+                    {
+                        res.status(200).json(
+                        userUpdated,
+                        hateoasLinks(req, userUpdated._id)
+                    )})
                     .catch((error) => {
                         res.status(400).json(error);
                     });
@@ -258,24 +302,19 @@ exports.updateUser = (req, res, next) => {
  * is not authorized.
  */
 exports.deleteUser = (req, res, next) => {
-    User.findById(req.auth.userId)
+    User.findByIdAndDelete(req.auth.userId)
         .then((user) => {
             if (!user) {
                 res.status(404).json({
                     error: new Error("User not found!")
                 });
             } else {
-                User.deleteOne({
-                        _id: req.auth.userId
-                    })
-                    .then(() => {
-                        res.status(204).json({})
-                    })
-                    .catch((error) => {
-                        res.status(400).json({
-                            error: error
-                        });
-                    });
+                const filename = user.imageUrl.split("/images/")[1];
+                fs.unlink(`images/${filename}`, function (err) {
+                    if (err) throw err;
+                    // if no error, file has been deleted successfully
+                    res.sendStatus(204);
+                });        
             }
         })
         .catch((error) => res.status(404).json({
@@ -283,6 +322,9 @@ exports.deleteUser = (req, res, next) => {
         }));
 }
 
+/**
+ * follow a user for an id given in params. 
+ */
 exports.follow = (req, res, next) => {
     User.findById(req.params.id)
         .then((userToFollow) => {
@@ -307,7 +349,8 @@ exports.follow = (req, res, next) => {
                                 upsert: true,
                                 setDefaultsOnInsert: true
                             })
-                            .then((userFollowing) => res.status(200).json(userFollowing))
+                            .then((userFollowing) => res.status(200).json(userFollowing,
+                                hateoasLinks(req, userFollowing._id)))
                             .catch((error) => res.status({
                                 error
                             }))
@@ -352,7 +395,8 @@ exports.unfollow = (req, res, next) => {
                                 upsert: true,
                                 setDefaultsOnInsert: true
                             })
-                            .then((userFollowing) => res.status(200).json(userFollowing))
+                            .then((userUnfollowing) => res.status(200).json(userUnfollowing,
+                                hateoasLinks(req, userUnfollowing._id)))
                             .catch((error) => res.status(400).json(error))
                     })
                     .catch((error) => res.status(400).json(
@@ -394,7 +438,8 @@ exports.reportUser = (req, res, next) => {
                         setDefaultsOnInsert: true
                     })
                     .then((userUpdated) => res.status(200).json(
-                        userUpdated
+                        userUpdated,
+                        hateoasLinks(req, req.auth.userId)
                     ))
                     .catch((error) => res.status(400).json({
                         error
@@ -408,4 +453,55 @@ exports.reportUser = (req, res, next) => {
             }
         })
         .catch((error) => res.status(400).json(error))
+}
+
+
+/**
+ * create hateoas links 
+ */
+const hateoasLinks = (req, id) => {
+    const URI = `${req.protocol}://${req.get("host") + "/api/auth/"}`;
+    return [{
+            rel: "signup",
+            title: "Signup",
+            href: URI + "signup",
+            method: "POST"
+        },
+        {
+            rel: "login",
+            title: "Login",
+            href: URI + "login",
+            method: "POST"
+        },
+        {
+            rel: "read",
+            title: "Read",
+            href: URI,
+            method: "GET"
+        },
+        {
+            rel: "export",
+            title: "Export",
+            href: URI + "export",
+            method: "GET"
+        },
+        {
+            rel: "update",
+            title: "Update",
+            href: URI,
+            method: "PUT"
+        },
+        {
+            rel: "delete",
+            title: "Delete",
+            href: URI,
+            method: "DELETE"
+        },
+        {
+            rel: "report",
+            title: "Report",
+            href: URI + id + "/report",
+            method: "POST"
+        }
+    ]
 }
