@@ -1,3 +1,35 @@
 <template>
-    <h1>Profil d'utilisateur</h1>
+<div>
+    <Header />
+    <main>
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12 col-md-8 col-lg-9 mb-3 pt-3 border-end">
+            <section id="user_profile" class="border border-2 rounded-3 bg-white mb-3">
+              <h1>Profil de l'utilisateur</h1>
+            </section>
+          </div>
+          <div class="col-12 col-md-4 col-lg-3 pt-3">
+            <section id="most_popular" class="border border-2 rounded-3 mb-3 p-2">
+              <h2 class="fs-4 text-start">Les plus populaires</h2>
+            </section>
+            <Footer />
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
 </template>
+
+<script>
+import Header from "../components/Header.vue";
+import Footer from "../components/Footer.vue";
+
+export default {
+  name: "App",
+  components: {
+    Header,
+    Footer
+  },
+};
+</script>
