@@ -1,16 +1,16 @@
 <template>
   <header>
     <nav
-      class="navbar navbar-expand-lg navbar-light bg-light mb-3 border-bottom border-primary border-4 fixed-top"
+      class="navbar navbar-expand-lg navbar-light bg-light mb-3 border-bottom border-primary border-4"
     >
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">
+        <router-link to="/" class="navbar-brand">
           <img
-            src="../assets/logos/icon-left-font-monochrome-black-rect.png"
+            src="../assets/logos/icon-left-font-transparent-rect.png"
             alt="logo Groupomania"
             class="img-fluid"
           />
-        </a>
+        </router-link>
         <button
           class="navbar-toggler"
           type="button"
@@ -39,16 +39,16 @@
           </form>
           <ul class="navbar-nav mb-2 mb-lg-0">
             <li class="nav-item text-start">
-              <a class="nav-link active" aria-current="page" href="#"
-                ><i class="fa-solid fa-house fs-2 fa-fw mx-2"></i>
+              <router-link to="/" class="nav-link active" aria-current="page"
+                ><i class="fa-solid fa-house fa-fw fs-2 mx-2"></i>
                 <span class="d-lg-none">Accueil</span>
-              </a>
+              </router-link>
             </li>
             <li class="nav-item text-start">
-              <a class="nav-link" href="#"
-                ><i class="fa-solid fa-bell fs-2 fa-fw mx-2"></i>
+              <router-link to="/notifications" class="nav-link"
+                ><i class="fa-solid fa-bell fa-fw fs-2 text-dark mx-2"></i>
                 <span class="d-lg-none"> Notifications</span>
-              </a>
+              </router-link>
             </li>
             <li class="nav-item text-start dropdown">
               <a
@@ -58,26 +58,26 @@
                 role="button"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
-                ><i class="fa-solid fa-user fs-2 fa-fw mx-2"></i>
+                ><i class="fa-solid fa-user fa-fw fs-2 text-dark mx-2"></i>
                 <span class="d-lg-none">Vous</span>
               </a>
               <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="#">Voir le profil</a></li>
+                <li><router-link to="/profile" class="dropdown-item">Voir le profil</router-link></li>
                 <li>
-                  <a class="dropdown-item" href="#">Modifier le profil</a>
+                  <router-link to="" class="dropdown-item">Modifier le profil</router-link>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="#">Changer le mot de passe</a>
+                  <router-link to="" class="dropdown-item">Changer le mot de passe</router-link>
                 </li>
               </ul>
             </li>
             <li class="nav-item text-start">
-              <a class="nav-link" href="#"
+              <router-link to="/login" class="nav-link"
                 ><i
-                  class="fa-solid fa-arrow-right-from-bracket fs-2 fa-fw mx-2"
+                  class="fa-solid fa-arrow-right-from-bracket fa-fw fs-2 text-dark mx-2"
                 ></i>
                 <span class="d-lg-none">Se déconnecter</span>
-              </a>
+              </router-link>
             </li>
           </ul>
         </div>
@@ -98,6 +98,6 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 img {
-  width: 180px;
+  width: 230px;
 }
 </style>
