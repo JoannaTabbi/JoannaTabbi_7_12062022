@@ -1,7 +1,31 @@
 <template>
   <div>
     <Header />
-    <Footer />
+    <main>
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12 col-lg-3 mb-3 pt-3">
+            <section id="home" class="border border-2 rounded-3 mb-3">
+              <h1>Accueil</h1>
+            </section>
+          </div>
+          <div class="col-12 col-md-8 col-lg-6 pt-3 border-start border-end">
+            <section id="create_post" class="border border-2 rounded-3 mb-3">
+              <h2>Créez un poste</h2>
+            </section>
+            <section id="feeds" class="border border-2 rounded-3 mb-3">
+              <h2>Fil d'actualité</h2>
+            </section>
+          </div>
+          <div class="col-12 col-md-4 col-lg-3 pt-3">
+            <section id="most_popular" class="border border-2 rounded-3 mb-3 p-2">
+              <h2 class="fs-4 text-start">Les plus populaires</h2>
+            </section>
+            <Footer />
+          </div>
+        </div>
+      </div>
+    </main>
   </div>
 </template>
 
