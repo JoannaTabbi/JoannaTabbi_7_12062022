@@ -1,18 +1,21 @@
 <template>
-  <router-view>
-
-  </router-view>
+  <div>
+     <Header /> 
+    <router-view> </router-view>
+    <!-- <Footer /> -->
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import Header from "./components/Header.vue";
+import Footer from "./components/Footer.vue";
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    HelloWorld
-  }
-}
+    Header,
+    Footer,
+  },
+};
 </script>
 
 <style>
@@ -21,6 +24,6 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #4E5166;
+  color: #4e5166;
 }
 </style>

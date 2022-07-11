@@ -4,9 +4,8 @@ import Signup from "@/views/Signup"
 import Login from "@/views/Login"
 import Notifications from "@/views/Notifications"
 import Profile from "@/views/Profile"
-import Search from "@/views/Search"
 import UserProfile from "@/views/UserProfile"
-import Trends from "@/views/Trends"
+import NotFound from "@/views/NotFound"
  
 
 const routes = [
@@ -36,19 +35,14 @@ const routes = [
         component: Profile
     },
     {
-        path: '/search', 
-        name: "Search",
-        component: Search
-    },
-    {
-        path: '/userProfile', 
+        path: '/userProfile/:id', 
         name: "UserProfile",
         component: UserProfile
     },
     {
-        path: '/trends', 
-        name: "Trends",
-        component: Trends
+        path: '/:catchAll(.*)',
+        name: 'NotFound',
+        component: NotFound
     }
 
 ]
