@@ -66,9 +66,6 @@
                 <li>
                   <router-link to="" class="dropdown-item">Modifier le profil</router-link>
                 </li>
-                <li>
-                  <router-link to="" class="dropdown-item">Changer le mot de passe</router-link>
-                </li>
               </ul>
             </li>
             <li class="nav-item text-start">
@@ -98,6 +95,6 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 img {
-  width: 230px;
+  width: 200px;
 }
 </style>
