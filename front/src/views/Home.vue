@@ -15,6 +15,7 @@
               class="border border-2 rounded-3 mb-3 p-3"
             >
               <h2 class="text-start fs-4">Créez un poste</h2>
+              <CreatePost />
             </section>
             <section id="feeds" class="border border-2 rounded-3 mb-3 p-3">
               <h2 class="text-start fs-4">Fil d'actualité</h2>
@@ -37,9 +38,12 @@
 </template>
 
 <script>
+import CreatePost from '../components/CreatePost.vue'
 export default {
   name: "App",
-  components: {},
+  components: {
+    CreatePost
+  },
 };
 </script>
 

@@ -41,7 +41,7 @@ const routes = [
     },
     {
         path: '/:catchAll(.*)',
-        name: 'NotFound',
+        name: "NotFound",
         component: NotFound
     }
 
