@@ -1,7 +1,7 @@
 <template>
   <div>
-     <Header /> 
-    <router-view> </router-view>
+     <Header v-if="isConnected"/> 
+    <router-view v-on:changeIsConnected="changeIsConnected"> </router-view>
     <!-- <Footer /> -->
   </div>
 </template>
@@ -15,6 +15,16 @@ export default {
     Header,
     Footer,
   },
+  data() {
+    return {
+      isConnected: true
+    }
+  },
+  methods: {
+    changeIsConnected(boolean) {
+      this.isConnected = boolean
+    }
+  }
 };
 </script>
 
@@ -25,5 +35,14 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #4e5166;
+}
+.bg-image {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url('https://picsum.photos/800/1200?random=1&grayscale');
+  }
+h1, h2 {
+  font-weight: bold;
 }
 </style>

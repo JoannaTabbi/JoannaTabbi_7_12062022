@@ -1,5 +1,5 @@
 <template>
-  <div class="vh-100 bg-image" style="background-image: url('https://picsum.photos/800/1200?random=1&grayscale')">
+  <div class="vh-100 bg-image">
     <div class="connexion container py-4 bg-secondary h-100">
       <div class="row px-2 px-sm-5 h-100">
         <div class="col-12 border-bottom border-dark">
@@ -76,10 +76,14 @@
 </template>
 
 <script>
-export default {};
+export default {
+    mounted() {
+    this.$emit("changeIsConnected", false)
+  }
+};
 </script>
 
-<style scoped>
+<style>
 img {
   width: 200px;
 }
@@ -87,9 +91,4 @@ img {
     width: 100%;
     max-width: 576px;
 }
-.bg-image{
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-  }
 </style>

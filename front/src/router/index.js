@@ -1,10 +1,10 @@
-import { createRouter, createWebHashHistory } from "vue-router"
+import { createRouter, createWebHistory } from "vue-router"
 import Home from "@/views/Home"
 import Signup from "@/views/Signup"
 import Login from "@/views/Login"
 import Notifications from "@/views/Notifications"
 import Profile from "@/views/Profile"
-import UserProfile from "@/views/UserProfile"
+import ModifyProfile from "@/views/ModifyProfile"
 import NotFound from "@/views/NotFound"
  
 
@@ -35,12 +35,12 @@ const routes = [
         component: Profile
     },
     {
-        path: '/userProfile/:id', 
-        name: "UserProfile",
-        component: UserProfile
+        path: '/modifyProfile', 
+        name: "ModifyProfile",
+        component: ModifyProfile
     },
     {
-        path: '/:catchAll(.*)',
+        path: '/:pathMatch(.*)*',
         name: "NotFound",
         component: NotFound
     }
@@ -49,7 +49,7 @@ const routes = [
 
 const router = createRouter({
     // 4. Provide the history implementation to use. We are using the hash history for simplicity here.
-    history: createWebHashHistory(),
+    history: createWebHistory(),
     routes, // short for `routes: routes`
   });
 

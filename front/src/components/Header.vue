@@ -44,12 +44,6 @@
                 <span class="d-lg-none">Accueil</span>
               </router-link>
             </li>
-            <li class="nav-item text-start">
-              <router-link to="/notifications" class="nav-link"
-                ><i class="fa-solid fa-bell fa-fw fs-2 text-dark mx-2"></i>
-                <span class="d-lg-none"> Notifications</span>
-              </router-link>
-            </li>
             <li class="nav-item text-start dropdown">
               <a
                 class="nav-link dropdown-toggle"
@@ -64,7 +58,7 @@
               <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                 <li><router-link to="/profile" class="dropdown-item">Voir le profil</router-link></li>
                 <li>
-                  <router-link to="" class="dropdown-item">Modifier le profil</router-link>
+                  <router-link to="/modifyProfile" class="dropdown-item">Modifier le profil</router-link>
                 </li>
               </ul>
             </li>
