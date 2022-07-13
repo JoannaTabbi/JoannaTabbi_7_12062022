@@ -5,6 +5,7 @@
           <div class="col-12 col-lg-3 mb-3 pt-3">
             <section id="home" class="shadow rounded-3 mb-3 p-3">
               <h1 class="text-start fs-3">Accueil</h1>
+              <WelcomeCard/>
             </section>
           </div>
           <div
@@ -38,11 +39,13 @@
 </template>
 
 <script>
+import WelcomeCard from '../components/WelcomeCard.vue'
 import CreatePost from '../components/CreatePost.vue'
 export default {
   name: "App",
   components: {
-    CreatePost
+    CreatePost,
+    WelcomeCard
   }
 };
 </script>
