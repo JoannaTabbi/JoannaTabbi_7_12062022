@@ -42,7 +42,10 @@ export default {
     background-repeat: no-repeat;
     background-image: url('https://picsum.photos/800/1200?random=1&grayscale');
   }
-h1, h2 {
+h1, h2, h5 {
   font-weight: bold;
+}
+a {
+  text-decoration: none;
 }
 </style>
