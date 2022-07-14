@@ -9,10 +9,10 @@
     </div>
 
     <div class="card-body">
-      <h5 class="card-title">Bonjour, Joanna</h5>
+      <h5 class="card-title">Bonjour Joanna</h5>
       <p class="card-text">Membre depuis le <span>12 juillet 2022</span></p>
     </div>
-    <ul class="list-group list-group-flush">
+    <ul class="list-group list-group-flush small">
       <li
         class="list-group-item d-flex flex-wrap align-items-center justify-content-between"
       >
@@ -21,18 +21,26 @@
           <span class="ms-1">Followers</span>
         </a>
         <a href="" class="fw-bold text-dark">
-            <span>4</span>
-            <span class="ms-1">Following</span>
-            </a>
+          <span>4</span>
+          <span class="ms-1">Following</span>
+        </a>
       </li>
-      <li class="list-group-item"><a href="" class="fw-bold text-dark">
-            <span>6</span>
-            <span class="ms-1">Posts</span>
-            </a></li>
+      <li class="list-group-item">
+        <a href="" class="fw-bold text-dark">
+          <span>6</span>
+          <span class="ms-1">Posts</span>
+        </a>
+      </li>
 
       <li
         class="list-group-item d-flex flex-wrap align-items-center justify-content-evenly"
-      ><router-link to="/modifyProfile" class="card-link bg-secondary bg-gradient text-black py-2 px-3 rounded-pill shadow">Modifier le profil</router-link></li>      
+      >
+        <router-link
+          to="/modifyProfile"
+          class="card-link bg-secondary bg-gradient text-black py-2 px-3 rounded-pill shadow"
+          >Modifier le profil</router-link
+        >
+      </li>
     </ul>
   </div>
 </template>

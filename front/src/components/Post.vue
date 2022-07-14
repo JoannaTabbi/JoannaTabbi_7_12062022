@@ -31,7 +31,7 @@
         architecto autem delectus numquam blanditiis iste.
       </p>
     </div>
-    <ul class="nav d-flex justify-content-start mb-4">
+    <ul class="nav d-flex justify-content-start mb-4 small">
       <li class="nav-item me-3">
         <a href="">
           <i class="fa-solid fa-thumbs-up fa-lg"></i>
@@ -48,30 +48,17 @@
       </li>
     </ul>
     <!--  COMMENTS  -->
-    <div class="ps-4 border-start">
-      <div class="d-flex mb-3 border-bottom pb-2">
-        <div class="img-sm-container me-3">
-          <img
-            class="mw-100 shadow rounded-3"
-            src="../assets/avatar-200.png"
-            alt="avatar"
-          />
-        </div>
-        <form class="w-100">
-          <textarea
-            class="form-control border-0 p-2"
-            placeholder="Qu'en dites-vous?"
-            rows="1"
-          ></textarea>
-        </form>
-      </div>
-      <div class="my-4 border">Comments</div>
-    </div>
+    <Comments />
   </div>
 </template>
 
 <script>
-export default {};
+import Comments from './Comments.vue'
+export default {
+ components: {
+    Comments
+  }
+};
 </script>
 
 <style scoped>

@@ -93,10 +93,4 @@ export default {};
 textarea[placeholder]:focus {
   background-image: radial-gradient(ellipse at 40% 50%, #ffebeb 30%, #fff 80%);
 }
-.fa-image {
-  color: #f84aa7;
-}
-.fa-paper-plane {
-  color: #9677bb;
-}
 </style>
