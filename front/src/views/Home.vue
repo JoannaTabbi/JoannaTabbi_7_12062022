@@ -20,6 +20,7 @@
             </section>
             <section id="feeds" class="shadow rounded-3 mb-3 p-3">
               <h2 class="text-start fs-4 fw-bolder">Fil d'actualité</h2>
+              <Post />
             </section>
           </div>
           <div class="col-12 col-md-4 col-lg-3 pt-3">
@@ -41,11 +42,13 @@
 <script>
 import WelcomeCard from '../components/WelcomeCard.vue'
 import CreatePost from '../components/CreatePost.vue'
+import Post from '../components/Post.vue'
 export default {
   name: "App",
   components: {
     CreatePost,
-    WelcomeCard
+    WelcomeCard,
+    Post
   }
 };
 </script>

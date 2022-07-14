@@ -14,9 +14,9 @@
     </div>
     <ul class="list-group list-group-flush">
       <li
-        class="list-group-item d-flex flex-wrap align-items-center justify-content-evenly"
+        class="list-group-item d-flex flex-wrap align-items-center justify-content-between"
       >
-        <a href="" class="fw-bold text-dark">
+        <a href="" class="fw-bold text-dark me-2">
           <span>3</span>
           <span class="ms-1">Followers</span>
         </a>
