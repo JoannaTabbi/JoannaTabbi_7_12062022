@@ -29,14 +29,13 @@
               class="shadow rounded-3 mb-3 p-3"
             >
               <h2 class="fs-4 text-start">Les plus populaires</h2>
-              <div class="col-12">
-                <Post />
+              <div class="col-12">post1
               </div>
               <div class="col-12">
-                <Post />
+                post2
               </div>
               <div class="col-12">
-                <Post />
+                post3
               </div>
             </section>
           </div>
