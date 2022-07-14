@@ -47,7 +47,8 @@
         </a>
       </li>
     </ul>
-    <div>
+    <!--  COMMENTS  -->
+    <div class="ps-4 border-start">
       <div class="d-flex mb-3 border-bottom pb-2">
         <div class="img-sm-container me-3">
           <img
@@ -64,9 +65,7 @@
           ></textarea>
         </form>
       </div>
-    </div>
-    <div class="my-4 ms-3 border">
-      Comments
+      <div class="my-4 border">Comments</div>
     </div>
   </div>
 </template>
@@ -80,6 +79,9 @@ export default {};
   border-color: inherit;
   -webkit-box-shadow: none;
   box-shadow: none;
+}
+textarea[placeholder]:focus {
+  background-image: radial-gradient(ellipse at 40% 50%, #ffebeb 30%, #fff 80%);
 }
 </style>
 >
