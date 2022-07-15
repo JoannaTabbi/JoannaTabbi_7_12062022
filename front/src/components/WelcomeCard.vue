@@ -3,13 +3,13 @@
     <div class="p-5 p-sm-3 p-lg-5">
       <img
         src="../assets/avatar-200.png"
-        class="img-fluid card-img-top shadow rounded-circle"
+        class="img-fluid card-img-top shadow border border-white border-3 rounded-circle"
         alt="mon avatar"
       />
     </div>
 
     <div class="card-body">
-      <h5 class="card-title">Bonjour Joanna</h5>
+      <h5 class="card-title">Bonjour Jean</h5>
       <p class="card-text">Membre depuis le <span>12 juillet 2022</span></p>
     </div>
     <ul class="list-group list-group-flush small">
@@ -37,7 +37,7 @@
       >
         <router-link
           to="/modifyProfile"
-          class="card-link bg-secondary bg-gradient text-black py-2 px-3 rounded-pill shadow"
+          class="btn btn-outline-dark py-2 px-3 rounded-pill shadow"
           >Modifier le profil</router-link
         >
       </li>
