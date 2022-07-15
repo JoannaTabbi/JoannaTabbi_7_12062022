@@ -10,7 +10,9 @@
         />
       </div>
       <div class="w-100 text-start">
-        <h5 class="fs-6 mb-0">Jean_Dupont</h5>
+        <router-link to="/profile">
+            <h5 class="fs-6 mb-0">Jean_Dupont</h5>
+        </router-link>
         <p class="fs-6 mb-0 fw-light fst-italic">13 juillet 2022 à 16:04</p>
       </div>
     </div>

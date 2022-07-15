@@ -5,15 +5,15 @@
           <div class="col-12 col-md-8 col-lg-9 mb-3 pt-3 border-end">
             <section
               id="profile"
-              class="border border-2 rounded-3 bg-white mb-3"
+              class="shadow rounded-3 bg-white mb-3"
             >
-              <h1>Votre profil</h1>
+              <ProfileCard />
             </section>
           </div>
           <div class="col-12 col-md-4 col-lg-3 pt-3">
             <section
               id="most_popular"
-              class="border border-2 rounded-3 mb-3 p-2"
+              class="shadow rounded-3 mb-3 p-2"
             >
               <h2 class="fs-4 text-start">Les plus populaires</h2>
             </section>
@@ -24,9 +24,12 @@
 </template>
 
 <script>
+import ProfileCard from "../components/ProfileCard.vue"
 export default {
   name: "App",
-  components: {},
+  components: {
+    ProfileCard
+  },
 };
 </script>
 

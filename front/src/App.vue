@@ -55,4 +55,7 @@ a {
   text-decoration: none;
   color: #4e5166;
 }
+a:hover {
+  color: #FD2D01;
+}
 </style>

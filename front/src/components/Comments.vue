@@ -31,7 +31,9 @@
         </div>
         <div>
           <div class="w-100 text-start bg-light rounded-3 p-2">
-            <h5 class="fs-6 mb-0">Jean_Dupont</h5>
+            <router-link to="/profile">
+              <h5 class="fs-6 mb-0">Jean_Dupont</h5>
+            </router-link>
             <p class="fs-6 mb-0">
               Lorem ipsum dolor sit amet consectetur, adipisicing elit. Commodi
               nam libero eveniet totam nulla.
