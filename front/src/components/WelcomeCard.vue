@@ -9,7 +9,7 @@
     </div>
 
     <div class="card-body">
-      <h5 class="card-title">Bonjour Jean</h5>
+      <h5 class="card-title">Bonjour <span>Jean_Dupont</span></h5>
       <p class="card-text">Membre depuis le <span>12 juillet 2022</span></p>
     </div>
     <ul class="list-group list-group-flush small">
