@@ -85,12 +85,4 @@ export default {};
 </script>
 
 <style scoped>
-.form-control:focus {
-  border-color: inherit;
-  -webkit-box-shadow: none;
-  box-shadow: none;
-}
-textarea[placeholder]:focus {
-  background-image: radial-gradient(ellipse at 40% 50%, #ffebeb 30%, #fff 80%);
-}
 </style>

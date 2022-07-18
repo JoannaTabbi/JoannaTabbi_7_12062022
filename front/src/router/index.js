@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from "vue-router"
 import Home from "@/views/Home"
 import Signup from "@/views/Signup"
 import Login from "@/views/Login"
-import Notifications from "@/views/Notifications"
 import Profile from "@/views/Profile"
 import ModifyProfile from "@/views/ModifyProfile"
 import NotFound from "@/views/NotFound"
@@ -23,11 +22,6 @@ const routes = [
         path: '/login', 
         name: "Login",
         component: Login
-    },
-    {
-        path: '/notifications', 
-        name: "Notificatons",
-        component: Notifications
     },
     {
         path: '/profile', 
