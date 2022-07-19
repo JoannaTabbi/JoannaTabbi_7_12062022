@@ -19,7 +19,7 @@
           alt="mon avatar"
         />
         <label
-          class="btn btn-dark bg-gradient rounded-3 image-btn position-absolute top-100 start-100 translate-middle"
+          class="btn btn-dark bg-gradient rounded-3 position-absolute top-100 start-100 translate-middle"
         >
           <i class="fa-solid fa-camera fa-lg"></i
           ><input type="file" class="form-control" hidden />

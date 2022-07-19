@@ -10,28 +10,50 @@
       </div>
     </div>
     <div class="row d-flex flex-column flex-lg-row mb-3 align-items-center">
-      <div class="avatar col-6 col-sm-3 col-lg-2 ms-0 ms-lg-3 mb-3 mb-lg-0">
+      <div class="avatar col-6 col-sm-3 col-lg-2 ms-0 ms-lg-3 mb-3 mb-lg-0 position-relative">
         <img
           src="../assets/avatar-200.png"
           class="img-fluid rounded-circle border border-white border-3 shadow"
           alt="mon avatar"
         />
+        <div
+          class="position-absolute top-0 start-100 translate-middle btn btn-outline-dark rounded-circle"
+        >
+          <i class="fa-regular fa-thumbs-up fa-lg"></i
+          >
+        </div>
       </div>
       <div
-        class="col-12 col-lg-5 d-flex flex-column align-items-lg-start justify-content-end mb-3 mb-lg-0"
+        class="col-12 col-lg-4 d-flex flex-column align-items-lg-start justify-content-end mb-3 mb-lg-0"
       >
         <h1 class="card-title fs-5 mb-0">Jean_Dupont</h1>
-        <p class="card-text">Membre depuis le <span>12 juillet 2022</span></p>
+        <p class="card-text small">Membre depuis le <span>12 juillet 2022</span></p>
       </div>
-      <div
-        class="col-12 col-lg-3 d-flex flex-wrap align-items-end justify-content-evenly ms-auto"
+      <div class="col-lg-1 dropdown">
+        <a
+          href="#"
+          role="button"
+          id="dropdownMenuLink"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+          class="fs-3"
+        >
+          ...
+        </a>
+
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
+          <li><a class="dropdown-item" href="#">Signaler cet utilisateur</a></li>
+        </ul>
+      </div>
+      <ul
+        class="nav col-lg-4 justify-content-center align-items-center ms-auto"
       >
-        <router-link
+      <li class="nav-item"><router-link
           to="/modifyProfile"
           class="btn btn-outline-dark py-2 px-3 rounded-pill shadow"
           >Modifier le profil</router-link
-        >
-      </div>
+        ></li>
+      </ul>
     </div>
     <ul class="nav nav-tabs" id="myTab" role="tablist">
       <li class="nav-item" role="presentation">
@@ -59,7 +81,7 @@
           aria-controls="followers"
           aria-selected="true"
         >
-          Followers
+          Vous suivent
         </button>
       </li>
       <li class="nav-item" role="presentation">
@@ -73,7 +95,7 @@
           aria-controls="following"
           aria-selected="false"
         >
-          Following
+          Suivis
         </button>
       </li>
       <li class="nav-item" role="presentation">
@@ -87,7 +109,7 @@
           aria-controls="posts"
           aria-selected="false"
         >
-          Posts
+          Publications
         </button>
       </li>
     </ul>

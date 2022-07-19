@@ -18,17 +18,17 @@
       >
         <a href="" class="fw-bold text-dark me-2">
           <span>3</span>
-          <span class="ms-1">Followers</span>
+          <span class="ms-1">Vous suivent</span>
         </a>
         <a href="" class="fw-bold text-dark">
           <span>4</span>
-          <span class="ms-1">Following</span>
+          <span class="ms-1">Suivis</span>
         </a>
       </li>
       <li class="list-group-item">
         <a href="" class="fw-bold text-dark">
           <span>6</span>
-          <span class="ms-1">Posts</span>
+          <span class="ms-1">Publications</span>
         </a>
       </li>
 
