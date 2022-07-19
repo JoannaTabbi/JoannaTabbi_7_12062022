@@ -1,7 +1,7 @@
 <template>
   <div class="card card-body border-0 m-0 p-3">
     <span class="mx-5 border-top border-primary border-3"></span>
-    <div class="d-flex my-3 border-bottom border-top py-2">
+    <div class="d-flex align-items-center my-3 border-bottom border-top py-2">
       <div class="d-flex img-sm-container me-3 align-items-center">
         <img
           class="mw-100 shadow rounded-3"
@@ -11,9 +11,28 @@
       </div>
       <div class="w-100 text-start">
         <router-link to="/profile">
-            <h5 class="fs-6 mb-0">Jean_Dupont</h5>
+          <h5 class="fs-6 mb-0">Jean_Dupont</h5>
         </router-link>
-        <p class="fs-6 mb-0 fw-light fst-italic">13 juillet 2022 à 16:04</p>
+        <p class="mb-0 fw-light small fst-italic">13 juillet 2022 à 16:04</p>
+      </div>
+      <!-- dropdown menu -->
+      <div class="dropdown fs-2">
+        <a
+          href="#"
+          role="button"
+          id="dropdownMenuLink"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          ...
+        </a>
+
+        <ul class="dropdown-menu dropdown-menu-end text-end" aria-labelledby="dropdownMenuLink">
+          <li><a class="dropdown-item" href="#">Modifiez votre publication</a></li>
+          <li><a class="dropdown-item" href="#">Supprimez votre publication</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="#">Signalez cette publication</a></li>
+        </ul>
       </div>
     </div>
     <div class="card-img mb-3">
@@ -55,22 +74,13 @@
 </template>
 
 <script>
-import Comments from './Comments.vue'
+import Comments from "./Comments.vue";
 export default {
- components: {
-    Comments
-  }
+  components: {
+    Comments,
+  },
 };
 </script>
 
-<style scoped>
-.form-control:focus {
-  border-color: inherit;
-  -webkit-box-shadow: none;
-  box-shadow: none;
-}
-textarea[placeholder]:focus {
-  background-image: radial-gradient(ellipse at 40% 50%, #ffebeb 30%, #fff 80%);
-}
-</style>
+<style scoped></style>
 >

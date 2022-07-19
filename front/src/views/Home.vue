@@ -15,7 +15,7 @@
               id="create_post"
               class="shadow rounded-3 mb-3 p-3"
             >
-              <h2 class="text-start fs-4">Créez un poste</h2>
+              <h2 class="text-start fs-4">Créez une publication</h2>
               <CreatePost />
             </section>
             <section id="feeds" class="shadow rounded-3 mb-3 p-3">
