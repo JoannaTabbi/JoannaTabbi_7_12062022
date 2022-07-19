@@ -18,14 +18,12 @@
     </div>
     <ul class="nav d-flex justify-content-around">
       <li class="nav-item">
-        <a
-          href=""
+        <label
           type="button"
-          data-bs-toggle="modal"
-          data-bs-target="#exampleModal"
         >
           <i class="fa-regular fa-image fa-2x"></i>
-        </a>
+          <input type="file" class="form-control" hidden />
+        </label>
       </li>
       <li class="nav-item">
         <a href="" type="button">
@@ -33,50 +31,6 @@
         ></a>
       </li>
     </ul>
-    <!-- Modal -->
-    <div
-      class="modal fade"
-      id="exampleModal"
-      tabindex="-1"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Photo</h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <div>
-              <div class="mb-3">
-                <label for="formFile" class="form-label text-start"
-                  ><i class="fa-regular fa-image fa-2x"></i
-                ></label>
-                <input class="form-control" type="file" id="formFile" />
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-primary"
-              data-bs-dismiss="modal"
-            >
-              Fermer
-            </button>
-            <button type="button" class="btn btn-light bg-gradient">
-              Ajouter
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -85,4 +39,7 @@ export default {};
 </script>
 
 <style scoped>
+.fa-image:hover {
+    color: #FD2D01;
+}
 </style>

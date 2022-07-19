@@ -11,7 +11,7 @@
           <h1 class="fs-4 text-center">Page d'inscription</h1>
         </div>
         <div class="col-12 mt-5 mb-4">
-          <form class="form">
+          <form class="form" @submit.prevent="register">
             <div class="row mb-3 align-items-center justify-content-between">
               <label for="inputUserName" class="col-2 col-form-label"
                 ><i
@@ -24,6 +24,7 @@
                   class="form-control"
                   id="inputUserName"
                   placeholder="Jean_0814"
+                  v-model.trim="user.userName"
                 />
               </div>
             </div>
@@ -39,6 +40,7 @@
                   class="form-control"
                   id="inputEmail"
                   placeholder="jean.dupond@exemple.fr"
+                  v-model.trim="user.email"
                 />
               </div>
             </div>
@@ -53,6 +55,7 @@
                   type="password"
                   class="form-control"
                   id="inputPassword"
+                  v-model.trim="user.password"
                 />
               </div>
             </div>
@@ -76,7 +79,24 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
+    data() {
+         return {
+            user: { 
+                userName:"",
+                email:"",
+                password:""
+            }
+         }
+    },
+    methods: {
+       register() {
+          axios.post(process.env.VUE_APP_API_URL + 'auth/signup', this.user)
+          .then((res) => console.log(res))
+          .catch((err) => console.log(err))
+       }
+    },
     mounted() {
     this.$emit("changeIsConnected", false)
   }
