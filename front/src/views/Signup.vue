@@ -88,6 +88,7 @@
 import axios from "axios";
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
+import router from '../router/index';
 export default {
   data() {
     const schema = yup.object().shape({
@@ -138,9 +139,9 @@ export default {
         .post(process.env.VUE_APP_API_URL + "auth/signup", this.user)
         .then((res) => {
           alert(
-            "Votre enregistrement a réussi, vous allez être rédirigé(e) vers la page d'identification"
+            "Votre enregistrement a réussi, fermez cette fenêtre pour être rédirigé(e) vers la page de connexion"
           );
-          window.location.href = "./login";
+          router.push('/login')
         })
         // alerts the user if the email or userName exist in database
         .catch((err) => {
