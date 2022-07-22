@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- if isConnected is false, the header will not be injected to the page -->
      <Header v-if="isConnected"/> 
     <router-view v-on:changeIsConnected="changeIsConnected"> </router-view>
     <!-- <Footer /> -->
@@ -20,6 +21,7 @@ export default {
       isConnected: true
     }
   },
+  // depending on isConnected = true or false, some action will be executed
   methods: {
     changeIsConnected(boolean) {
       this.isConnected = boolean
