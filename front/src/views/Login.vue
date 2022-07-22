@@ -11,7 +11,7 @@
           <h1 class="fs-4 text-center">Page de connexion</h1>
         </div>
         <div class="col-12 mt-5 mb-4">
-          <form class="form">
+          <Form class="form" @submit="login" :validation-schema="schema">
             <div class="row mb-3 align-items-center justify-content-between">
               <label for="inputEmail" class="col-2 col-form-label"
                 ><i
@@ -19,12 +19,15 @@
                 ></i
               ></label>
               <div class="col-10">
-                <input
+                <Field
                   type="email"
                   class="form-control"
                   id="inputEmail"
+                  name="inputEmail"
                   placeholder="jean.dupond@exemple.fr"
+                  v-model="user.email"
                 />
+                <ErrorMessage name="inputEmail" as="small" />
               </div>
             </div>
             <div class="row mb-3 align-items-center justify-content-between">
@@ -34,11 +37,14 @@
                 ></i
               ></label>
               <div class="col-10">
-                <input
+                <Field
                   type="password"
                   class="form-control"
                   id="inputPassword"
+                  name="inputPassword"
+                  v-model="user.password"
                 />
+                <ErrorMessage name="inputPassword" as="small" />
               </div>
             </div>
             <button
@@ -47,7 +53,7 @@
             >
               Connexion
             </button>
-          </form>
+          </Form>
         </div>
         <div class="col-12 mb-3">
           <p class="mb-0">Pas encore inscrit ?</p>
@@ -61,7 +67,37 @@
 </template>
 
 <script>
+import axios from "axios";
+import { Form, Field, ErrorMessage } from "vee-validate";
+import * as yup from "yup";
 export default {
+  data() {
+    const schema = yup.object().shape({
+      inputEmail: yup
+        .string()
+        .required("L'email est obligatoire"),
+      inputPassword: yup
+        .string()
+        .required("Le mot de passe est obligatoire")
+    });
+    return {
+      schema,
+      user: {
+        email: "",
+        password: "",
+      },
+    };
+  },
+  components: {
+    Form,
+    Field,
+    ErrorMessage,
+  },
+  methods: {
+    login() {
+       console.log(this.user)
+    }
+  },
   // sets the value of isConnected to false in order to not show the header on the login page
   mounted() {
     this.$emit("changeIsConnected", false);

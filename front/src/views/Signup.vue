@@ -44,7 +44,6 @@
                   name="inputEmail"
                   placeholder="jean.dupond@exemple.fr"
                   v-model.trim="user.email"
-                  :rules="validateEmail"
                 />
                 <ErrorMessage name="inputEmail" as="small" />
               </div>
@@ -96,7 +95,10 @@ export default {
         .string()
         .required("Ce champs est obligatoire")
         .min(3, "Le nom de l'utilisateur doit contenir au moins 3 caractères")
-        .matches(/^\S*$/, "Le mot de passe ne doit pas contenir des espaces blancs"),
+        .matches(
+          /^\S*$/,
+          "Le mot de passe ne doit pas contenir des espaces blancs"
+        ),
       inputEmail: yup
         .string()
         .required("Ce champs est obligatoire")
@@ -106,8 +108,14 @@ export default {
         .required("Ce champs est obligatoire")
         .min(8, "Le mot de passe doit contenir au moins 8 caractères")
         .max(100, "Le mot de passe ne doit pas dépasser 100 caractères")
-        .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/, "Le mot de passe doit contenir au moins une majuscule, une minuscule et un nombre")
-        .matches(/^\S*$/, "Le mot de passe ne doit pas contenir des espaces blancs")
+        .matches(
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/,
+          "Le mot de passe doit contenir au moins une majuscule, une minuscule et un nombre"
+        )
+        .matches(
+          /^\S*$/,
+          "Le mot de passe ne doit pas contenir des espaces blancs"
+        ),
     });
     return {
       schema,
@@ -129,14 +137,20 @@ export default {
       axios
         .post(process.env.VUE_APP_API_URL + "auth/signup", this.user)
         .then((res) => {
-          alert("Votre enregistrement a réussi, vous allez être rédirigé(e) vers la page d'identification")
-          window.location.href = "./login"
-    })
+          alert(
+            "Votre enregistrement a réussi, vous allez être rédirigé(e) vers la page d'identification"
+          );
+          window.location.href = "./login";
+        })
         // alerts the user if the email or userName exist in database
-        .catch((err) => {if (err.response.data.message.includes('unique')) {
-          alert("L'email ou le nom d'utilisateur existe déjà. Veuillez en saisir un autre")
-        }});
-    }, 
+        .catch((err) => {
+          if (err.response.data.message.includes("unique")) {
+            alert(
+              "L'email ou le nom d'utilisateur existe déjà. Veuillez en saisir un autre ou connectez-vous"
+            );
+          }
+        });
+    },
   },
   // sets the value of isConnected to false in order to not show the header on the signup page
   mounted() {
