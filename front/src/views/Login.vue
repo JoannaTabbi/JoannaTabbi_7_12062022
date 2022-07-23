@@ -11,6 +11,9 @@
           <h1 class="fs-4 text-center">Page de connexion</h1>
         </div>
         <div class="col-12 mt-5 mb-4">
+
+          <!-- connexion form -->
+
           <Form class="form" @submit="login" :validation-schema="schema">
             <div class="row mb-3 align-items-center justify-content-between">
               <label for="inputEmail" class="col-2 col-form-label"
@@ -47,6 +50,9 @@
                 <ErrorMessage name="inputPassword" as="small" />
               </div>
             </div>
+
+            <!-- submit -->
+
             <button
               type="submit"
               class="btn btn-dark bg-gradient rounded-5 w-100 mt-4 text-white fw-bold"
@@ -70,8 +76,10 @@
 import axios from "axios";
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
+import router from '../router/index';
 export default {
   data() {
+    // defines the validation rules and error messages for each connexion field
     const schema = yup.object().shape({
       inputEmail: yup
         .string()
@@ -94,8 +102,22 @@ export default {
     ErrorMessage,
   },
   methods: {
+    //logs in user once the connexion fields validated
     login() {
-       console.log(this.user)
+       console.log(this.user);
+       axios
+        .post(process.env.VUE_APP_API_URL + "auth/login", this.user, {
+          withCredentials: true
+        })
+        .then((res) => {
+          console.log(res.data.token);
+          axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
+          this.$router.push('/')
+          })
+        .catch((err) => {
+          console.log(err)
+          this.$router.push('/login')
+          })
     }
   },
   // sets the value of isConnected to false in order to not show the header on the login page

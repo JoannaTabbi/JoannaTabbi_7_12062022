@@ -25,7 +25,8 @@ app.use((req, res, next) => {
     next();
   });
 var corsOptions = {
-  origin: "http://localhost:8080"
+  origin: "http://localhost:8080",
+  credentials: true
 };
 
 app.use(cors(corsOptions));

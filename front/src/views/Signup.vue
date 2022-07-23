@@ -91,6 +91,7 @@ import * as yup from "yup";
 import router from '../router/index';
 export default {
   data() {
+    // defines the validation rules and error messages for each registration field
     const schema = yup.object().shape({
       inputUserName: yup
         .string()
@@ -137,7 +138,7 @@ export default {
     register() {
       axios
         .post(process.env.VUE_APP_API_URL + "auth/signup", this.user)
-        .then((res) => {
+        .then(() => {
           alert(
             "Votre enregistrement a réussi, fermez cette fenêtre pour être rédirigé(e) vers la page de connexion"
           );
