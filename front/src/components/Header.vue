@@ -63,12 +63,12 @@
               </ul>
             </li>
             <li class="nav-item text-start">
-              <router-link to="/login" class="nav-link"
+              <a href="#" class="nav-link" @click="logout"
                 ><i
                   class="fa-solid fa-arrow-right-from-bracket fa-fw fs-2 text-dark mx-2"
                 ></i>
                 <span class="d-lg-none">Se déconnecter</span>
-              </router-link>
+              </a>
             </li>
           </ul>
         </div>
@@ -78,11 +78,23 @@
 </template>
 
 <script>
+import axios from 'axios'
+import router from '../router/index'
 export default {
   name: "Header",
   props: {
     msg: String,
   },
+  methods: {
+    logout() {
+      axios.get(process.env.VUE_APP_API_URL +'auth/logout', {}, {withCredentials: true})
+      .then(() => {
+        axios.defaults.headers.common['Authorization'] = '';
+      })
+      .then(() => router.push('/login'))
+      .catch()
+    }
+  }
 };
 </script>
 

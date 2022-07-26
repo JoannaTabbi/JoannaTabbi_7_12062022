@@ -104,7 +104,6 @@ export default {
   methods: {
     //logs in user once the connexion fields validated
     login() {
-       console.log(this.user);
        axios
         .post(process.env.VUE_APP_API_URL + "auth/login", this.user, {
           withCredentials: true
@@ -112,11 +111,12 @@ export default {
         .then((res) => {
           console.log(res.data.token);
           axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
-          this.$router.push('/')
           })
+          .then(() => router.push('/'))
+          .catch((err) => console.log(err))
         .catch((err) => {
           console.log(err)
-          this.$router.push('/login')
+          router.push('/login')
           })
     }
   },

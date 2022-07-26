@@ -8,7 +8,7 @@ axios.interceptors.response.use(resp => resp, async error => {
     if (error.response.status === 403 && !refresh) {
         refresh = true;
 
-        const {status, data} = await axios.post('token', {}, {
+        const {status, data} = await axios.post('auth/token', {}, {
             withCredentials: true
         });
 
