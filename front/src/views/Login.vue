@@ -11,7 +11,10 @@
           <h1 class="fs-4 text-center">Page de connexion</h1>
         </div>
         <div class="col-12 mt-5 mb-4">
-          <form class="form">
+
+          <!-- connexion form -->
+
+          <Form class="form" @submit="login" :validation-schema="schema">
             <div class="row mb-3 align-items-center justify-content-between">
               <label for="inputEmail" class="col-2 col-form-label"
                 ><i
@@ -19,12 +22,15 @@
                 ></i
               ></label>
               <div class="col-10">
-                <input
+                <Field
                   type="email"
                   class="form-control"
                   id="inputEmail"
+                  name="inputEmail"
                   placeholder="jean.dupond@exemple.fr"
+                  v-model="user.email"
                 />
+                <ErrorMessage name="inputEmail" as="small" />
               </div>
             </div>
             <div class="row mb-3 align-items-center justify-content-between">
@@ -34,20 +40,26 @@
                 ></i
               ></label>
               <div class="col-10">
-                <input
+                <Field
                   type="password"
                   class="form-control"
                   id="inputPassword"
+                  name="inputPassword"
+                  v-model="user.password"
                 />
+                <ErrorMessage name="inputPassword" as="small" />
               </div>
             </div>
+
+            <!-- submit -->
+
             <button
               type="submit"
               class="btn btn-dark bg-gradient rounded-5 w-100 mt-4 text-white fw-bold"
             >
               Connexion
             </button>
-          </form>
+          </Form>
         </div>
         <div class="col-12 mb-3">
           <p class="mb-0">Pas encore inscrit ?</p>
@@ -61,7 +73,62 @@
 </template>
 
 <script>
+import axios from "axios";
+import { Form, Field, ErrorMessage } from "vee-validate";
+import * as yup from "yup";
+import router from '../router/index';
+import { useAuthStore } from '../stores/authStore';
+
 export default {
+  data() {
+    // defines the validation rules and error messages for each connexion field
+    const schema = yup.object().shape({
+      inputEmail: yup
+        .string()
+        .required("L'email est obligatoire")
+        .email(),
+      inputPassword: yup
+        .string()
+        .required("Le mot de passe est obligatoire")
+    });
+    return {
+      schema,
+      user: {
+        email: "",
+        password: "",
+      },
+    };
+  },
+  components: {
+    Form,
+    Field,
+    ErrorMessage,
+  },
+  methods: {
+    //logs in user once the connexion fields validated
+    async login() {
+      const res = await axios
+        .post(process.env.VUE_APP_API_URL + "auth/login", this.user, {
+          withCredentials: true
+        })
+        // si pas de réponse, redirige l'utilisateur vers la page de login
+        if(!res) {
+           router.push('/login')
+        }
+         // axios intercepts the token and places it in the header authorization
+          console.log(res.data, res.headers);
+          axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
+        
+         //store the user and the token in AuthStore in order to reuse it 
+          const auth = useAuthStore();
+          auth.loggedIn(res.data.token, res.data.User)
+
+          //redirects the authenticated user to home page
+          router.push('/')
+          // displays the header
+          this.$emit("changeIsConnected", true); 
+    }
+  },
   // sets the value of isConnected to false in order to not show the header on the login page
   mounted() {
     this.$emit("changeIsConnected", false);

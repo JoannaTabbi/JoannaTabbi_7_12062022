@@ -50,6 +50,7 @@ import WelcomeCard from '../components/WelcomeCard.vue'
 import CreatePost from '../components/CreatePost.vue'
 import Post from '../components/Post.vue'
 import MiniPost from '../components/MiniPost.vue'
+import { useAuthStore } from '../stores/authStore'
 export default {
   name: "App",
   components: {

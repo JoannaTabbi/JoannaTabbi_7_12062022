@@ -25,16 +25,29 @@
           ><input type="file" class="form-control" hidden />
         </label>
       </div>
-      <div
-        class="col-12 col-lg-3 d-flex flex-wrap align-items-end justify-content-evenly ms-auto mt-3 mt-lg-0"
-      >
-        <button
-          class="btn btn-outline-danger py-2 px-3 rounded-pill shadow"
-          data-bs-toggle="modal"
-          data-bs-target="#deleteProfileAlert"
+      <div class="d-flex col-12 col-lg-9">
+        <div
+          class="col-6 mt-3 mt-lg-0"
         >
-          Supprimer le profil
-        </button>
+          <button
+            class="btn btn-outline-dark py-2 px-3 rounded-pill shadow"
+            data-bs-toggle="modal"
+            data-bs-target="#deleteProfileAlert"
+          >
+            Exporter mes données
+          </button>
+        </div>
+        <div
+          class="col-6 mt-3 mt-lg-0"
+        >
+          <button
+            class="btn btn-outline-danger py-2 px-3 rounded-pill shadow"
+            data-bs-toggle="modal"
+            data-bs-target="#deleteProfileAlert"
+          >
+            Supprimer le profil
+          </button>
+        </div>
       </div>
     </div>
     <div class="container">
@@ -121,7 +134,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title text-primary" id="deleteProfileAlertLabel">
-                <i class="fa-solid fa-triangle-exclamation fa-lg"></i>
+              <i class="fa-solid fa-triangle-exclamation fa-lg"></i>
             </h5>
             <button
               type="button"
@@ -130,7 +143,10 @@
               aria-label="Close"
             ></button>
           </div>
-          <div class="modal-body">Votre profil sera supprimé définitivement. Etes-vous sûr(e) de vouloir continuer ? </div>
+          <div class="modal-body">
+            Votre profil sera supprimé définitivement. Etes-vous sûr(e) de
+            vouloir continuer ?
+          </div>
           <div class="modal-footer">
             <button
               type="button"
@@ -139,7 +155,9 @@
             >
               Abandonner
             </button>
-            <button type="button" class="btn btn-outline-danger">Supprimer</button>
+            <button type="button" class="btn btn-outline-danger">
+              Supprimer
+            </button>
           </div>
         </div>
       </div>
