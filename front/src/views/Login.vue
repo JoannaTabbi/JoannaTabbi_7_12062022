@@ -77,13 +77,16 @@ import axios from "axios";
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 import router from '../router/index';
+import { useAuthStore } from '../stores/authStore';
+
 export default {
   data() {
     // defines the validation rules and error messages for each connexion field
     const schema = yup.object().shape({
       inputEmail: yup
         .string()
-        .required("L'email est obligatoire"),
+        .required("L'email est obligatoire")
+        .email(),
       inputPassword: yup
         .string()
         .required("Le mot de passe est obligatoire")
@@ -103,21 +106,27 @@ export default {
   },
   methods: {
     //logs in user once the connexion fields validated
-    login() {
-       axios
+    async login() {
+      const res = await axios
         .post(process.env.VUE_APP_API_URL + "auth/login", this.user, {
           withCredentials: true
         })
-        .then((res) => {
-          console.log(res.data.token);
+        // si pas de réponse, redirige l'utilisateur vers la page de login
+        if(!res) {
+           router.push('/login')
+        }
+         // axios intercepts the token and places it in the header authorization
+          console.log(res.data, res.headers);
           axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
-          })
-          .then(() => router.push('/'))
-          .catch((err) => console.log(err))
-        .catch((err) => {
-          console.log(err)
-          router.push('/login')
-          })
+        
+         //store the user and the token in AuthStore in order to reuse it 
+          const auth = useAuthStore();
+          auth.loggedIn(res.data.token, res.data.User)
+
+          //redirects the authenticated user to home page
+          router.push('/')
+          // displays the header
+          this.$emit("changeIsConnected", true); 
     }
   },
   // sets the value of isConnected to false in order to not show the header on the login page

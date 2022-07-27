@@ -55,10 +55,19 @@
                 ><i class="fa-solid fa-user fa-fw fs-2 text-dark mx-2"></i>
                 <span class="d-lg-none">Vous</span>
               </a>
-              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                <li><router-link to="/profile" class="dropdown-item">Voir le profil</router-link></li>
+              <ul
+                class="dropdown-menu dropdown-menu-end"
+                aria-labelledby="navbarDropdown"
+              >
                 <li>
-                  <router-link to="/modifyProfile" class="dropdown-item">Modifier le profil</router-link>
+                  <router-link to="/profile" class="dropdown-item"
+                    >Voir le profil</router-link
+                  >
+                </li>
+                <li>
+                  <router-link to="/modifyProfile" class="dropdown-item"
+                    >Modifier le profil</router-link
+                  >
                 </li>
               </ul>
             </li>
@@ -78,23 +87,38 @@
 </template>
 
 <script>
-import axios from 'axios'
-import router from '../router/index'
+import axios from "axios";
+import router from "../router/index";
+import { useAuthStore } from "../stores/authStore";
 export default {
   name: "Header",
   props: {
     msg: String,
   },
   methods: {
-    logout() {
-      axios.get(process.env.VUE_APP_API_URL +'auth/logout', {}, {withCredentials: true})
-      .then(() => {
-        axios.defaults.headers.common['Authorization'] = '';
-      })
-      .then(() => router.push('/login'))
-      .catch()
-    }
-  }
+    async logout() {
+      try {
+        // fetching logout route
+        const res = await axios.get(
+          process.env.VUE_APP_API_URL + "auth/logout",
+          {},
+          { withCredentials: true }
+        );
+
+        //takes out the authorization bearer from response headers
+        axios.defaults.headers.common["Authorization"] = "";
+
+        // throws away the user from pinia store
+        const auth = useAuthStore();
+        auth.loggedOut();
+
+        // redirects user to the login page
+        router.push("/login");
+      } catch (err) {
+        throw err;
+      }
+    },
+  },
 };
 </script>
 
