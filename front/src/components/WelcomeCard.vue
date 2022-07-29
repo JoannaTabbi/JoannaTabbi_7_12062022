@@ -9,8 +9,10 @@
     </div>
 
     <div class="card-body">
-      <h5 class="card-title">Bonjour <span>Jean_Dupont</span></h5>
-      <p class="card-text">Membre depuis le <span>12 juillet 2022</span></p>
+      
+      <h5 class="card-title">Bonjour <span><router-link to="/myProfile">{{auth.user.userName}}</router-link></span></h5>
+      
+      <small class="card-text">Membre depuis le <div>{{$filters.formatDate(auth.user.createdAt)}}</div></small>
     </div>
     <ul class="list-group list-group-flush small">
       <li
@@ -45,8 +47,10 @@
   </div>
 </template>
 
-<script>
-export default {};
+<script setup>
+import {useAuthStore} from '../stores/authStore'
+const auth = useAuthStore()
+
 </script>
 
 <style></style>

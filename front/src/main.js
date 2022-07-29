@@ -4,8 +4,21 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 import './interceptors/axios'
+import moment from 'moment'
+import 'moment/locale/fr'
 
 const pinia = createPinia()
-createApp(App).use(pinia).use(router).mount('#app')
+const app = createApp(App)
+app.use(pinia)
+app.use(router)
 
+app.config.globalProperties.$filters = {
+    formatDate(value) {
+        if (value) {
+            return moment(String(value)).format('LL')
+          }
+    }
+  }
+
+app.mount('#app')
 import "bootstrap/dist/js/bootstrap.bundle"

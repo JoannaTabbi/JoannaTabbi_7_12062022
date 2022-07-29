@@ -10,7 +10,9 @@
       </div>
     </div>
     <div class="row d-flex flex-column flex-lg-row mb-3 align-items-center">
-      <div class="avatar col-6 col-sm-3 col-lg-2 ms-0 ms-lg-3 mb-3 mb-lg-0 position-relative">
+      <div
+        class="avatar col-6 col-sm-3 col-lg-2 ms-0 ms-lg-3 mb-3 mb-lg-0 position-relative"
+      >
         <img
           src="../assets/avatar-200.png"
           class="img-fluid rounded-circle border border-white border-3 shadow"
@@ -19,15 +21,16 @@
         <div
           class="position-absolute top-0 start-100 translate-middle btn btn-outline-dark rounded-circle"
         >
-          <i class="fa-regular fa-thumbs-up fa-lg"></i
-          >
+          <i class="fa-regular fa-thumbs-up fa-lg"></i>
         </div>
       </div>
       <div
         class="col-12 col-lg-4 d-flex flex-column align-items-lg-start justify-content-end mb-3 mb-lg-0"
       >
-        <h1 class="card-title fs-5 mb-0">Jean_Dupont</h1>
-        <p class="card-text small">Membre depuis le <span>12 juillet 2022</span></p>
+        <h1 class="card-title fs-5 mb-0">{{ userName }}</h1>
+        <p class="card-text small">
+          Membre depuis le <span>{{ createdAt }}</span>
+        </p>
       </div>
       <div class="col-lg-1 dropdown">
         <a
@@ -41,18 +44,25 @@
           ...
         </a>
 
-        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
-          <li><a class="dropdown-item" href="#">Signaler cet utilisateur</a></li>
+        <ul
+          class="dropdown-menu dropdown-menu-end"
+          aria-labelledby="dropdownMenuLink"
+        >
+          <li>
+            <a class="dropdown-item" href="#">Signaler cet utilisateur</a>
+          </li>
         </ul>
       </div>
       <ul
         class="nav col-lg-4 justify-content-center align-items-center ms-auto"
       >
-      <li class="nav-item"><router-link
-          to="/modifyProfile"
-          class="btn btn-outline-dark py-2 px-3 rounded-pill shadow"
-          >Modifier le profil</router-link
-        ></li>
+        <li class="nav-item">
+          <router-link
+            to="/modifyProfile"
+            class="btn btn-outline-dark py-2 px-3 rounded-pill shadow"
+            >Modifier le profil</router-link
+          >
+        </li>
       </ul>
     </div>
     <ul class="nav nav-tabs" id="myTab" role="tablist">
@@ -120,15 +130,7 @@
         role="tabpanel"
         aria-labelledby="about-tab"
       >
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore
-        impedit ratione ad placeat beatae saepe eos assumenda dolorum fugit
-        maiores accusantium, incidunt voluptates. Mollitia, reiciendis laborum.
-        Reiciendis ex ad esse magni, explicabo quos? Totam, rerum iusto commodi
-        cupiditate consequuntur provident reiciendis, officia autem cum
-        dignissimos eaque aut ab dolor soluta ut architecto alias voluptates
-        sint asperiores? Iure adipisci repellat tempora quia. Excepturi quae
-        similique labore ab blanditiis ratione molestiae temporibus obcaecati
-        qui. Ex error minus deserunt dignissimos esse!
+        {{ aboutMe }}
       </div>
       <div
         class="tab-pane fade"
@@ -138,10 +140,6 @@
       >
         <div class="container">
           <div class="row g-3">
-            <MiniProfile />
-            <MiniProfile />
-            <MiniProfile />
-            <MiniProfile />
             <MiniProfile />
           </div>
         </div>
@@ -154,8 +152,6 @@
       >
         <div class="container">
           <div class="row g-3">
-            <MiniProfile />
-            <MiniProfile />
             <MiniProfile />
           </div>
         </div>
@@ -172,15 +168,15 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import Post from "./Post.vue";
 import MiniProfile from "./MiniProfileCard.vue";
-export default {
-  components: {
-    Post,
-    MiniProfile,
-  },
-};
+defineProps(["userName", "createdAt", "aboutMe"]);
+
+// gets all the posts created by one user
+async function getUserPosts() {
+  const posts = await axios.get(process.env.VUE_APP_API_URL + "posts");
+}
 </script>
 
 <style>

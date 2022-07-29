@@ -1,8 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router"
+import { useAuthStore } from "@/stores/authStore"  
 import Home from "@/views/Home"
 import Signup from "@/views/Signup"
 import Login from "@/views/Login"
 import Profile from "@/views/Profile"
+import MyProfile from "@/views/MyProfile"
 import ModifyProfile from "@/views/ModifyProfile"
 import NotFound from "@/views/NotFound"
  
@@ -24,9 +26,14 @@ const routes = [
         component: Login
     },
     {
-        path: '/profile', 
+        path: '/profile/:id', 
         name: "Profile",
         component: Profile
+    },
+    {
+        path: '/myProfile', 
+        name: "MyProfile",
+        component: MyProfile
     },
     {
         path: '/modifyProfile', 
@@ -48,3 +55,15 @@ const router = createRouter({
   });
 
 export default router
+
+router.beforeEach(async (to) => {
+    // redirect to login page if not logged in and trying to access a restricted page
+    const publicPages = ['/login', '/signup'];
+    const authRequired = !publicPages.includes(to.path);
+    const auth = useAuthStore();
+
+    if (authRequired && !auth.user) {
+       // auth.returnUrl = to.fullPath;
+        return '/login';
+    }
+});
