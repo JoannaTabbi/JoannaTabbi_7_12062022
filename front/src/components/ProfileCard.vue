@@ -118,6 +118,7 @@
           role="tab"
           aria-controls="posts"
           aria-selected="false"
+          @click="getMyPosts"
         >
           Publications
         </button>
@@ -169,13 +170,21 @@
 </template>
 
 <script setup>
-import Post from "./Post.vue";
-import MiniProfile from "./MiniProfileCard.vue";
-defineProps(["userName", "createdAt", "aboutMe"]);
+import Post from "./Post.vue"
+import MiniProfile from "./MiniProfileCard.vue"
+import {ref} from 'vue'
+import getPosts from '../composables/getPosts'
+import { useAuthStore } from "../stores/authStore"
+const auth = useAuthStore()
+defineProps(["userName", "createdAt", "aboutMe"])
 
-// gets all the posts created by one user
-async function getUserPosts() {
-  const posts = await axios.get(process.env.VUE_APP_API_URL + "posts");
+// get my own posts 
+
+const getMyPosts = () => {
+  const {posts, error, loadPosts} = getPosts()
+  loadPosts()
+  const myPosts = posts.filter((post) => post.userId === auth.user._id)
+  console.log(myPosts)
 }
 </script>
 

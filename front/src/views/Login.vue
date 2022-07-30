@@ -86,7 +86,7 @@ export default {
       inputEmail: yup
         .string()
         .required("L'email est obligatoire")
-        .email(),
+        .email("L'email n'est pas valide"),
       inputPassword: yup
         .string()
         .required("Le mot de passe est obligatoire")
@@ -112,7 +112,7 @@ export default {
           withCredentials: true
         })
         // si pas de réponse, redirige l'utilisateur vers la page de login
-        if(!res) {
+        if(!res.ok) {
            router.push('/login')
         }
          // axios intercepts the token and places it in the header authorization
