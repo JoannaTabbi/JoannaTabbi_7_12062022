@@ -8,9 +8,9 @@ import {
 
 // gets all posts
 const getPosts = () => {
-    let posts = []
-    let error = null
-    const loadPosts = () => {
+    const posts = ref([])
+    const error = ref(null)
+    const loadPosts = async () => {
 
         const auth = useAuthStore()
         const authOptions = {
@@ -18,23 +18,11 @@ const getPosts = () => {
                 'Authorization': 'Bearer ' + auth.token
             }
         }
-        axios.get(process.env.VUE_APP_API_URL + "posts/", {
+        const res = await axios.get(process.env.VUE_APP_API_URL + "/posts/", {
                 withCredentials: true
             }, authOptions)
-            .then((res) => {
-                if (res.ok) {
-                   return res.json()
-                }
-            })
-            .then((data) => {
-                console.log(data)
-                posts = data
-            })
-            .catch((err) => {
-                error = err.message
-                console.log(error)
-            })
-
+        posts.value = res.data
+        console.log(posts.value)
 
     }
     return {

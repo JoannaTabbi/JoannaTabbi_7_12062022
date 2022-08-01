@@ -100,7 +100,7 @@ export default {
       try {
         // fetching logout route
         const res = await axios.get(
-          process.env.VUE_APP_API_URL + "auth/logout",
+          process.env.VUE_APP_API_URL + "/auth/logout",
           {},
           { withCredentials: true }
         );

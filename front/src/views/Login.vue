@@ -108,7 +108,7 @@ export default {
     //logs in user once the connexion fields validated
     async login() {
       const res = await axios
-        .post(process.env.VUE_APP_API_URL + "auth/login", this.user, {
+        .post(process.env.VUE_APP_API_URL + "/auth/login", this.user, {
           withCredentials: true
         })
         // si pas de réponse, redirige l'utilisateur vers la page de login

@@ -14,7 +14,7 @@
         class="avatar col-6 col-sm-3 col-lg-2 ms-0 ms-lg-3 mb-3 mb-lg-0 position-relative"
       >
         <img
-          src="../assets/avatar-200.png"
+          :src="avatarUrl"
           class="img-fluid rounded-circle border border-white border-3 shadow"
           alt="mon avatar"
         />
@@ -118,7 +118,7 @@
           role="tab"
           aria-controls="posts"
           aria-selected="false"
-          @click="getMyPosts"
+          @click="loadPosts"
         >
           Publications
         </button>
@@ -170,22 +170,26 @@
 </template>
 
 <script setup>
-import Post from "./Post.vue"
-import MiniProfile from "./MiniProfileCard.vue"
-import {ref} from 'vue'
-import getPosts from '../composables/getPosts'
-import { useAuthStore } from "../stores/authStore"
-const auth = useAuthStore()
-defineProps(["userName", "createdAt", "aboutMe"])
+import Post from "./Post.vue";
+import MiniProfile from "./MiniProfileCard.vue";
+import { ref, onMounted, computed } from "vue";
 
-// get my own posts 
+//import function that gets all the posts
+import getPosts from "../composables/getPosts";
+const { posts, error, loadPosts } = getPosts();
 
-const getMyPosts = () => {
-  const {posts, error, loadPosts} = getPosts()
-  loadPosts()
-  const myPosts = posts.filter((post) => post.userId === auth.user._id)
-  console.log(myPosts)
-}
+import { useAuthStore } from "../stores/authStore";
+const auth = useAuthStore();
+
+defineProps(["avatarUrl", "userName", "createdAt", "aboutMe"]);
+
+// get all the posts
+//onMounted(getPosts)
+
+// filter my own posts
+const getMyPosts = computed(() => {
+  return posts.value.filter((post) => {});
+});
 </script>
 
 <style>
