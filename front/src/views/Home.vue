@@ -58,8 +58,12 @@ export default {
     WelcomeCard,
     Post,
     MiniPost
-  }
-};
+  },
+mounted(){
+  const auth = useAuthStore()
+  console.log(auth.user)
+}
+}
 </script>
 
 <style scoped></style>

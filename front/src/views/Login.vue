@@ -116,7 +116,6 @@ export default {
            router.push('/login')
         }
          // axios intercepts the token and places it in the header authorization
-          console.log(res.data, res.headers);
           axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
         
          //store the user and the token in AuthStore in order to reuse it 

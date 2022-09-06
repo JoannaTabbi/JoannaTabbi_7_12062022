@@ -7,12 +7,11 @@ state: () => {
         user: null
     }
 },
-getters: {
-
-},
+persist: true,
 actions: {
     // fetches the user information 
   loggedIn(token, user) {
+    console.log("loggedIn marche")
     this.token = token;
     this.user = user;
   },
