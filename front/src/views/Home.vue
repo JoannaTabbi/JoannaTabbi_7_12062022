@@ -5,7 +5,13 @@
           <div class="col-12 col-lg-3 mb-3 pt-3">
             <section id="home" class="shadow rounded-3 mb-3 p-3">
               <h1 class="text-start fs-3">Accueil</h1>
-              <WelcomeCard/>
+              <WelcomeCard
+                :avatar-url="require(`@/assets/avatar-200.png`)"
+                :user-name="user.userName"
+                :created-at="$filters.formatDate(user.createdAt)"
+                :followers-number="followersNb"
+                :following-number="followingNb"
+                />
             </section>
           </div>
           <div
@@ -51,15 +57,28 @@ import CreatePost from '../components/CreatePost.vue'
 import Post from '../components/Post.vue'
 import MiniPost from '../components/MiniPost.vue'
 import { useAuthStore } from '../stores/authStore'
+import { mapState } from 'pinia'
 export default {
-  name: "App",
+  name: "Home",
   components: {
     CreatePost,
     WelcomeCard,
     Post,
     MiniPost
-  }
-};
+  },
+  computed : {
+    ...mapState(useAuthStore, {
+      user : 'user',
+      followersNb : 'followersNb',
+      followingNb : 'followingNb',
+      avatarUrl : 'avatarUrl'
+      })
+  },
+mounted(){
+  const auth = useAuthStore()
+  console.log(auth.user)
+}
+}
 </script>
 
 <style scoped></style>

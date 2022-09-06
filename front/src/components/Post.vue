@@ -11,9 +11,9 @@
       </div>
       <div class="w-100 text-start">
         <router-link to="/profile">
-          <h5 class="fs-6 mb-0">Jean_Dupont</h5>
+          <h5 class="fs-6 mb-0">{{postAuthor}}</h5>
         </router-link>
-        <p class="mb-0 fw-light small fst-italic">13 juillet 2022 à 16:04</p>
+        <p class="mb-0 fw-light small fst-italic">{{postCreatedAt}}</p>
       </div>
       <!-- dropdown menu -->
       <div class="dropdown fs-2">
@@ -44,12 +44,7 @@
     </div>
     <div>
       <p class="text-start">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Illo, quas.
-        Blanditiis possimus quasi, illo officia quaerat facere cupiditate nihil
-        ea ab porro, pariatur quibusdam unde provident vero perferendis minus
-        non et architecto illum deleniti autem repellendus! Dignissimos sint
-        nostrum aliquam odit rerum, hic corporis animi provident magni, quam
-        architecto autem delectus numquam blanditiis iste.
+        {{postMessage}}
       </p>
     </div>
     <ul class="nav d-flex justify-content-start mb-4 small">
@@ -73,13 +68,9 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import Comments from "./Comments.vue";
-export default {
-  components: {
-    Comments,
-  },
-};
+defineProps(['postAuthor', 'postCreatedAt', 'postMessage'])
 </script>
 
 <style scoped></style>

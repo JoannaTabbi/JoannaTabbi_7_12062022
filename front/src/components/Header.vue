@@ -60,7 +60,7 @@
                 aria-labelledby="navbarDropdown"
               >
                 <li>
-                  <router-link to="/profile" class="dropdown-item"
+                  <router-link to="/myProfile" class="dropdown-item"
                     >Voir le profil</router-link
                   >
                 </li>
@@ -100,7 +100,7 @@ export default {
       try {
         // fetching logout route
         const res = await axios.get(
-          process.env.VUE_APP_API_URL + "auth/logout",
+          process.env.VUE_APP_API_URL + "/auth/logout",
           {},
           { withCredentials: true }
         );

@@ -86,7 +86,7 @@ export default {
       inputEmail: yup
         .string()
         .required("L'email est obligatoire")
-        .email(),
+        .email("L'email n'est pas valide"),
       inputPassword: yup
         .string()
         .required("Le mot de passe est obligatoire")
@@ -108,15 +108,14 @@ export default {
     //logs in user once the connexion fields validated
     async login() {
       const res = await axios
-        .post(process.env.VUE_APP_API_URL + "auth/login", this.user, {
+        .post(process.env.VUE_APP_API_URL + "/auth/login", this.user, {
           withCredentials: true
         })
         // si pas de réponse, redirige l'utilisateur vers la page de login
-        if(!res) {
+        if(!res.ok) {
            router.push('/login')
         }
          // axios intercepts the token and places it in the header authorization
-          console.log(res.data, res.headers);
           axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
         
          //store the user and the token in AuthStore in order to reuse it 

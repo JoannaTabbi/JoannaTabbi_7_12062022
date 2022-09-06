@@ -10,15 +10,15 @@
           />
         </div>
         <div class="col-12 mb-3 mb-lg-0">
-          <h3 class="card-title text-center fs-6 mb-0">JeanClaude74</h3>
+          <h3 class="card-title text-center fs-6 mb-0">{{userName}}</h3>
         </div>
       </div>
     </router-link>
   </div>
 </template>
 
-<script>
-export default {};
+<script setup>
+  defineProps(['userName'])
 </script>
 
 <style></style>

@@ -194,7 +194,7 @@ exports.readOneself = (req, res, next) => {
                 });
             } else {
                 user.email = decryptMail(user.email); // decrypts user's email
-                user.avatarUrl = `${req.protocol}://${req.get("host")}${user.avatarUrl}`;
+                user.imageUrl = `${req.protocol}://${req.get("host")}${user.imageUrl}`;
                 res.status(200).json(user,
                     hateoasLinks(req, user._id));
             }
