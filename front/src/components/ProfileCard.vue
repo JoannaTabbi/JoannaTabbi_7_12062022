@@ -169,27 +169,30 @@
   </div>
 </template>
 
-<script setup>
+<script>
 import Post from "./Post.vue";
 import MiniProfile from "./MiniProfileCard.vue";
-import { ref, onMounted, computed } from "vue";
 
 //import function that gets all the posts
 import getPosts from "../composables/getPosts";
 const { posts, error, loadPosts } = getPosts();
 
-import { useAuthStore } from "../stores/authStore";
-const auth = useAuthStore();
-
-defineProps(["avatarUrl", "userName", "createdAt", "aboutMe"]);
+export default {
+  name: "profileCard",
+  components : {
+    Post,
+    MiniProfile
+  },
+  props: ["avatarUrl", "userName", "createdAt", "aboutMe"]
+  }
 
 // get all the posts
 //onMounted(getPosts)
 
-// filter my own posts
+/* filter my own posts
 const getMyPosts = computed(() => {
   return posts.value.filter((post) => {});
-});
+}); */
 </script>
 
 <style>
