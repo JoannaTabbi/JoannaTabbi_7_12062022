@@ -108,13 +108,12 @@ export default {
     //logs in user once the connexion fields validated
     async login() {
       const res = await axios
-        .post(process.env.VUE_APP_API_URL + "/auth/login", this.user, {
-          withCredentials: true
-        })
+        .post(process.env.VUE_APP_API_URL + "/auth/login", this.user)
         // si pas de réponse, redirige l'utilisateur vers la page de login
         if(!res.ok) {
            router.push('/login')
         }
+        console.log(res);
          // axios intercepts the token and places it in the header authorization
           axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
         

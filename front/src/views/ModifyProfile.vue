@@ -26,9 +26,7 @@
         </label>
       </div>
       <div class="d-flex col-12 col-lg-9">
-        <div
-          class="col-6 mt-3 mt-lg-0"
-        >
+        <div class="col-6 mt-3 mt-lg-0">
           <button
             class="btn btn-outline-dark py-2 px-3 rounded-pill shadow"
             data-bs-toggle="modal"
@@ -37,9 +35,7 @@
             Exporter mes données
           </button>
         </div>
-        <div
-          class="col-6 mt-3 mt-lg-0"
-        >
+        <div class="col-6 mt-3 mt-lg-0">
           <button
             class="btn btn-outline-danger py-2 px-3 rounded-pill shadow"
             data-bs-toggle="modal"
@@ -155,7 +151,11 @@
             >
               Abandonner
             </button>
-            <button type="button" class="btn btn-outline-danger">
+            <button
+              type="button"
+              class="btn btn-outline-danger"
+              @click="deleteMyProfile"
+            >
               Supprimer
             </button>
           </div>
@@ -166,7 +166,43 @@
 </template>
 
 <script>
-export default {};
+import { useAuthStore } from "../stores/authStore";
+import { mapState, mapActions } from "pinia";
+import axios from "axios";
+import router from "../router/index";
+
+export default {
+  name: "modifyProfile",
+  computed: {
+    ...mapState(useAuthStore, {
+      user: "user",
+      token: "token",
+    }),
+  },
+  methods: {
+    ...mapActions(useAuthStore, ["loggedOut"]),
+    //deletes the user
+    deleteMyProfile() {
+      // deletes the user's data from the server
+      const res = axios.delete(process.env.VUE_APP_API_URL + "/auth", {
+        headers: {
+          Authorization: "Bearer " + this.token,
+        },
+      })
+        .then(() => {
+          //takes out the authorization bearer from response headers
+          axios.defaults.headers.common["Authorization"] = "";
+
+          // throws away the user from pinia store
+          this.loggedOut();
+
+          // redirects user to the signup page
+          router.push("/signup");
+        })
+        .catch((err) => console.log(err));
+    },
+  },
+};
 </script>
 
 <style scoped></style>
