@@ -113,7 +113,6 @@ export default {
         if(!res.ok) {
            router.push('/login')
         }
-        console.log(res);
          // axios intercepts the token and places it in the header authorization
           axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
         
