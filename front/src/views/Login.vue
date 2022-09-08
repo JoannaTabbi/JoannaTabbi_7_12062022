@@ -118,7 +118,7 @@ export default {
         
          //store the user and the token in AuthStore in order to reuse it 
           const auth = useAuthStore();
-          auth.loggedIn(res.data.token, res.data.User)
+          auth.loggedIn(res.data.token, res.data.refreshToken, res.data.User)
 
           //redirects the authenticated user to home page
           router.push('/')

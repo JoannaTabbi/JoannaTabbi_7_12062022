@@ -119,6 +119,7 @@ exports.login = (req, res, next) => {
                                     expiresIn: 150 * 60 // expires after 15 minutes
                                 }
                             ),
+                            refreshToken,
                             User: user
                         },
                         hateoasLinks(req, user._id));
