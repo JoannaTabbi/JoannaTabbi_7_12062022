@@ -48,25 +48,25 @@ exports.signup = (req, res, next) => {
         return res.status(400).json({
             error: "Invalid email format"
         });
-    } 
-        //encrypts password
-        bcrypt
-            .hash(req.body.password, 10)
-            .then((hash) => {
-                const user = new User({
-                    userName: req.body.userName,
-                    email: encryptMail(req.body.email),
-                    password: hash,
-                    isAdmin: req.body.isAdmin  // see front
-                });
-                user
-                    .save()
-                    .then((user) => res.status(201).json(
-                        user
-                    ))
-                    .catch((error) => res.status(400).json(error));
-            })
-            .catch((error) => res.status(500).json(error));
+    }
+    //encrypts password
+    bcrypt
+        .hash(req.body.password, 10)
+        .then((hash) => {
+            const user = new User({
+                userName: req.body.userName,
+                email: encryptMail(req.body.email),
+                password: hash,
+                isAdmin: req.body.isAdmin // see front
+            });
+            user
+                .save()
+                .then((user) => res.status(201).json(
+                    user
+                ))
+                .catch((error) => res.status(400).json(error));
+        })
+        .catch((error) => res.status(500).json(error));
 };
 
 /**
@@ -99,12 +99,12 @@ exports.login = (req, res, next) => {
                     };
                     // creating a refresh token stored in cookie, that will allow us to regenerate the token once expired; 
                     const refreshToken = jwt.sign({
-                        userId: user._id // the method takes two arguments : 
-                    }, // a response object and
-                    process.env.REFRESH_TOKEN_SECRET, { // a secret key
-                        expiresIn: '24h'
-                    }
-                )
+                            userId: user._id // the method takes two arguments : 
+                        }, // a response object and
+                        process.env.REFRESH_TOKEN_SECRET, { // a secret key
+                            expiresIn: '24h'
+                        }
+                    )
                     res.cookie('jwt', refreshToken, {
                         httpOnly: true,
                         maxAge: 24 * 60 * 60
@@ -119,6 +119,7 @@ exports.login = (req, res, next) => {
                                     expiresIn: 150 * 60 // expires after 15 minutes
                                 }
                             ),
+                            refreshToken,
                             User: user
                         },
                         hateoasLinks(req, user._id));
@@ -139,10 +140,10 @@ exports.login = (req, res, next) => {
  */
 exports.logout = (req, res, next) => {
     const cookies = req.cookies;
-    if (!cookies?.jwt) return res.sendStatus(204);
+    if (!cookies ?.jwt) return res.sendStatus(204);
     User.findById(req.auth.userId)
         .then(() => {
-            res.clearCookie('jwt', {  //removes refresh token
+            res.clearCookie('jwt', { //removes refresh token
                 httpOnly: true
             });
             res.redirect('/'); // warning: returns error!
@@ -233,12 +234,12 @@ exports.exportData = (req, res, next) => {
  */
 exports.updateUser = (req, res, next) => {
     User.findById(req.auth.userId)
-        .then( async (user) => {
+        .then(async (user) => {
             if (!user) {
                 res.status(404).json(error);
             } else {
-                const update = req.file? 
-                JSON.parse(req.body.user) : req.body;
+                const update = req.file ?
+                    JSON.parse(req.body.user) : req.body;
                 // the password is updated
                 if (update.password) {
                     const hash = await bcrypt.hash(update.password, 10); // the password is crypted
@@ -255,37 +256,37 @@ exports.updateUser = (req, res, next) => {
                     } else {
                         update.email = encryptMail(update.email); // the email is crypted
                         console.log(update.email);
-                    }   
+                    }
                 }
                 // check if image file is present
                 const userObject = req.file ? {
                     ...update,
                     imageUrl: `/images/${req.file.filename}`
-                  } : {
+                } : {
                     ...update
-                  };
-                  const filename = user.imageUrl.split("/images/")[1];
-                  try {
-                    if (userObject.imageUrl) {
-                      fs.unlinkSync(`images/${filename}`);
+                };
+                const filename = user.imageUrl.split("/images/")[1];
+                try {
+                    if (userObject.imageUrl && userObject.imageUrl !== "/images/avatar-200.png") {
+                        fs.unlinkSync(`images/${filename}`);
                     }
-                  } catch (error) {
+                } catch (error) {
                     console.log(error);
-                  }
+                }
                 User.findByIdAndUpdate({
-                        _id: req.auth.userId
-                    },
+                            _id: req.auth.userId
+                        },
                         userObject, {
-                        new: true,
-                        upsert: true,
-                        setDefaultsOnInsert: true
-                    })
-                    .then((userUpdated) => 
-                    {
+                            new: true,
+                            upsert: true,
+                            setDefaultsOnInsert: true
+                        })
+                    .then((userUpdated) => {
                         res.status(200).json(
-                        userUpdated,
-                        hateoasLinks(req, userUpdated._id)
-                    )})
+                            userUpdated,
+                            hateoasLinks(req, userUpdated._id)
+                        )
+                    })
                     .catch((error) => {
                         res.status(400).json(error);
                     });
@@ -309,12 +310,14 @@ exports.deleteUser = (req, res, next) => {
                     error: new Error("User not found!")
                 });
             } else {
-                const filename = user.imageUrl.split("/images/")[1];
-                fs.unlink(`images/${filename}`, function (err) {
-                    if (err) throw err;
-                    // if no error, file has been deleted successfully
-                    res.sendStatus(204);
-                });        
+                console.log(user.imageUrl);
+                if (user.imageUrl !== "/images/avatar-200.png") {
+                    const filename = user.imageUrl.split("/images/")[1];
+                    fs.unlinkSync(`images/${filename}`);
+                }
+
+                // if no error, file has been deleted successfully 
+                res.sendStatus(204);
             }
         })
         .catch((error) => res.status(404).json({

@@ -6,7 +6,7 @@
             <section id="home" class="shadow rounded-3 mb-3 p-3">
               <h1 class="text-start fs-3">Accueil</h1>
               <WelcomeCard
-                :avatar-url="require(`@/assets/avatar-200.png`)"
+                :avatar-url="avatarUrl"
                 :user-name="user.userName"
                 :created-at="$filters.formatDate(user.createdAt)"
                 :followers-number="followersNb"

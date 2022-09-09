@@ -108,9 +108,7 @@ export default {
     //logs in user once the connexion fields validated
     async login() {
       const res = await axios
-        .post(process.env.VUE_APP_API_URL + "/auth/login", this.user, {
-          withCredentials: true
-        })
+        .post(process.env.VUE_APP_API_URL + "/auth/login", this.user)
         // si pas de réponse, redirige l'utilisateur vers la page de login
         if(!res.ok) {
            router.push('/login')
@@ -120,7 +118,7 @@ export default {
         
          //store the user and the token in AuthStore in order to reuse it 
           const auth = useAuthStore();
-          auth.loggedIn(res.data.token, res.data.User)
+          auth.loggedIn(res.data.token, res.data.refreshToken, res.data.User)
 
           //redirects the authenticated user to home page
           router.push('/')

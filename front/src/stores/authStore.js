@@ -4,6 +4,7 @@ export const useAuthStore = defineStore('AuthStore', {
 state: () => {
     return {
         token: null,
+        refreshToken: null,
         user: null
     }
 },
@@ -11,20 +12,18 @@ persist: true,
 getters: {
   followersNb : store => store.user.followers.length,
   followingNb : store => store.user.following.length,
-  avatarUrl : (store) => {
-    store.user.imageUrl ? 
-        require(`@/assets/avatar-200.png`) : require('@/assets/logos/icon-left-font.png')
-          }
+  avatarUrl : store => `${process.env.VUE_APP_URL}${store.user.imageUrl}`
 },
 actions: {
     // fetches the user information 
-  loggedIn(token, user) {
-    console.log("loggedIn marche")
+  loggedIn(token, refreshToken, user) {
     this.token = token;
+    this.refreshToken = refreshToken;
     this.user = user;
   },
   loggedOut() {
     this.token = null;
+    this.refreshToken = null;
     this.user = null;
   }
 }
