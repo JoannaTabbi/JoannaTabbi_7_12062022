@@ -267,7 +267,7 @@ exports.updateUser = (req, res, next) => {
                 };
                 const filename = user.imageUrl.split("/images/")[1];
                 try {
-                    if (userObject.imageUrl) {
+                    if (userObject.imageUrl && userObject.imageUrl !== "/images/avatar-200.png") {
                         fs.unlinkSync(`images/${filename}`);
                     }
                 } catch (error) {
@@ -311,7 +311,7 @@ exports.deleteUser = (req, res, next) => {
                 });
             } else {
                 console.log(user.imageUrl);
-                if (user.imageUrl !== "avatar-200.png") {
+                if (user.imageUrl !== "/images/avatar-200.png") {
                     const filename = user.imageUrl.split("/images/")[1];
                     fs.unlinkSync(`images/${filename}`);
                 }

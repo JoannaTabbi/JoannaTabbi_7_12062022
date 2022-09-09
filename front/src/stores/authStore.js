@@ -11,7 +11,8 @@ state: () => {
 persist: true,
 getters: {
   followersNb : store => store.user.followers.length,
-  followingNb : store => store.user.following.length
+  followingNb : store => store.user.following.length,
+  avatarUrl : store => `${process.env.VUE_APP_URL}${store.user.imageUrl}`
 },
 actions: {
     // fetches the user information 
