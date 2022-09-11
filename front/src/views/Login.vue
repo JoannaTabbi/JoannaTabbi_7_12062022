@@ -113,15 +113,14 @@ export default {
         if(!res.ok) {
            router.push('/login')
         }
-         // axios intercepts the token and places it in the header authorization
-          axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
-        
+
          //store the user and the token in AuthStore in order to reuse it 
           const auth = useAuthStore();
           auth.loggedIn(res.data.token, res.data.refreshToken, res.data.User)
 
           //redirects the authenticated user to home page
           router.push('/')
+          
           // displays the header
           this.$emit("changeIsConnected", true); 
     }

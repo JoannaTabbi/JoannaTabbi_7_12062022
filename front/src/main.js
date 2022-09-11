@@ -4,7 +4,6 @@ import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import App from './App.vue'
 import router from './router'
-import './interceptors/axios'
 import moment from 'moment'
 import 'moment/locale/fr'
 

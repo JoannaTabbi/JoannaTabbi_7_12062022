@@ -152,9 +152,9 @@
               Abandonner
             </button>
             <button
-              type="button"
+              type="submit"
               class="btn btn-outline-danger"
-              @click="deleteMyProfile"
+              @click.prevent="deleteMyProfile"
             >
               Supprimer
             </button>
@@ -168,7 +168,7 @@
 <script>
 import { useAuthStore } from "../stores/authStore";
 import { mapState, mapActions } from "pinia";
-import axios from "axios";
+import Axios from "@/interceptors/axios";
 import router from "../router/index";
 
 export default {
@@ -184,14 +184,10 @@ export default {
     //deletes the user
     deleteMyProfile() {
       // deletes the user's data from the server
-      const res = axios.delete(process.env.VUE_APP_API_URL + "/auth", {
-        headers: {
-          Authorization: "Bearer " + this.token,
-        },
-      })
+      const res = Axios.delete(process.env.VUE_APP_API_URL + "/auth")
         .then(() => {
           //takes out the authorization bearer from response headers
-          axios.defaults.headers.common["Authorization"] = "";
+          Axios.defaults.headers.common["Authorization"] = "";
 
           // throws away the user from pinia store
           this.loggedOut();
