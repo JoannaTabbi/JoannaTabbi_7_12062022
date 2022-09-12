@@ -63,11 +63,10 @@ export default {
     Post,
     MiniPost,
   },
-  mounted() {
-    console.log("c'est ici"),
+  computed : {
     ...mapState(useAuthStore, {
       user: "user",
-      followersNb : (state) => state.user.followers.length,
+      followersNb : "followersNb",
       followingNb: "followingNb"
   }),
   },

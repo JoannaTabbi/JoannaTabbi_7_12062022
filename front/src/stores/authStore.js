@@ -10,7 +10,7 @@ state: () => {
 },
 persist: true,
 getters: {
-  //followersNb : (state) => state.user.followers.length,
+  followersNb : (state) => state.user ? state.user.followers.length : 0,
   followingNb : (state) => state.user ? state.user.following.length : 0,
 },
 actions: {

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useAuthStore } from '@/stores/authStore';
 
 //create new instance for axios and defining url base for requests 
 
@@ -9,9 +10,10 @@ let Axios = axios.create({
 // intercepting any axios request to inject an access token to headers.Authorization
 Axios.interceptors.request.use(request => {
 
-    const token = JSON.parse(localStorage.getItem('AuthStore')).token;
-    if (token) {
-        request.headers.Authorization = `Bearer ${token}`;
+    const auth = useAuthStore();
+    console.log(auth.token);
+    if (auth.token) {
+        request.headers.Authorization = `Bearer ${auth.token}`;
     }
     return request
 })
