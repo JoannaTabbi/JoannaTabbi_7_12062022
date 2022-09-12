@@ -86,6 +86,7 @@ exports.login = (req, res, next) => {
                     error: "User not found"
                 });
             };
+            user.imageUrl = `${req.protocol}://${req.get("host")}${user.imageUrl}`;
             user.email = decryptMail(user.email);
             //checks if the password given matches the one assigned 
             //to the user in database. If correct, returns userId and a token.

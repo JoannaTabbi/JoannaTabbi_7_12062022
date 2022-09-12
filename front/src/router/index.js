@@ -53,10 +53,8 @@ const router = createRouter({
     history: createWebHistory(),
     routes, // short for `routes: routes`
   });
-
-export default router
-
-router.beforeEach(async (to) => {
+  
+  router.beforeEach(async (to) => {
     // redirect to login page if not logged in and trying to access a restricted page
     const publicPages = ['/login', '/signup'];
     const authRequired = !publicPages.includes(to.path);
@@ -67,3 +65,5 @@ router.beforeEach(async (to) => {
         return '/login';
     }
 });
+
+export default router

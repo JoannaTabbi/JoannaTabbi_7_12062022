@@ -6,7 +6,7 @@
           <section id="home" class="shadow rounded-3 mb-3 p-3">
             <h1 class="text-start fs-3">Accueil</h1>
             <WelcomeCard
-              :avatar-url="avatarUrl"
+              :avatar-url="user.imageUrl"
               :user-name="user.userName"
               :created-at="$filters.formatDate(user.createdAt)"
               :followers-number="followersNb"
@@ -63,13 +63,13 @@ export default {
     Post,
     MiniPost,
   },
-  computed: {
-    ...mapState(useAuthStore, [
-      "user",
-      "followersNb",
-      "followingNb",
-      "avatarUrl",
-    ]),
+  mounted() {
+    console.log("c'est ici"),
+    ...mapState(useAuthStore, {
+      user: "user",
+      followersNb : (state) => state.user.followers.length,
+      followingNb: "followingNb"
+  }),
   },
   created() {
     this.followersNb,
