@@ -51,7 +51,7 @@
         <div class="col-12 border-bottom border-dark mb-5">
           <h1 class="fs-4 text-center">Modifiez le profil</h1>
         </div>
-        <form class="form">
+        <form class="form" @submit.prevent="submitProfileModif">
           <div class="row mb-3 align-items-center justify-content-between">
             <label
               for="inputAboutMe"
@@ -63,6 +63,7 @@
                 class="form-control"
                 id="inputAboutMe"
                 rows="3"
+                :placeholder="user.aboutMe"
               ></textarea>
             </div>
           </div>
@@ -77,7 +78,7 @@
                 type="text"
                 class="form-control"
                 id="inputUserName"
-                placeholder="Jean_0814"
+                :placeholder="user.userName"
               />
             </div>
           </div>
@@ -92,7 +93,7 @@
                 type="email"
                 class="form-control"
                 id="inputEmail"
-                placeholder="jean.dupond@exemple.fr"
+                :placeholder="user.email"
               />
             </div>
           </div>
@@ -152,9 +153,10 @@
               Abandonner
             </button>
             <button
-              type="submit"
+              type="button"
               class="btn btn-outline-danger"
-              @click.prevent="deleteMyProfile"
+              data-bs-dismiss="modal"
+              @click="deleteMyProfile"
             >
               Supprimer
             </button>
