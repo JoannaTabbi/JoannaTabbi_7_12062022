@@ -64,17 +64,9 @@ export default {
     MiniPost,
   },
   computed : {
-    ...mapState(useAuthStore, {
-      user: "user",
-      followersNb : "followersNb",
-      followingNb: "followingNb"
-  }),
+    ...mapState(useAuthStore, ['user', 'followersNb', 'followingNb']),
   },
-  created() {
-    this.followersNb,
-    this.followingNb,
-    this.avatarUrl
-  }
+  
 };
 </script>
 

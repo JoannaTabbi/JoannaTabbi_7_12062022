@@ -14,7 +14,7 @@
         class="avatar col-6 col-sm-3 col-lg-2 ms-0 ms-lg-3 mb-3 mb-lg-0 position-relative"
       >
         <img
-          src="../assets/avatar-200.png"
+          :src="user.imageUrl"
           class="img-fluid rounded-circle border border-white border-3 shadow"
           alt="mon avatar"
         />
@@ -174,10 +174,7 @@ import router from "../router/index";
 export default {
   name: "modifyProfile",
   computed: {
-    ...mapState(useAuthStore, {
-      user: "user",
-      token: "token",
-    }),
+    ...mapState(useAuthStore, ['user']),
   },
   methods: {
     ...mapActions(useAuthStore, ["loggedOut"]),
