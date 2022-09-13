@@ -5,7 +5,7 @@
         <div class="col-12 col-md-8 col-lg-9 mb-3 pt-3 border-end">
           <section id="profile" class="shadow rounded-3 bg-white mb-3">
             <ProfileCard
-              :avatar-url="avatarUrl"
+              :avatar-url="user.imageUrl"
               :user-name="user.userName"
               :created-at="$filters.formatDate(user.createdAt)"
               :about-me="user.aboutMe"
@@ -35,7 +35,6 @@
 </template>
 
 <script>
-import { ref } from "vue";
 import ProfileCard from "../components/ProfileCard.vue";
 import MiniPost from "../components/MiniPost.vue";
 import { mapState } from 'pinia'
@@ -48,13 +47,11 @@ export default {
     MiniPost
   },
   computed : {
-    ...mapState(useAuthStore, ['user', 'avatarUrl'])
+    ...mapState(useAuthStore, ['user'])
   }
 }
-
-
-
-
+  
 </script>
+
 
 <style scoped></style>

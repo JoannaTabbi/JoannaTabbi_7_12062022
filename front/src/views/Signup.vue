@@ -137,7 +137,7 @@ export default {
     //register the new user in the database
     register() {
       axios
-        .post(process.env.VUE_APP_API_URL + "auth/signup", this.user)
+        .post(process.env.VUE_APP_API_URL + "/auth/signup", this.user)
         .then(() => {
           alert(
             "Votre enregistrement a réussi, fermez cette fenêtre pour être rédirigé(e) vers la page de connexion"

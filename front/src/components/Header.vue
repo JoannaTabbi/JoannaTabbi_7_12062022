@@ -105,9 +105,6 @@ export default {
           { withCredentials: true }
         );
 
-        //takes out the authorization bearer from response headers
-        axios.defaults.headers.common["Authorization"] = "";
-
         // throws away the user from pinia store
         const auth = useAuthStore();
         auth.loggedOut();

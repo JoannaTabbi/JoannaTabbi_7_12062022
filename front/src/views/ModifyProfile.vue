@@ -14,7 +14,7 @@
         class="avatar col-6 col-sm-3 col-lg-2 ms-0 ms-lg-3 mb-3 mb-lg-0 position-relative"
       >
         <img
-          src="../assets/avatar-200.png"
+          :src="user.imageUrl"
           class="img-fluid rounded-circle border border-white border-3 shadow"
           alt="mon avatar"
         />
@@ -152,9 +152,9 @@
               Abandonner
             </button>
             <button
-              type="button"
+              type="submit"
               class="btn btn-outline-danger"
-              @click="deleteMyProfile"
+              @click.prevent="deleteMyProfile"
             >
               Supprimer
             </button>
@@ -168,30 +168,23 @@
 <script>
 import { useAuthStore } from "../stores/authStore";
 import { mapState, mapActions } from "pinia";
-import axios from "axios";
+import Axios from "@/interceptors/axios";
 import router from "../router/index";
 
 export default {
   name: "modifyProfile",
   computed: {
-    ...mapState(useAuthStore, {
-      user: "user",
-      token: "token",
-    }),
+    ...mapState(useAuthStore, ['user']),
   },
   methods: {
     ...mapActions(useAuthStore, ["loggedOut"]),
     //deletes the user
     deleteMyProfile() {
       // deletes the user's data from the server
-      const res = axios.delete(process.env.VUE_APP_API_URL + "/auth", {
-        headers: {
-          Authorization: "Bearer " + this.token,
-        },
-      })
+      const res = Axios.delete(process.env.VUE_APP_API_URL + "/auth")
         .then(() => {
           //takes out the authorization bearer from response headers
-          axios.defaults.headers.common["Authorization"] = "";
+          Axios.defaults.headers.common["Authorization"] = "";
 
           // throws away the user from pinia store
           this.loggedOut();
