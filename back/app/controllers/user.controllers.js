@@ -117,7 +117,7 @@ exports.login = (req, res, next) => {
                                     userId: user._id // the method takes two arguments : 
                                 }, // a response object and
                                 process.env.TOKEN_SECRET, { // a secret key
-                                    expiresIn: 150 * 60 // expires after 15 minutes
+                                    expiresIn: 15 * 60 // expires after 15 minutes
                                 }
                             ),
                             refreshToken,

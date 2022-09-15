@@ -22,6 +22,8 @@ Axios.interceptors.request.use(request => {
 let refresh = false;
 
 Axios.interceptors.response.use(resp => resp, async error => {
+    
+    const auth = useAuthStore();
     if (error.response.status === 403 && !refresh) {
         refresh = true;
 
@@ -30,6 +32,8 @@ Axios.interceptors.response.use(resp => resp, async error => {
         });
 
         if (status === 200) {
+            auth.token = data.token; 
+            console.log(data.token);
             Axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
 
             return Axios(error.config);

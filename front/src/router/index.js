@@ -61,7 +61,7 @@ const router = createRouter({
     const auth = useAuthStore();
 
     if (authRequired && !auth.user) {
-       // auth.returnUrl = to.fullPath;
+        auth.loggedOut();
         return '/login';
     }
 });

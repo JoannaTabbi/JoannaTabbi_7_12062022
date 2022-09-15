@@ -179,14 +179,27 @@ export default {
     ...mapState(useAuthStore, ['user']),
   },
   methods: {
-    ...mapActions(useAuthStore, ["loggedOut"]),
+    //...mapActions(useAuthStore, ["loggedOut"]),
     //deletes the user
-    deleteMyProfile() {
-      // deletes the user's data from the server
+    async deleteMyProfile() {
+       try {
+        // deletes the user's data from the server
+        const res = await Axios.delete(process.env.VUE_APP_API_URL + "/auth")
+
+        // throws away the user from pinia store
+        const auth = useAuthStore();
+        auth.loggedOut();
+
+        // redirects user to the signup page
+        router.push("/signup");
+      } catch (err) {
+        throw err;
+      }
+      /* // deletes the user's data from the server
       const res = Axios.delete(process.env.VUE_APP_API_URL + "/auth")
         .then(() => {
           //takes out the authorization bearer from response headers
-          Axios.defaults.headers.common["Authorization"] = "";
+          //Axios.defaults.headers.common["Authorization"] = "";
 
           // throws away the user from pinia store
           this.loggedOut();
@@ -194,7 +207,7 @@ export default {
           // redirects user to the signup page
           router.push("/signup");
         })
-        .catch((err) => console.log(err));
+        .catch((err) => console.log(err)); */
     },
   },
 };

@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import router from "../router/index";
 
 export const useAuthStore = defineStore('AuthStore', {
 state: () => {

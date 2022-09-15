@@ -72,12 +72,12 @@
               </ul>
             </li>
             <li class="nav-item text-start">
-              <a href="#" class="nav-link" @click="logout"
+              <router-link to="/login" class="nav-link" @click.prevent="logout"
                 ><i
                   class="fa-solid fa-arrow-right-from-bracket fa-fw fs-2 text-dark mx-2"
                 ></i>
                 <span class="d-lg-none">Se déconnecter</span>
-              </a>
+              </router-link>
             </li>
           </ul>
         </div>
