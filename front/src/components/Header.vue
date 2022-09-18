@@ -53,7 +53,7 @@
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
                 ><i class="fa-solid fa-user fa-fw fs-2 text-dark mx-2"></i>
-                <span class="d-lg-none">Vous</span>
+                <span class="d-lg-none">{{ userName }}</span>
               </a>
               <ul
                 class="dropdown-menu dropdown-menu-end"
@@ -87,14 +87,12 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios from "@/_interceptors/axios.js";
 import router from "../router/index";
 import { useAuthStore } from "../stores/authStore";
 export default {
   name: "Header",
-  props: {
-    msg: String,
-  },
+  props: ['userName'],
   methods: {
     async logout() {
       try {

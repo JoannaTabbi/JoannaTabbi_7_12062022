@@ -174,7 +174,7 @@ import Post from "./Post.vue";
 import MiniProfile from "./MiniProfileCard.vue";
 
 //import function that gets all the posts
-import getPosts from "../composables/getPosts";
+import getPosts from "../_services/post.services.js";
 const { posts, error, loadPosts } = getPosts();
 
 export default {

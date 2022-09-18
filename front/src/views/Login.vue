@@ -120,15 +120,8 @@ export default {
 
           //redirects the authenticated user to home page
           router.push('/')
-          
-          // displays the header
-          this.$emit("changeIsConnected", true); 
     }
-  },
-  // sets the value of isConnected to false in order to not show the header on the login page
-  mounted() {
-    this.$emit("changeIsConnected", false);
-  },
+  }
 };
 </script>
 

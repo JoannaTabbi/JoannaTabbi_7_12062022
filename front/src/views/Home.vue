@@ -6,11 +6,11 @@
           <section id="home" class="shadow rounded-3 mb-3 p-3">
             <h1 class="text-start fs-3">Accueil</h1>
             <WelcomeCard
-              :avatar-url="user.imageUrl"
-              :user-name="user.userName"
-              :created-at="$filters.formatDate(user.createdAt)"
-              :followers-number="followersNb"
-              :following-number="followingNb"
+              :avatar-url="auth.user.imageUrl"
+              :user-name="auth.user.userName"
+              :created-at="$filters.formatDate(auth.user.createdAt)"
+              :followers-number="auth.followersNb"
+              :following-number="auth.followingNb"
             />
           </section>
         </div>
@@ -54,7 +54,6 @@ import CreatePost from "../components/CreatePost.vue";
 import Post from "../components/Post.vue";
 import MiniPost from "../components/MiniPost.vue";
 import { useAuthStore } from "../stores/authStore";
-import { mapState } from "pinia";
 export default {
   name: "Home",
   components: {
@@ -63,9 +62,10 @@ export default {
     Post,
     MiniPost,
   },
-  computed : {
-    ...mapState(useAuthStore, ['user', 'followersNb', 'followingNb']),
-  },
+  setup() {
+    const auth = useAuthStore();
+    return { auth }
+  }
   
 };
 </script>

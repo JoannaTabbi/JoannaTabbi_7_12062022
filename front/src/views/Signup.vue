@@ -153,11 +153,7 @@ export default {
           }
         });
     },
-  },
-  // sets the value of isConnected to false in order to not show the header on the signup page
-  mounted() {
-    this.$emit("changeIsConnected", false);
-  },
+  }
 };
 </script>
 

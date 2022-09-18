@@ -14,7 +14,7 @@
         class="avatar col-6 col-sm-3 col-lg-2 ms-0 ms-lg-3 mb-3 mb-lg-0 position-relative"
       >
         <img
-          :src="user.imageUrl"
+          :src="auth.user.imageUrl"
           class="img-fluid rounded-circle border border-white border-3 shadow"
           alt="mon avatar"
         />
@@ -63,7 +63,7 @@
                 class="form-control"
                 id="inputAboutMe"
                 rows="3"
-                :placeholder="user.aboutMe"
+                :placeholder="auth.user.aboutMe"
               ></textarea>
             </div>
           </div>
@@ -78,7 +78,7 @@
                 type="text"
                 class="form-control"
                 id="inputUserName"
-                :placeholder="user.userName"
+                :placeholder="auth.user.userName"
               />
             </div>
           </div>
@@ -93,7 +93,7 @@
                 type="email"
                 class="form-control"
                 id="inputEmail"
-                :placeholder="user.email"
+                :placeholder="auth.user.email"
               />
             </div>
           </div>
@@ -169,47 +169,30 @@
 
 <script>
 import { useAuthStore } from "../stores/authStore";
-import { mapState, mapActions } from "pinia";
-import Axios from "@/interceptors/axios";
+import Axios from "@/_interceptors/axios";
 import router from "../router/index";
 
 export default {
   name: "modifyProfile",
-  computed: {
-    ...mapState(useAuthStore, ['user']),
+  setup() {
+    const auth = useAuthStore()
+    return { auth }
   },
   methods: {
-    //...mapActions(useAuthStore, ["loggedOut"]),
     //deletes the user
-    async deleteMyProfile() {
-       try {
-        // deletes the user's data from the server
-        const res = await Axios.delete(process.env.VUE_APP_API_URL + "/auth")
-
-        // throws away the user from pinia store
-        const auth = useAuthStore();
-        auth.loggedOut();
-
-        // redirects user to the signup page
-        router.push("/signup");
-      } catch (err) {
-        throw err;
-      }
-      /* // deletes the user's data from the server
+    deleteMyProfile() {
+      // deletes the user's data from the server
       const res = Axios.delete(process.env.VUE_APP_API_URL + "/auth")
         .then(() => {
-          //takes out the authorization bearer from response headers
-          //Axios.defaults.headers.common["Authorization"] = "";
-
+         
           // throws away the user from pinia store
-          this.loggedOut();
-
+          this.auth.loggedOut();
           // redirects user to the signup page
           router.push("/signup");
         })
-        .catch((err) => console.log(err)); */
-    },
-  },
+        .catch((err) => console.log(err));
+    }
+  }
 };
 </script>
 
