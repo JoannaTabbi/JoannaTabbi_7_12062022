@@ -122,12 +122,21 @@
               <ErrorMessage name="password" as="small" />
             </div>
           </div>
+          <div class="d-flex justify-content-between">
+            <button
+            type="button"
+            class="col-5 btn btn-danger bg-gradient rounded-5 mt-4 text-white fw-bold mb-3"
+            @click="resetUpdate"
+          >
+            Abandonez
+          </button>
           <button
             type="submit"
-            class="btn btn-dark bg-gradient rounded-5 w-100 mt-4 text-white fw-bold mb-3"
+            class="col-5 btn btn-dark bg-gradient rounded-5 mt-4 text-white fw-bold mb-3"
           >
             Modifiez
           </button>
+          </div>
         </Form>
       </div>
     </div>
@@ -251,7 +260,15 @@ export default {
         .then((res) => {
           this.auth.user = res.data // updates user in the store
         })
+        router.push("/myProfile")
+
+    
         .catch((err) => console.log(err))
+    },
+
+    //resets changes
+    resetUpdate() {
+        router.push("/myProfile")
     },
 
     //deletes the user

@@ -29,7 +29,6 @@ actions: {
   editMyProfile() {
     userServices.getOneself()
       .then((res) => {
-          console.log(res.data)
           this.user = res.data})
       .catch(err => console.log(err))
   }
