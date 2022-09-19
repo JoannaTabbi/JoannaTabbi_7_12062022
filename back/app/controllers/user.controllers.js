@@ -283,6 +283,8 @@ exports.updateUser = (req, res, next) => {
                             setDefaultsOnInsert: true
                         })
                     .then((userUpdated) => {
+                        userUpdated.imageUrl = `${req.protocol}://${req.get("host")}${user.imageUrl}`;
+                        userUpdated.email = decryptMail(userUpdated.email); // decrypts user's email
                         res.status(200).json(
                             userUpdated,
                             hateoasLinks(req, userUpdated._id)

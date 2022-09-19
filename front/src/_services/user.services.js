@@ -11,8 +11,8 @@ let getOneself = () => {
 };
 
 //modifies user's data in the base
-let updateUser = () => {
-    return axios.put('/auth')
+let updateUser = (credentials) => {
+    return axios.put('/auth', credentials)
 };
 
 //deletes user's data from the base

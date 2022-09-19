@@ -55,7 +55,7 @@
           class="form"
           @submit="submitUpdate"
           :validation-schema="schema"
-          :initial-values="this.auth.user"
+          :initial-values="this.userUpdate"
         >
           <div class="row mb-3 align-items-center justify-content-between">
             <label
@@ -70,9 +70,8 @@
                 id="inputAboutMe"
                 name="aboutMe"
                 rows="3"
-                v-model.trim="userUpdate.aboutMe"
               />
-              <ErrorMessage name="inputAboutMe" as="small" />
+              <ErrorMessage name="aboutMe" as="small" />
             </div>
           </div>
           <div class="row mb-3 align-items-center justify-content-between">
@@ -87,9 +86,8 @@
                 class="form-control"
                 id="inputUserName"
                 name="userName"
-                v-model.trim="userUpdate.userName"
               />
-              <ErrorMessage name="inputUserName" as="small" />
+              <ErrorMessage name="userName" as="small" />
             </div>
           </div>
           <div class="row mb-3 align-items-center justify-content-between">
@@ -104,9 +102,8 @@
                 class="form-control"
                 id="inputEmail"
                 name="email"
-                v-model.trim="userUpdate.email"
               />
-              <ErrorMessage name="inputEmail" as="small" />
+              <ErrorMessage name="email" as="small" />
             </div>
           </div>
           <div class="row mb-3 align-items-center justify-content-between">
@@ -121,10 +118,8 @@
                 class="form-control"
                 id="inputPassword"
                 name="password"
-                v-model.trim="userUpdate.password"
-                size
               />
-              <ErrorMessage name="inputPassword" as="small" />
+              <ErrorMessage name="password" as="small" />
             </div>
           </div>
           <button
@@ -189,7 +184,6 @@
 
 <script>
 import { useAuthStore } from "@/stores/authStore";
-import { storeToRefs } from 'pinia';
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 import { userServices } from "@/_services";
@@ -246,8 +240,18 @@ export default {
   methods: {
     // updates user's data
     submitUpdate(value) {
-      console.log(value)
-      console.log(userUpdate)
+      
+      // the new password will be submitted only if changed
+      if (value.password === this.auth.user.password) {
+        delete (value.password);
+        } 
+
+        // updates user's data on the server 
+      userServices.updateUser(value)
+        .then((res) => {
+          this.auth.user = res.data // updates user in the store
+        })
+        .catch((err) => console.log(err))
     },
 
     //deletes the user
