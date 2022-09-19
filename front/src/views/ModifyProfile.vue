@@ -51,7 +51,12 @@
         <div class="col-12 border-bottom border-dark mb-5">
           <h1 class="fs-4 text-center">Modifiez le profil</h1>
         </div>
-        <form class="form" @submit.prevent="submitProfileModif">
+        <Form
+          class="form"
+          @submit="submitUpdate"
+          :validation-schema="schema"
+          :initial-values="this.auth.user"
+        >
           <div class="row mb-3 align-items-center justify-content-between">
             <label
               for="inputAboutMe"
@@ -59,12 +64,15 @@
               >A propos...</label
             >
             <div class="col-12 col-lg-10">
-              <textarea
+              <Field
+                as="textarea"
                 class="form-control"
                 id="inputAboutMe"
+                name="aboutMe"
                 rows="3"
-                :placeholder="auth.user.aboutMe"
-              ></textarea>
+                v-model.trim="userUpdate.aboutMe"
+              />
+              <ErrorMessage name="inputAboutMe" as="small" />
             </div>
           </div>
           <div class="row mb-3 align-items-center justify-content-between">
@@ -74,12 +82,14 @@
               ></i
             ></label>
             <div class="col-10">
-              <input
+              <Field
                 type="text"
                 class="form-control"
                 id="inputUserName"
-                :placeholder="auth.user.userName"
+                name="userName"
+                v-model.trim="userUpdate.userName"
               />
+              <ErrorMessage name="inputUserName" as="small" />
             </div>
           </div>
           <div class="row mb-3 align-items-center justify-content-between">
@@ -89,12 +99,14 @@
               ></i
             ></label>
             <div class="col-10">
-              <input
+              <Field
                 type="email"
                 class="form-control"
                 id="inputEmail"
-                :placeholder="auth.user.email"
+                name="email"
+                v-model.trim="userUpdate.email"
               />
+              <ErrorMessage name="inputEmail" as="small" />
             </div>
           </div>
           <div class="row mb-3 align-items-center justify-content-between">
@@ -104,7 +116,15 @@
               ></i
             ></label>
             <div class="col-10">
-              <input type="password" class="form-control" id="inputPassword" />
+              <Field
+                type="password"
+                class="form-control"
+                id="inputPassword"
+                name="password"
+                v-model.trim="userUpdate.password"
+                size
+              />
+              <ErrorMessage name="inputPassword" as="small" />
             </div>
           </div>
           <button
@@ -113,7 +133,7 @@
           >
             Modifiez
           </button>
-        </form>
+        </Form>
       </div>
     </div>
 
@@ -168,31 +188,84 @@
 </template>
 
 <script>
-import { useAuthStore } from "../stores/authStore";
-import Axios from "@/_interceptors/axios";
-import router from "../router/index";
+import { useAuthStore } from "@/stores/authStore";
+import { storeToRefs } from 'pinia';
+import { Form, Field, ErrorMessage } from "vee-validate";
+import * as yup from "yup";
+import { userServices } from "@/_services";
+import router from "@/router/index";
 
 export default {
   name: "modifyProfile",
   setup() {
-    const auth = useAuthStore()
-    return { auth }
+    const auth = useAuthStore();
+    return { auth };
+  },
+  data() {
+    // defines the validation rules and error messages for each field
+    const schema = yup.object().shape({
+      aboutMe: yup.string(),
+      userName: yup
+        .string()
+        .min(3, "Le nom de l'utilisateur doit contenir au moins 3 caractères")
+        .matches(
+          /^\S*$/,
+          "Le mot de passe ne doit pas contenir des espaces blancs"
+        ),
+      email: yup
+        .string()
+        .email("L'email n'est pas valide"),
+      password: yup
+        .string()
+        .min(8, "Le mot de passe doit contenir au moins 8 caractères")
+        .max(100, "Le mot de passe ne doit pas dépasser 100 caractères")
+        .matches(
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/,
+          "Le mot de passe doit contenir au moins une majuscule, une minuscule et un nombre"
+        )
+        .matches(
+          /^\S*$/,
+          "Le mot de passe ne doit pas contenir des espaces blancs"
+        ),
+    });
+    return {
+      schema,
+      userUpdate: {
+        aboutMe: this.auth.user.aboutMe,
+        userName: this.auth.user.userName,
+        email: this.auth.user.email,
+        password: this.auth.user.password,
+      },
+    };
+  },
+  components: {
+    Form,
+    Field,
+    ErrorMessage,
   },
   methods: {
+    // updates user's data
+    submitUpdate(value) {
+      console.log(value)
+      console.log(userUpdate)
+    },
+
     //deletes the user
     deleteMyProfile() {
       // deletes the user's data from the server
-      const res = Axios.delete(process.env.VUE_APP_API_URL + "/auth")
-        .then(() => {
-         
-          // throws away the user from pinia store
-          this.auth.loggedOut();
+      userServices
+        .deleteUser()
+        .then((res) => {
+          console.log(res);
           // redirects user to the signup page
           router.push("/signup");
+
+          // throws away the user from pinia store
+          this.auth.loggedOut();
         })
         .catch((err) => console.log(err));
-    }
-  }
+    },
+  },
 };
 </script>
 

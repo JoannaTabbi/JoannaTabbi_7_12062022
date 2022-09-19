@@ -87,9 +87,9 @@
 </template>
 
 <script>
-import axios from "@/_interceptors/axios.js";
-import router from "../router/index";
-import { useAuthStore } from "../stores/authStore";
+import { authServices } from '@/_services';
+import router from "@/router/index";
+import { useAuthStore } from "@/stores/authStore";
 export default {
   name: "Header",
   props: ['userName'],
@@ -97,11 +97,7 @@ export default {
     async logout() {
       try {
         // fetching logout route
-        const res = await axios.get(
-          process.env.VUE_APP_API_URL + "/auth/logout",
-          {},
-          { withCredentials: true }
-        );
+        const res = await authServices.logoutUser();
 
         // throws away the user from pinia store
         const auth = useAuthStore();

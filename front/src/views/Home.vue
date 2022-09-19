@@ -54,6 +54,7 @@ import CreatePost from "../components/CreatePost.vue";
 import Post from "../components/Post.vue";
 import MiniPost from "../components/MiniPost.vue";
 import { useAuthStore } from "../stores/authStore";
+import { userServices } from '@/_services';
 export default {
   name: "Home",
   components: {
@@ -63,11 +64,10 @@ export default {
     MiniPost,
   },
   setup() {
-    const auth = useAuthStore();
+    const auth = useAuthStore()
     return { auth }
   }
-  
-};
+}
 </script>
 
 <style scoped></style>

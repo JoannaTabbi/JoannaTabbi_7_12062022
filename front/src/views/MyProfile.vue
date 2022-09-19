@@ -35,9 +35,9 @@
 </template>
 
 <script>
-import ProfileCard from "../components/ProfileCard.vue";
-import MiniPost from "../components/MiniPost.vue";
-import { useAuthStore } from "../stores/authStore";
+import ProfileCard from "@/components/ProfileCard.vue";
+import MiniPost from "@/components/MiniPost.vue";
+import { useAuthStore } from "@/stores/authStore";
 
 export default {
   name: "MyProfile",
@@ -48,6 +48,9 @@ export default {
   setup() {
     const auth = useAuthStore()
     return { auth }
+  },
+  mounted() {
+    this.auth.editMyProfile()
   }
 }
   
