@@ -53,7 +53,7 @@
         </div>
         <Form
           class="form"
-          @submit="submitUpdate"
+          @submit="onSubmit"
           :validation-schema="schema"
           :initial-values="this.userUpdate"
         >
@@ -124,18 +124,17 @@
           </div>
           <div class="d-flex justify-content-between">
             <button
-            type="button"
-            class="col-5 btn btn-danger bg-gradient rounded-5 mt-4 text-white fw-bold mb-3"
-            @click="resetUpdate"
-          >
-            Abandonez
-          </button>
-          <button
-            type="submit"
-            class="col-5 btn btn-dark bg-gradient rounded-5 mt-4 text-white fw-bold mb-3"
-          >
-            Modifiez
-          </button>
+              type="reset"
+              class="col-5 btn btn-danger bg-gradient rounded-5 mt-4 text-white fw-bold mb-3"
+            >
+              Réinitialisez
+            </button>
+            <button
+              type="submit"
+              class="col-5 btn btn-dark bg-gradient rounded-5 mt-4 text-white fw-bold mb-3"
+            >
+              Modifiez
+            </button>
           </div>
         </Form>
       </div>
@@ -215,9 +214,7 @@ export default {
           /^\S*$/,
           "Le mot de passe ne doit pas contenir des espaces blancs"
         ),
-      email: yup
-        .string()
-        .email("L'email n'est pas valide"),
+      email: yup.string().email("L'email n'est pas valide"),
       password: yup
         .string()
         .min(8, "Le mot de passe doit contenir au moins 8 caractères")
@@ -248,43 +245,40 @@ export default {
   },
   methods: {
     // updates user's data
-    submitUpdate(value) {
-      
+    onSubmit(value, actions) {
       // the new password will be submitted only if changed
       if (value.password === this.auth.user.password) {
-        delete (value.password);
-        } 
+        delete value.password;
+      }
 
-        // updates user's data on the server 
-      userServices.updateUser(value)
+      // updates user's data on the server
+      userServices
+        .updateUser(value)
         .then((res) => {
-          this.auth.user = res.data // updates user in the store
+          this.auth.user = res.data; // updates user in the store
+          router.push("/myProfile");
         })
-        router.push("/myProfile")
 
-    
-        .catch((err) => console.log(err))
-    },
-
-    //resets changes
-    resetUpdate() {
-        router.push("/myProfile")
+        .catch((err) => {
+          console.log(err.codeName);
+          actions.setFieldError("email", err);
+        });
     },
 
     //deletes the user
-    deleteMyProfile() {
+    async deleteMyProfile() {
       // deletes the user's data from the server
-      userServices
-        .deleteUser()
-        .then((res) => {
-          console.log(res);
-          // redirects user to the signup page
-          router.push("/signup");
+      try {
+        await userServices.deleteUser();
 
-          // throws away the user from pinia store
-          this.auth.loggedOut();
-        })
-        .catch((err) => console.log(err));
+        // redirects user to the signup page
+        await router.push("/signup");
+
+        // throws away the user from pinia store
+        this.auth.loggedOut();
+      } catch (err) {
+        console.log(err);
+      }
     },
   },
 };
