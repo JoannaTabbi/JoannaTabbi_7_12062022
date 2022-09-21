@@ -1,4 +1,5 @@
 const User = require("../models/user.model");
+const RefreshToken = require("../models/refreshToken.model");
 const Post = require("../models/post.model");
 const Comment = require("../models/comment.model");
 const bcrypt = require("bcrypt");
@@ -92,24 +93,14 @@ exports.login = (req, res, next) => {
             //to the user in database. If correct, returns userId and a token.
             bcrypt
                 .compare(req.body.password, user.password)
-                .then((valid) => {
+                .then(async (valid) => {
                     if (!valid) {
                         return res.status(401).json({
                             error: "Incorrect password"
                         });
                     };
-                    // creating a refresh token stored in cookie, that will allow us to regenerate the token once expired; 
-                    const refreshToken = jwt.sign({
-                            userId: user._id // the method takes two arguments : 
-                        }, // a response object and
-                        process.env.REFRESH_TOKEN_SECRET, { // a secret key
-                            expiresIn: '24h'
-                        }
-                    )
-                    res.cookie('jwt', refreshToken, {
-                        httpOnly: true,
-                        maxAge: 24 * 60 * 60
-                    });
+                    // creating a refresh token stored in database, that will allow us to regenerate the token once expired; 
+                    const refreshToken = await RefreshToken.createToken(user);
                     res.status(200).json({
                             userId: user._id,
                             // creating a token for a new session
@@ -117,7 +108,7 @@ exports.login = (req, res, next) => {
                                     userId: user._id // the method takes two arguments : 
                                 }, // a response object and
                                 process.env.TOKEN_SECRET, { // a secret key
-                                    expiresIn: 15 * 60 // expires after 15 minutes
+                                    expiresIn: process.env.TOKEN_EXPIRATION // expires after 15 minutes
                                 }
                             ),
                             refreshToken,

@@ -260,8 +260,7 @@ export default {
         })
 
         .catch((err) => {
-          console.log(err.codeName);
-          actions.setFieldError("email", err);
+          console.log(err);
         });
     },
 
