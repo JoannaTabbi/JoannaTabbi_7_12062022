@@ -12,14 +12,13 @@ let logoutUser = () => {
   return axios.get('/auth/logout')
 };
 
-let getRefreshToken = (refreshToken) => {
-  return axios.post('auth/token',
-  refreshToken)
-};
+let getNewToken = () => {
+  return axios.post('auth/token')
+}
 
 export const authServices = {
     signupUser,
     loginUser,
     logoutUser,
-    getRefreshToken
+    getNewToken
 }

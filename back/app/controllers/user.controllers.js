@@ -1,5 +1,4 @@
 const User = require("../models/user.model");
-const RefreshToken = require("../models/refreshToken.model");
 const Post = require("../models/post.model");
 const Comment = require("../models/comment.model");
 const bcrypt = require("bcrypt");
@@ -93,14 +92,24 @@ exports.login = (req, res, next) => {
             //to the user in database. If correct, returns userId and a token.
             bcrypt
                 .compare(req.body.password, user.password)
-                .then(async (valid) => {
+                .then((valid) => {
                     if (!valid) {
                         return res.status(401).json({
                             error: "Incorrect password"
                         });
                     };
-                    // creating a refresh token stored in database, that will allow us to regenerate the token once expired; 
-                    const refreshToken = await RefreshToken.createToken(user);
+                    // creating a refresh token stored in cookie, that will allow us to regenerate the token once expired; 
+                    const refreshToken = jwt.sign({
+                            userId: user._id // the method takes two arguments : 
+                        }, // a response object and
+                        process.env.REFRESH_TOKEN_SECRET, { // a secret key
+                            expiresIn: process.env.REFRESH_TOKEN_EXPIRATION
+                        }
+                    )
+                    res.cookie('jwt', refreshToken, {
+                        httpOnly: true,
+                        maxAge: 24 * 60 * 60
+                    });
                     res.status(200).json({
                             userId: user._id,
                             // creating a token for a new session
@@ -114,7 +123,7 @@ exports.login = (req, res, next) => {
                             refreshToken,
                             User: user
                         },
-                        hateoasLinks(req, user._id));
+                        hateoasLinks(req, user._id));   
                 })
                 .catch((error) => res.status(500).json({
                     error
@@ -131,10 +140,13 @@ exports.login = (req, res, next) => {
  * !!! the client should also delete the access token !!!
  */
 exports.logout = (req, res, next) => {
-    
+    const cookies = req.cookies;
+    if (!cookies ?.jwt) return res.sendStatus(204);
     User.findById(req.auth.userId)
-        .then((userFound) => {
-            RefreshToken.deleteMany({ user : userFound._id }, { useFindAndModify: false }).exec();
+        .then(() => {
+            res.clearCookie('jwt', { //removes refresh token
+                httpOnly: true
+            });
             res.redirect('/'); // warning: returns error!
             res.status(200).json({
                 message: "user logged out successfully"

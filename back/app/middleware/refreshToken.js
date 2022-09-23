@@ -1,40 +1,37 @@
-const jwt = require("jsonwebtoken");
-require("dotenv").config();
-const RefreshToken = require("../models/refreshToken.model");
+const { json } = require('express');
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
-module.exports = async (req, res) => {
-    const { refreshToken: requestToken } = req.body;
-  
-    if (requestToken == null) {
-      return res.status(403).json({ message: "Refresh Token is required!" });
-    }
-  
+module.exports = (req, res) => {
     try {
-      let refreshToken = await RefreshToken.findOne({ token: requestToken });
-  
-      if (!refreshToken) {
-        res.status(403).json({ message: "Refresh token is not in database!" });
-        return;
-      }
-  
-      if (RefreshToken.verifyExpiration(refreshToken)) {
-        RefreshToken.findByIdAndRemove(refreshToken._id, { useFindAndModify: false }).exec();
-        
+        const cookies = req.cookies;
+        if (!cookies?.jwt) return res.sendStatus(401).send({ message: "pas de cookie dans le four" });
+        const refreshToken = cookies.jwt;
+        const decodedRefreshToken = jwt.verify(
+            refreshToken,
+            process.env.REFRESH_TOKEN_SECRET
+        );
+        const userId = decodedRefreshToken.userId;
+        req.auth = {
+            userId
+        };
+        if (req.body.userId && req.body.userId !== userId) {
+            throw 'Invalid user ID';
+        } else {
+            const accessToken = jwt.sign({
+                    userId: decodedRefreshToken.userId
+                },
+                process.env.TOKEN_SECRET, {
+                    expiresIn: process.env.TOKEN_EXPIRATION
+                }
+            );
+            res.json({
+                accessToken, refreshToken
+            });
+        }
+    } catch {
         res.status(403).json({
-          message: "Refresh token was expired. Please make a new signin request",
+            error: new Error('Unauthorized request!')
         });
-        return;
-      }
-  
-      let newAccessToken = jwt.sign({ id: refreshToken.user._id }, process.env.TOKEN_SECRET, {
-        expiresIn: process.env.TOKEN_EXPIRATION,
-      });
-  
-      return res.status(200).json({
-        accessToken: newAccessToken,
-        refreshToken: refreshToken.token,
-      });
-    } catch (err) {
-      return res.status(500).send({ message: err });
     }
-  };
+}
