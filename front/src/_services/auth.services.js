@@ -9,13 +9,12 @@ let loginUser = (credentials) => {
 };
 
 let logoutUser = () => {
-  return axios.get('/auth/logout', {},
-  { withCredentials: true })
+  return axios.get('/auth/logout')
 };
 
-let getRefreshToken = () => {
-  return axios.post('auth/token', {},
-  { withCredentials: true })
+let getRefreshToken = (refreshToken) => {
+  return axios.post('auth/token',
+  refreshToken)
 };
 
 export const authServices = {

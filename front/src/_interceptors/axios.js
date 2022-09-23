@@ -27,31 +27,30 @@ Axios.interceptors.request.use(
 
 // intercepting status 403 while the old access token is expiring; a new request is sent to
 // auth/token to control the refresh token and receive a new access token
-let refresh = false;
+//let refresh = false;
 
 Axios.interceptors.response.use(
   (res) => {
     return res;
   },
   async (err) => {
+    const originalConfig = err.config;
     const auth = useAuthStore();
     if (err.response) {
-      if (err.response.status === 403 && !refresh) {
-        refresh = true;
+      if (err.response.status === 403 && !originalConfig._retry) {
+        originalConfig._retry = true;
         try {
-          const { status, data } = await authServices.getRefreshToken(
-            auth.refreshToken
+          const rs = await authServices.getRefreshToken(
+            { refreshToken: auth.refreshToken }
           );
 
-          if (status === 200) {
-            auth.token = data.token;
-            auth.refreshToken = data.refreshToken;
-            Axios.defaults.headers.common[
-              "Authorization"
-            ] = `Bearer ${data.token}`;
+          
+            auth.token = rs.data.accessToken;
+            auth.refreshToken = rs.data.refreshToken;
+            Axios.defaults.headers.common.Authorization = `Bearer ${rs.data.accessToken}`;
 
-            return Axios(err.config);
-          }
+            return Axios(originalConfig);
+          
         } catch (_error) {
           if (_error.response && _error.response.data) {
             return Promise.reject(_error.response.data);
@@ -63,7 +62,7 @@ Axios.interceptors.response.use(
         return Promise.reject(err.response.data);
       }
     }
-    refresh = false;
+    //refresh = false;
     return Promise.reject(err);;
   }
 );

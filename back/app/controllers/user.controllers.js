@@ -131,13 +131,10 @@ exports.login = (req, res, next) => {
  * !!! the client should also delete the access token !!!
  */
 exports.logout = (req, res, next) => {
-    const cookies = req.cookies;
-    if (!cookies ?.jwt) return res.sendStatus(204);
+    
     User.findById(req.auth.userId)
-        .then(() => {
-            res.clearCookie('jwt', { //removes refresh token
-                httpOnly: true
-            });
+        .then((userFound) => {
+            RefreshToken.deleteMany({ user : userFound._id }, { useFindAndModify: false }).exec();
             res.redirect('/'); // warning: returns error!
             res.status(200).json({
                 message: "user logged out successfully"
