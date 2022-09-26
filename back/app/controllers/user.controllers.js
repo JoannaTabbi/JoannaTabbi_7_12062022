@@ -73,6 +73,8 @@ exports.signup = (req, res, next) => {
  * logs the user who's already registered. 
  */
 exports.login = (req, res, next) => {
+    
+    const cookies = res.cookies;
 
     //encrypts the email given in the request and controls if it is present 
     //in the Users collection
@@ -99,31 +101,50 @@ exports.login = (req, res, next) => {
                         });
                     };
                     // creating a refresh token stored in cookie, that will allow us to regenerate the token once expired; 
-                    const refreshToken = jwt.sign({
+                    const newRefreshToken = jwt.sign({
                             userId: user._id // the method takes two arguments : 
                         }, // a response object and
                         process.env.REFRESH_TOKEN_SECRET, { // a secret key
                             expiresIn: process.env.REFRESH_TOKEN_EXPIRATION
                         }
                     )
-                    res.cookie('jwt', refreshToken, {
-                        httpOnly: true,
-                        maxAge: 24 * 60 * 60
-                    });
-                    res.status(200).json({
-                            userId: user._id,
-                            // creating a token for a new session
-                            token: jwt.sign({
-                                    userId: user._id // the method takes two arguments : 
-                                }, // a response object and
-                                process.env.TOKEN_SECRET, { // a secret key
-                                    expiresIn: process.env.TOKEN_EXPIRATION // expires after 15 minutes
-                                }
-                            ),
-                            refreshToken,
-                            User: user
-                        },
-                        hateoasLinks(req, user._id));   
+                    User.findByIdAndUpdate(
+                        user._id, {
+                            $push: {
+                                refreshToken: newRefreshToken
+                            }
+                        }, {
+                            new: true,
+                            upsert: true,
+                            setDefaultsOnInsert: true
+                        }
+                    )
+                    .then(() => {
+                        if (cookies?.jwt) {
+                            res.clearCookie('jwt', { //removes the potential expired refresh token
+                            httpOnly: true,
+                            sameSite: "none"
+                        })};
+                        res.cookie('jwt', newRefreshToken, {
+                            httpOnly: true,
+                            sameSite: "None"
+                        });
+                        res.status(200).json({
+                                userId: user._id,
+                                // creating a token for a new session
+                                token: jwt.sign({
+                                        userId: user._id // the method takes two arguments : 
+                                    }, // a response object and
+                                    process.env.TOKEN_SECRET, { // a secret key
+                                        expiresIn: process.env.TOKEN_EXPIRATION 
+                                    }
+                                ),
+                                newRefreshToken,
+                                User: user
+                            },
+                            hateoasLinks(req, user._id));  
+                    })
+                      
                 })
                 .catch((error) => res.status(500).json({
                     error
@@ -135,24 +156,48 @@ exports.login = (req, res, next) => {
 };
 
 /**
- * Logs out the user. His refresh token is invalidated.
+ * Logs out the user. His refresh token is invalidated and withdrown from the database.
  * The user is redirected to the home page.
  * !!! the client should also delete the access token !!!
  */
 exports.logout = (req, res, next) => {
     const cookies = req.cookies;
-    if (!cookies ?.jwt) return res.sendStatus(204);
+    if (!cookies?.jwt) return res.sendStatus(204);
+
     User.findById(req.auth.userId)
         .then(() => {
-            res.clearCookie('jwt', { //removes refresh token
-                httpOnly: true
-            });
-            res.redirect('/'); // warning: returns error!
-            res.status(200).json({
-                message: "user logged out successfully"
-            });
+            //delete refresh token from datatbase
+            
+            User.findByIdAndUpdate(
+                req.auth.userId, {
+                    $pull: {
+                        refreshToken: cookies.jwt
+                    }
+                }, {
+                    new: true,
+                    upsert: true,
+                    setDefaultsOnInsert: true
+                })
+                .then(() => {
+                    res.clearCookie('jwt', { //removes refresh token
+                        httpOnly: true,
+                        sameSite: "None"
+                    });
+                    //res.redirect('/'); // warning: returns error!
+                    res.status(200).json({
+                        message: "user logged out successfully"
+                    }); 
+                })
+                .catch((error) => res.status(400).json(error))
+            
+            
         })
-        .catch((error) => res.status(404).json(error));
+        .catch((error) => {
+            res.clearCookie('jwt', { //removes refresh token
+                httpOnly: true,
+                sameSite: "None"
+            });
+            res.status(404).json(error)});
 }
 
 /**
