@@ -1,6 +1,4 @@
 const User = require("../models/user.model");
-const Post = require("../models/post.model");
-const Comment = require("../models/comment.model");
 const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
 const cryptoJS = require('crypto-js');
@@ -122,12 +120,11 @@ exports.login = (req, res, next) => {
                     .then(() => {
                         if (cookies?.jwt) {
                             res.clearCookie('jwt', { //removes the potential expired refresh token
-                            httpOnly: true,
-                            sameSite: "none"
-                        })};
+                            httpOnly: true
+                        })}; 
                         res.cookie('jwt', newRefreshToken, {
                             httpOnly: true,
-                            sameSite: "None"
+                            maxAge: 24 * 60 * 60
                         });
                         res.status(200).json({
                                 userId: user._id,
@@ -164,12 +161,12 @@ exports.logout = (req, res, next) => {
     const cookies = req.cookies;
     if (!cookies?.jwt) return res.sendStatus(204);
 
-    User.findById(req.auth.userId)
-        .then(() => {
+    User.findOne({refreshToken: cookies.jwt})
+        .then((userFound) => {
             //delete refresh token from datatbase
             
             User.findByIdAndUpdate(
-                req.auth.userId, {
+                userFound._id, {
                     $pull: {
                         refreshToken: cookies.jwt
                     }
@@ -180,8 +177,7 @@ exports.logout = (req, res, next) => {
                 })
                 .then(() => {
                     res.clearCookie('jwt', { //removes refresh token
-                        httpOnly: true,
-                        sameSite: "None"
+                        httpOnly: true
                     });
                     //res.redirect('/'); // warning: returns error!
                     res.status(200).json({
@@ -194,8 +190,7 @@ exports.logout = (req, res, next) => {
         })
         .catch((error) => {
             res.clearCookie('jwt', { //removes refresh token
-                httpOnly: true,
-                sameSite: "None"
+                httpOnly: true
             });
             res.status(404).json(error)});
 }

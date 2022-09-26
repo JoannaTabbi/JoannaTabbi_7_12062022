@@ -35,8 +35,9 @@ Axios.interceptors.response.use(resp => resp, async error => {
         const {status, data} = await authServices.getNewToken();
 
         if (status === 200) {
-            auth.token = data.accesToken; 
-            Axios.defaults.headers.common['Authorization'] = `Bearer ${data.accesToken}`;
+            auth.token = data.accessToken; 
+            auth.refreshToken = data.refreshToken;
+            Axios.defaults.headers.common['Authorization'] = `Bearer ${data.accessToken}`;
 
             return Axios(error.config);
         }
