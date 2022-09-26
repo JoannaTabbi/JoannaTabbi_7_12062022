@@ -1,6 +1,4 @@
 const User = require("../models/user.model");
-const Post = require("../models/post.model");
-const Comment = require("../models/comment.model");
 const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
 const cryptoJS = require('crypto-js');
@@ -73,6 +71,8 @@ exports.signup = (req, res, next) => {
  * logs the user who's already registered. 
  */
 exports.login = (req, res, next) => {
+    
+    const cookies = res.cookies;
 
     //encrypts the email given in the request and controls if it is present 
     //in the Users collection
@@ -99,31 +99,49 @@ exports.login = (req, res, next) => {
                         });
                     };
                     // creating a refresh token stored in cookie, that will allow us to regenerate the token once expired; 
-                    const refreshToken = jwt.sign({
+                    const newRefreshToken = jwt.sign({
                             userId: user._id // the method takes two arguments : 
                         }, // a response object and
                         process.env.REFRESH_TOKEN_SECRET, { // a secret key
-                            expiresIn: '24h'
+                            expiresIn: process.env.REFRESH_TOKEN_EXPIRATION
                         }
                     )
-                    res.cookie('jwt', refreshToken, {
-                        httpOnly: true,
-                        maxAge: 24 * 60 * 60
-                    });
-                    res.status(200).json({
-                            userId: user._id,
-                            // creating a token for a new session
-                            token: jwt.sign({
-                                    userId: user._id // the method takes two arguments : 
-                                }, // a response object and
-                                process.env.TOKEN_SECRET, { // a secret key
-                                    expiresIn: 150 * 60 // expires after 15 minutes
-                                }
-                            ),
-                            refreshToken,
-                            User: user
-                        },
-                        hateoasLinks(req, user._id));
+                    User.findByIdAndUpdate(
+                        user._id, {
+                            $push: {
+                                refreshToken: newRefreshToken
+                            }
+                        }, {
+                            new: true,
+                            upsert: true,
+                            setDefaultsOnInsert: true
+                        }
+                    )
+                    .then(() => {
+                        if (cookies?.jwt) {
+                            res.clearCookie('jwt', { //removes the potential expired refresh token
+                            httpOnly: true
+                        })}; 
+                        res.cookie('jwt', newRefreshToken, {
+                            httpOnly: true,
+                            maxAge: 24 * 60 * 60
+                        });
+                        res.status(200).json({
+                                userId: user._id,
+                                // creating a token for a new session
+                                token: jwt.sign({
+                                        userId: user._id // the method takes two arguments : 
+                                    }, // a response object and
+                                    process.env.TOKEN_SECRET, { // a secret key
+                                        expiresIn: process.env.TOKEN_EXPIRATION 
+                                    }
+                                ),
+                                newRefreshToken,
+                                User: user
+                            },
+                            hateoasLinks(req, user._id));  
+                    })
+                      
                 })
                 .catch((error) => res.status(500).json({
                     error
@@ -135,24 +153,46 @@ exports.login = (req, res, next) => {
 };
 
 /**
- * Logs out the user. His refresh token is invalidated.
+ * Logs out the user. His refresh token is invalidated and withdrown from the database.
  * The user is redirected to the home page.
  * !!! the client should also delete the access token !!!
  */
 exports.logout = (req, res, next) => {
     const cookies = req.cookies;
-    if (!cookies ?.jwt) return res.sendStatus(204);
-    User.findById(req.auth.userId)
-        .then(() => {
+    if (!cookies?.jwt) return res.sendStatus(204);
+
+    User.findOne({refreshToken: cookies.jwt})
+        .then((userFound) => {
+            //delete refresh token from datatbase
+            
+            User.findByIdAndUpdate(
+                userFound._id, {
+                    $pull: {
+                        refreshToken: cookies.jwt
+                    }
+                }, {
+                    new: true,
+                    upsert: true,
+                    setDefaultsOnInsert: true
+                })
+                .then(() => {
+                    res.clearCookie('jwt', { //removes refresh token
+                        httpOnly: true
+                    });
+                    //res.redirect('/'); // warning: returns error!
+                    res.status(200).json({
+                        message: "user logged out successfully"
+                    }); 
+                })
+                .catch((error) => res.status(400).json(error))
+            
+            
+        })
+        .catch((error) => {
             res.clearCookie('jwt', { //removes refresh token
                 httpOnly: true
             });
-            res.redirect('/'); // warning: returns error!
-            res.status(200).json({
-                message: "user logged out successfully"
-            });
-        })
-        .catch((error) => res.status(404).json(error));
+            res.status(404).json(error)});
 }
 
 /**
@@ -283,6 +323,8 @@ exports.updateUser = (req, res, next) => {
                             setDefaultsOnInsert: true
                         })
                     .then((userUpdated) => {
+                        userUpdated.imageUrl = `${req.protocol}://${req.get("host")}${user.imageUrl}`;
+                        userUpdated.email = decryptMail(userUpdated.email); // decrypts user's email
                         res.status(200).json(
                             userUpdated,
                             hateoasLinks(req, userUpdated._id)

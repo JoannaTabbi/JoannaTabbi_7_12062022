@@ -14,7 +14,7 @@
         class="avatar col-6 col-sm-3 col-lg-2 ms-0 ms-lg-3 mb-3 mb-lg-0 position-relative"
       >
         <img
-          :src="user.imageUrl"
+          :src="auth.user.imageUrl"
           class="img-fluid rounded-circle border border-white border-3 shadow"
           alt="mon avatar"
         />
@@ -51,7 +51,12 @@
         <div class="col-12 border-bottom border-dark mb-5">
           <h1 class="fs-4 text-center">Modifiez le profil</h1>
         </div>
-        <form class="form">
+        <Form
+          class="form"
+          @submit="onSubmit"
+          :validation-schema="schema"
+          :initial-values="this.userUpdate"
+        >
           <div class="row mb-3 align-items-center justify-content-between">
             <label
               for="inputAboutMe"
@@ -59,11 +64,14 @@
               >A propos...</label
             >
             <div class="col-12 col-lg-10">
-              <textarea
+              <Field
+                as="textarea"
                 class="form-control"
                 id="inputAboutMe"
+                name="aboutMe"
                 rows="3"
-              ></textarea>
+              />
+              <ErrorMessage name="aboutMe" as="small" />
             </div>
           </div>
           <div class="row mb-3 align-items-center justify-content-between">
@@ -73,12 +81,13 @@
               ></i
             ></label>
             <div class="col-10">
-              <input
+              <Field
                 type="text"
                 class="form-control"
                 id="inputUserName"
-                placeholder="Jean_0814"
+                name="userName"
               />
+              <ErrorMessage name="userName" as="small" />
             </div>
           </div>
           <div class="row mb-3 align-items-center justify-content-between">
@@ -88,12 +97,13 @@
               ></i
             ></label>
             <div class="col-10">
-              <input
+              <Field
                 type="email"
                 class="form-control"
                 id="inputEmail"
-                placeholder="jean.dupond@exemple.fr"
+                name="email"
               />
+              <ErrorMessage name="email" as="small" />
             </div>
           </div>
           <div class="row mb-3 align-items-center justify-content-between">
@@ -103,16 +113,30 @@
               ></i
             ></label>
             <div class="col-10">
-              <input type="password" class="form-control" id="inputPassword" />
+              <Field
+                type="password"
+                class="form-control"
+                id="inputPassword"
+                name="password"
+              />
+              <ErrorMessage name="password" as="small" />
             </div>
           </div>
-          <button
-            type="submit"
-            class="btn btn-dark bg-gradient rounded-5 w-100 mt-4 text-white fw-bold mb-3"
-          >
-            Modifiez
-          </button>
-        </form>
+          <div class="d-flex justify-content-between">
+            <button
+              type="reset"
+              class="col-5 btn btn-danger bg-gradient rounded-5 mt-4 text-white fw-bold mb-3"
+            >
+              Réinitialisez
+            </button>
+            <button
+              type="submit"
+              class="col-5 btn btn-dark bg-gradient rounded-5 mt-4 text-white fw-bold mb-3"
+            >
+              Modifiez
+            </button>
+          </div>
+        </Form>
       </div>
     </div>
 
@@ -152,9 +176,10 @@
               Abandonner
             </button>
             <button
-              type="submit"
+              type="button"
               class="btn btn-outline-danger"
-              @click.prevent="deleteMyProfile"
+              data-bs-dismiss="modal"
+              @click="deleteMyProfile"
             >
               Supprimer
             </button>
@@ -166,33 +191,94 @@
 </template>
 
 <script>
-import { useAuthStore } from "../stores/authStore";
-import { mapState, mapActions } from "pinia";
-import Axios from "@/interceptors/axios";
-import router from "../router/index";
+import { useAuthStore } from "@/stores/authStore";
+import { Form, Field, ErrorMessage } from "vee-validate";
+import * as yup from "yup";
+import { userServices } from "@/_services";
+import router from "@/router/index";
 
 export default {
   name: "modifyProfile",
-  computed: {
-    ...mapState(useAuthStore, ['user']),
+  setup() {
+    const auth = useAuthStore();
+    return { auth };
+  },
+  data() {
+    // defines the validation rules and error messages for each field
+    const schema = yup.object().shape({
+      aboutMe: yup.string(),
+      userName: yup
+        .string()
+        .min(3, "Le nom de l'utilisateur doit contenir au moins 3 caractères")
+        .matches(
+          /^\S*$/,
+          "Le mot de passe ne doit pas contenir des espaces blancs"
+        ),
+      email: yup.string().email("L'email n'est pas valide"),
+      password: yup
+        .string()
+        .min(8, "Le mot de passe doit contenir au moins 8 caractères")
+        .max(100, "Le mot de passe ne doit pas dépasser 100 caractères")
+        .matches(
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/,
+          "Le mot de passe doit contenir au moins une majuscule, une minuscule et un nombre"
+        )
+        .matches(
+          /^\S*$/,
+          "Le mot de passe ne doit pas contenir des espaces blancs"
+        ),
+    });
+    return {
+      schema,
+      userUpdate: {
+        aboutMe: this.auth.user.aboutMe,
+        userName: this.auth.user.userName,
+        email: this.auth.user.email,
+        password: this.auth.user.password,
+      },
+    };
+  },
+  components: {
+    Form,
+    Field,
+    ErrorMessage,
   },
   methods: {
-    ...mapActions(useAuthStore, ["loggedOut"]),
-    //deletes the user
-    deleteMyProfile() {
-      // deletes the user's data from the server
-      const res = Axios.delete(process.env.VUE_APP_API_URL + "/auth")
-        .then(() => {
-          //takes out the authorization bearer from response headers
-          Axios.defaults.headers.common["Authorization"] = "";
+    // updates user's data
+    onSubmit(value, actions) {
+      // the new password will be submitted only if changed
+      if (value.password === this.auth.user.password) {
+        delete value.password;
+      }
 
-          // throws away the user from pinia store
-          this.loggedOut();
-
-          // redirects user to the signup page
-          router.push("/signup");
+      // updates user's data on the server
+      userServices
+        .updateUser(value)
+        .then((res) => {
+          this.auth.user = res.data; // updates user in the store
+          router.push("/myProfile");
         })
-        .catch((err) => console.log(err));
+
+        .catch((err) => {
+          console.log(err.codeName);
+          actions.setFieldError("email", err);
+        });
+    },
+
+    //deletes the user
+    async deleteMyProfile() {
+      // deletes the user's data from the server
+      try {
+        await userServices.deleteUser();
+
+        // redirects user to the signup page
+        await router.push("/signup");
+
+        // throws away the user from pinia store
+        this.auth.loggedOut();
+      } catch (err) {
+        console.log(err);
+      }
     },
   },
 };

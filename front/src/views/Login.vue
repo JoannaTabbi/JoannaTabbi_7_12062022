@@ -73,7 +73,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import { authServices } from '@/_services';
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 import router from '../router/index';
@@ -107,8 +107,8 @@ export default {
   methods: {
     //logs in user once the connexion fields validated
     async login() {
-      const res = await axios
-        .post(process.env.VUE_APP_API_URL + "/auth/login", this.user)
+      const res = await authServices.loginUser(this.user)
+        
         // si pas de réponse, redirige l'utilisateur vers la page de login
         if(!res.ok) {
            router.push('/login')
@@ -120,15 +120,8 @@ export default {
 
           //redirects the authenticated user to home page
           router.push('/')
-          
-          // displays the header
-          this.$emit("changeIsConnected", true); 
     }
-  },
-  // sets the value of isConnected to false in order to not show the header on the login page
-  mounted() {
-    this.$emit("changeIsConnected", false);
-  },
+  }
 };
 </script>
 

@@ -28,7 +28,8 @@ const routes = [
     {
         path: '/profile/:id', 
         name: "Profile",
-        component: Profile
+        component: Profile,
+        props: true
     },
     {
         path: '/myProfile', 
@@ -51,7 +52,7 @@ const routes = [
 const router = createRouter({
     // 4. Provide the history implementation to use. We are using the hash history for simplicity here.
     history: createWebHistory(),
-    routes, // short for `routes: routes`
+    routes // short for `routes: routes`
   });
   
   router.beforeEach(async (to) => {
@@ -61,7 +62,7 @@ const router = createRouter({
     const auth = useAuthStore();
 
     if (authRequired && !auth.user) {
-       // auth.returnUrl = to.fullPath;
+        auth.loggedOut();
         return '/login';
     }
 });

@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { userServices } from "@/_services";
 
 export const useAuthStore = defineStore('AuthStore', {
 state: () => {
@@ -24,6 +25,12 @@ actions: {
     this.token = null;
     this.refreshToken = null;
     this.user = null;
+  },
+  editMyProfile() {
+    userServices.getOneself()
+      .then((res) => {
+          this.user = res.data})
+      .catch(err => console.log(err))
   }
 }
 

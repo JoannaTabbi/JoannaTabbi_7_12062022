@@ -1,8 +1,8 @@
 <template>
   <div>
     <!-- if isConnected is false, the header will not be injected to the page -->
-     <Header v-if="isConnected"/> 
-    <router-view v-on:changeIsConnected="changeIsConnected"> </router-view>
+     <Header v-if="auth.user" :user-name="auth.user.userName"/> 
+    <router-view > </router-view>
     <!-- <Footer /> -->
   </div>
 </template>
@@ -10,22 +10,16 @@
 <script>
 import Header from "./components/Header.vue";
 import Footer from "./components/Footer.vue";
+import {useAuthStore} from '@/stores/authStore.js';
 export default {
   name: "App",
   components: {
     Header,
     Footer,
   },
-  data() {
-    return {
-      isConnected: true
-    }
-  },
-  // depending on isConnected = true or false, some action will be executed
-  methods: {
-    changeIsConnected(boolean) {
-      this.isConnected = boolean
-    }
+  setup() {
+    const auth = useAuthStore()
+    return { auth }
   }
 };
 </script>

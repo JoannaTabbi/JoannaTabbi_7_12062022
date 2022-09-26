@@ -53,7 +53,7 @@
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
                 ><i class="fa-solid fa-user fa-fw fs-2 text-dark mx-2"></i>
-                <span class="d-lg-none">Vous</span>
+                <span class="d-lg-none">{{ userName }}</span>
               </a>
               <ul
                 class="dropdown-menu dropdown-menu-end"
@@ -72,12 +72,12 @@
               </ul>
             </li>
             <li class="nav-item text-start">
-              <a href="#" class="nav-link" @click="logout"
+              <router-link to="/login" class="nav-link" @click.prevent="logout"
                 ><i
                   class="fa-solid fa-arrow-right-from-bracket fa-fw fs-2 text-dark mx-2"
                 ></i>
                 <span class="d-lg-none">Se déconnecter</span>
-              </a>
+              </router-link>
             </li>
           </ul>
         </div>
@@ -87,23 +87,17 @@
 </template>
 
 <script>
-import axios from "axios";
-import router from "../router/index";
-import { useAuthStore } from "../stores/authStore";
+import { authServices } from '@/_services';
+import router from "@/router/index";
+import { useAuthStore } from "@/stores/authStore";
 export default {
   name: "Header",
-  props: {
-    msg: String,
-  },
+  props: ['userName'],
   methods: {
     async logout() {
       try {
         // fetching logout route
-        const res = await axios.get(
-          process.env.VUE_APP_API_URL + "/auth/logout",
-          {},
-          { withCredentials: true }
-        );
+        const res = await authServices.logoutUser();
 
         // throws away the user from pinia store
         const auth = useAuthStore();

@@ -29,7 +29,8 @@ const userSchema = new mongoose.Schema({
     },
     aboutMe: {
         type: String,
-        maxlength: 1024  
+        maxlength: 1024,
+        default: "Je suis..." 
     },
     imageUrl: {
         type: String,
@@ -53,6 +54,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         ref: "User"
     }],
+    refreshToken: [String]
 },
 {
     timestamps: true

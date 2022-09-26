@@ -85,7 +85,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import { authServices } from '@/_services';
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 import router from '../router/index';
@@ -136,8 +136,7 @@ export default {
   methods: {
     //register the new user in the database
     register() {
-      axios
-        .post(process.env.VUE_APP_API_URL + "/auth/signup", this.user)
+      authServices.signupUser(this.user)
         .then(() => {
           alert(
             "Votre enregistrement a réussi, fermez cette fenêtre pour être rédirigé(e) vers la page de connexion"
@@ -153,11 +152,7 @@ export default {
           }
         });
     },
-  },
-  // sets the value of isConnected to false in order to not show the header on the signup page
-  mounted() {
-    this.$emit("changeIsConnected", false);
-  },
+  }
 };
 </script>
 

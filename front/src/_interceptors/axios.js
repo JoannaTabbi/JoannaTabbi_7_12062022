@@ -1,17 +1,21 @@
 import axios from "axios";
 import { useAuthStore } from '@/stores/authStore';
+import { authServices } from '@/_services/auth.services';
 
 //create new instance for axios and defining url base for requests 
 
 let Axios = axios.create({
-    baseURL : process.env.VUE_APP_API_URL
+    baseURL : process.env.VUE_APP_API_URL,
+    headers: {
+        "Content-Type": "application/json",
+      },
+    withCredentials: true
 })
 
 // intercepting any axios request to inject an access token to headers.Authorization
 Axios.interceptors.request.use(request => {
 
     const auth = useAuthStore();
-    console.log(auth.token);
     if (auth.token) {
         request.headers.Authorization = `Bearer ${auth.token}`;
     }
@@ -23,15 +27,17 @@ Axios.interceptors.request.use(request => {
 let refresh = false;
 
 Axios.interceptors.response.use(resp => resp, async error => {
+    
+    const auth = useAuthStore();
     if (error.response.status === 403 && !refresh) {
         refresh = true;
 
-        const {status, data} = await Axios.post('auth/token', {}, {
-            withCredentials: true
-        });
+        const {status, data} = await authServices.getNewToken();
 
         if (status === 200) {
-            Axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
+            auth.token = data.accessToken; 
+            auth.refreshToken = data.refreshToken;
+            Axios.defaults.headers.common['Authorization'] = `Bearer ${data.accessToken}`;
 
             return Axios(error.config);
         }
