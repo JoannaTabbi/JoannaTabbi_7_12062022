@@ -185,14 +185,7 @@ export default {
   },
   props: ["avatarUrl", "userName", "createdAt", "aboutMe"]
   }
-
-// get all the posts
-//onMounted(getPosts)
-
-/* filter my own posts
-const getMyPosts = computed(() => {
-  return posts.value.filter((post) => {});
-}); */
+  
 </script>
 
 <style>

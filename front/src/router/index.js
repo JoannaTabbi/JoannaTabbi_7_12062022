@@ -3,7 +3,7 @@ import { useAuthStore } from "@/stores/authStore"
 import Home from "@/views/Home"
 import Signup from "@/views/Signup"
 import Login from "@/views/Login"
-import Profile from "@/views/Profile"
+import UserProfile from "@/views/UserProfile"
 import MyProfile from "@/views/MyProfile"
 import ModifyProfile from "@/views/ModifyProfile"
 import NotFound from "@/views/NotFound"
@@ -26,9 +26,9 @@ const routes = [
         component: Login
     },
     {
-        path: '/profile/:id', 
-        name: "Profile",
-        component: Profile,
+        path: '/userProfile/:id', 
+        name: "UserProfile",
+        component: UserProfile,
         props: true
     },
     {
