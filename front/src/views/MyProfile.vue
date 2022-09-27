@@ -5,20 +5,19 @@
               :user-name="auth.user.userName"
               :created-at="$filters.formatDate(auth.user.createdAt)"
               :about-me="auth.user.aboutMe"
+              :user-profile="userProfile=false"
             />
           
 </template>
 
 <script>
 import Profile from "@/components/Profile.vue";
-import ProfileCard from "@/components/ProfileCard.vue";
 import { useAuthStore } from "@/stores/authStore";
 
 export default {
   name: "MyProfile",
   components : {
-    Profile,
-    ProfileCard
+    Profile
   },
   setup() {
     const auth = useAuthStore()

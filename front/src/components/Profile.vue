@@ -7,7 +7,12 @@
               id="profile"
               class="shadow rounded-3 bg-white mb-3"
             >
-              <ProfileCard />
+              <ProfileCard 
+              :avatar-url="avatarUrl"
+              :user-name="userName"
+              :created-at="createdAt"
+              :about-me="aboutMe"
+              :user-profile="userProfile"/>
             </section>
           </div>
           <div class="col-12 col-md-4 col-lg-3 pt-3">
@@ -41,6 +46,7 @@ export default {
       ProfileCard,
       MiniPost
   },
+  props: ['avatarUrl', 'userName', 'createdAt', 'aboutMe', 'userProfile']
 }
 </script>
 

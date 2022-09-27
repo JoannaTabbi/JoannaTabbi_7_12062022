@@ -18,7 +18,7 @@
           class="img-fluid rounded-circle border border-white border-3 shadow"
           alt="mon avatar"
         />
-        <div
+        <div v-if="userProfile"
           class="position-absolute top-0 start-100 translate-middle btn btn-outline-dark rounded-circle"
         >
           <i class="fa-regular fa-thumbs-up fa-lg"></i>
@@ -32,7 +32,7 @@
           Membre depuis le <span>{{ createdAt }}</span>
         </p>
       </div>
-      <div class="col-lg-1 dropdown">
+      <div v-if="userProfile" class="col-lg-1 dropdown">
         <a
           href="#"
           role="button"
@@ -53,7 +53,7 @@
           </li>
         </ul>
       </div>
-      <ul
+      <ul v-if="!userProfile"
         class="nav col-lg-4 justify-content-center align-items-center ms-auto"
       >
         <li class="nav-item">
@@ -183,9 +183,9 @@ export default {
     Post,
     MiniProfile
   },
-  props: ["avatarUrl", "userName", "createdAt", "aboutMe"]
+  props: ["avatarUrl", "userName", "createdAt", "aboutMe", "userProfile"]
   }
-  
+
 </script>
 
 <style>
