@@ -40,7 +40,7 @@ export default {
   props: {
     schema: {
       type: Object,
-      required: true,
+      required: true
     },
     submitMessage: {
       type: String
