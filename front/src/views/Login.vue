@@ -14,52 +14,7 @@
 
           <!-- connexion form -->
 
-          <Form class="form" @submit="login" :validation-schema="schema">
-            <div class="row mb-3 align-items-center justify-content-between">
-              <label for="inputEmail" class="col-2 col-form-label"
-                ><i
-                  class="fa-solid fa-at border border-3 border-dark rounded-3 p-2"
-                ></i
-              ></label>
-              <div class="col-10">
-                <Field
-                  type="email"
-                  class="form-control"
-                  id="inputEmail"
-                  name="inputEmail"
-                  placeholder="jean.dupond@exemple.fr"
-                  v-model="user.email"
-                />
-                <ErrorMessage name="inputEmail" as="small" />
-              </div>
-            </div>
-            <div class="row mb-3 align-items-center justify-content-between">
-              <label for="inputPassword" class="col-2 col-form-label"
-                ><i
-                  class="fa-solid fa-lock border border-3 border-dark rounded-3 p-2"
-                ></i
-              ></label>
-              <div class="col-10">
-                <Field
-                  type="password"
-                  class="form-control"
-                  id="inputPassword"
-                  name="inputPassword"
-                  v-model="user.password"
-                />
-                <ErrorMessage name="inputPassword" as="small" />
-              </div>
-            </div>
-
-            <!-- submit -->
-
-            <button
-              type="submit"
-              class="btn btn-dark bg-gradient rounded-5 w-100 mt-4 text-white fw-bold"
-            >
-              Connexion
-            </button>
-          </Form>
+          <DynamicForm :schema="formSchema" submit-message="Connexion" :submit-function="login"/>
         </div>
         <div class="col-12 mb-3">
           <p class="mb-0">Pas encore inscrit ?</p>
@@ -74,40 +29,50 @@
 
 <script>
 import { authServices } from '@/_services';
-import { Form, Field, ErrorMessage } from "vee-validate";
-import * as yup from "yup";
+import DynamicForm from '@/components/DynamicForm';
+import * as Yup from "yup";
 import router from '../router/index';
 import { useAuthStore } from '../stores/authStore';
 
 export default {
   data() {
-    // defines the validation rules and error messages for each connexion field
-    const schema = yup.object().shape({
-      inputEmail: yup
-        .string()
-        .required("L'email est obligatoire")
-        .email("L'email n'est pas valide"),
-      inputPassword: yup
-        .string()
-        .required("Le mot de passe est obligatoire")
-    });
+    const formSchema = {
+      fields: [
+        {
+          label: 'EMAIL',
+          name: 'email',
+          as: 'input',
+          type: 'email',
+          id: 'email',
+          placeholder: "jean.dupond@exemple.fr",
+          rules: Yup.string().required("L'email est obligatoire").email("L'email n'est pas valide")
+        },
+        {
+          label: 'MOT DE PASSE',
+          name: 'password',
+          as: 'input',
+          type: 'password',
+          id: 'password',
+          rules: Yup.string().required("Le mot de passe est obligatoire")
+        },
+      ],
+    };
     return {
-      schema,
+      formSchema,
       user: {
-        email: "",
-        password: "",
+        email: this.email,
+        password: this.password
       },
     };
   },
   components: {
-    Form,
-    Field,
-    ErrorMessage,
+    DynamicForm
   },
   methods: {
     //logs in user once the connexion fields validated
-    async login() {
-      const res = await authServices.loginUser(this.user)
+    async login(values) {
+      console.log(values);
+      const res = await authServices.loginUser(values)
         
         // si pas de réponse, redirige l'utilisateur vers la page de login
         if(!res.ok) {
@@ -116,7 +81,7 @@ export default {
 
          //store the user and the token in AuthStore in order to reuse it 
           const auth = useAuthStore();
-          auth.loggedIn(res.data.token, res.data.refreshToken, res.data.User)
+          auth.loggedIn(res.data.token, res.data.newRefreshToken, res.data.User)
 
           //redirects the authenticated user to home page
           router.push('/')
@@ -131,6 +96,6 @@ img {
 }
 .connexion {
   width: 100%;
-  max-width: 576px;
+  max-width: 500px;
 }
 </style>
