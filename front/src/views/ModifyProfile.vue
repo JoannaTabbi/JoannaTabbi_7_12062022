@@ -114,7 +114,7 @@
 <script>
 import { useAuthStore } from "@/stores/authStore";
 import DynamicForm from "@/components/DynamicForm";
-import * as yup from "yup";
+import * as Yup from "yup";
 import { userServices } from "@/_services";
 import router from "@/router/index";
 
@@ -133,7 +133,7 @@ export default {
           as: "input",
           type: "text",
           id: "userName",
-          rules: yup
+          rules: Yup
             .string()
             .min(
               3,
@@ -151,7 +151,7 @@ export default {
           type: "text",
           id: "aboutMe",
           rows: "3",
-          rules: yup.string(),
+          rules: Yup.string(),
         },
         {
           label: "EMAIL",
@@ -159,7 +159,7 @@ export default {
           as: "input",
           type: "email",
           id: "email",
-          rules: yup.string().email("L'email n'est pas valide"),
+          rules: Yup.string().email("L'email n'est pas valide"),
         },
         {
           label: "MOT DE PASSE",
@@ -168,7 +168,7 @@ export default {
           type: "password",
           ref: "password",
           id: "password",
-          rules: yup
+          rules: Yup
             .string()
             .min(8, "Le mot de passe doit contenir au moins 8 caractères")
             .max(100, "Le mot de passe ne doit pas dépasser 100 caractères")
@@ -187,12 +187,12 @@ export default {
           as: "input",
           type: "password",
           id: "confirmPassword",
-          rules: yup
-            .string()
+          rules: Yup.string()
             .required()
-            .oneOf(
-              [yup.ref("password"), null],
-              "Le mot de passe ne correspond pas"
+            .test(
+              "confirmation",
+              "Les mots de passe ne correspondent pas",
+              (value) => password.value === value
             ),
         },
       ],

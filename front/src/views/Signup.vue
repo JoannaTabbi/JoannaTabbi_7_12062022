@@ -94,20 +94,16 @@ export default {
           id: "confirmPassword",
           rules: Yup.string()
             .required()
-            .oneOf(
-              [Yup.ref("password"), null],
-              "Le mot de passe ne correspond pas"
+            .test(
+              "confirmation",
+              "Les mots de passe ne correspondent pas",
+              (value) => password.value === value
             ),
         },
       ],
     };
     return {
       formSchema,
-      user: {
-        userName: "",
-        email: "",
-        password: "",
-      },
     };
   },
   components: {
@@ -115,9 +111,10 @@ export default {
   },
   methods: {
     //register the new user in the database
-    register() {
+    register(value) {
+      console.log(value);
       authServices
-        .signupUser(this.user)
+        .signupUser(value)
         .then(() => {
           alert(
             "Votre enregistrement a réussi, fermez cette fenêtre pour être rédirigé(e) vers la page de connexion"
