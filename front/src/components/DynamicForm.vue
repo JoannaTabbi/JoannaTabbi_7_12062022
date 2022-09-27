@@ -1,5 +1,6 @@
 <template>
-  <Form class="form" @submit="submitFunction">
+  <Form class="form" @submit="submitFunction"
+          :initial-values="initialValues">
     <div class="mb-2 text-start" v-for="{ as, name, label, ...attrs } in schema.fields" :key="name">
       <label 
         class="col-form-label px-2"
@@ -16,7 +17,15 @@
         as="small" 
         :name="name" />
     </div>
+    <!-- reset -->
 
+    <button
+              type="reset"
+              class="col-5 btn btn-danger bg-gradient rounded-5 mt-4 text-white fw-bold mb-3"
+              v-if="modifyProfile"
+            >
+              Réinitialisez
+            </button>
     <!-- submit -->
 
     <button
@@ -47,6 +56,12 @@ export default {
     },
     submitFunction: {
       type: Function
+    },
+    modifyProfile: {
+      type: Boolean
+    },
+    initialValues: {
+      type: Object
     }
   },
 

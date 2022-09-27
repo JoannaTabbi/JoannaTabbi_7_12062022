@@ -70,10 +70,11 @@ export default {
           label: "MOT DE PASSE",
           name: "password",
           as: "input",
-          //type: "password",
+          type: "password",
           ref: "password",
           id: "password",
           rules: Yup.string()
+            .required()
             .min(8, "Le mot de passe doit contenir au moins 8 caractères")
             .max(100, "Le mot de passe ne doit pas dépasser 100 caractères")
             .matches(
@@ -89,7 +90,7 @@ export default {
           label: "CONFIRMEZ LE MOT DE PASSE",
           name: "confirmPassword",
           as: "input",
-          //type: "password",
+          type: "password",
           id: "confirmPassword",
           rules: Yup.string()
             .required()
