@@ -71,7 +71,6 @@ export default {
   methods: {
     //logs in user once the connexion fields validated
     async login(values) {
-      console.log(values);
       const res = await authServices.loginUser(values)
         
         // si pas de réponse, redirige l'utilisateur vers la page de login

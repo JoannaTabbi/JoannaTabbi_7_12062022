@@ -101,7 +101,6 @@ export default {
       ],
     };
     return {
-      pwdValidationSchema,
       formSchema,
       user: {
         userName: "",

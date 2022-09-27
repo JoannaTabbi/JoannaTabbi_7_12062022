@@ -122,6 +122,22 @@
               <ErrorMessage name="password" as="small" />
             </div>
           </div>
+          <div class="row mb-3 align-items-center justify-content-between">
+            <label for="inputConfirmPassword" class="col-2 col-form-label"
+              ><i
+                class="fa-solid fa-lock border border-3 border-dark rounded-3 p-2"
+              ></i
+            ></label>
+            <div class="col-10">
+              <Field
+                type="password"
+                class="form-control"
+                id="inputConfirmPassword"
+                name="confirmPassword"
+              />
+              <ErrorMessage name="confirmPassword" as="small" />
+            </div>
+          </div>
           <div class="d-flex justify-content-between">
             <button
               type="reset"
@@ -226,6 +242,13 @@ export default {
         .matches(
           /^\S*$/,
           "Le mot de passe ne doit pas contenir des espaces blancs"
+        ),
+      confirmPassword: yup
+        .string()
+        .required()
+        .oneOf(
+          [yup.ref("password"), null],
+          "Le mot de passe ne correspond pas"
         ),
     });
     return {
