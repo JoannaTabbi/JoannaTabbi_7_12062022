@@ -4,7 +4,7 @@
     :user-name="this.user.userName"
     :created-at="$filters.formatDate(this.user.createdAt)"
     :about-me="this.user.aboutMe"
-    :user-profile="userProfile=true"
+    :user-profile="true"
   />
 </template>
 

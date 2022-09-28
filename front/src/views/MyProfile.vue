@@ -1,11 +1,8 @@
 <template>
   
             <Profile
-              :avatar-url="auth.user.imageUrl"
-              :user-name="auth.user.userName"
-              :created-at="$filters.formatDate(auth.user.createdAt)"
-              :about-me="auth.user.aboutMe"
-              :user-profile="userProfile=false"
+              :user="auth.user"
+              :user-profile="false"
             />
           
 </template>
@@ -22,6 +19,9 @@ export default {
   setup() {
     const auth = useAuthStore()
     return { auth }
+  },
+  computed() {
+    auth.user.createdAt = $filters.formatDate(auth.user.createdAt)
   },
   mounted() {
     this.auth.editMyProfile()
