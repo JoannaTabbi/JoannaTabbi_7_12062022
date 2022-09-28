@@ -95,7 +95,6 @@ import DynamicModal from "@/components/DynamicModal";
 import * as Yup from "yup";
 import { userServices } from "@/_services";
 import router from "@/router/index";
-import { toggleModal } from "@/_helpers/modal.helpers.js";
 
 export default {
   name: "modifyProfile",

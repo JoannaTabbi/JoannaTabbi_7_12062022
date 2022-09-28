@@ -1,4 +1,5 @@
 <template>
+<div>
   <div class="vh-100 bg-image">
     <div class="connexion container py-4 bg-secondary h-100">
       <div class="row px-2 px-sm-5 h-100">
@@ -26,11 +27,26 @@
       </div>
     </div>
   </div>
+ <div v-if="showModal">
+      <DynamicModal
+        modal-message="Votre enregistrement a réussi, fermez cette fenêtre pour être rédirigé(e) vers la page de connexion"
+        submitModalText="Fermer"
+        @submitted="redirectToLogin"
+        @closed="redirectToLogin"
+      >
+        <template v-slot:modalTitle>
+          <i class="fa-solid fa-triangle-exclamation fa-lg"></i>
+          FELICITATIONS !
+        </template>
+      </DynamicModal>
+    </div>
+</div>
 </template>
 
 <script>
 import { authServices } from "@/_services";
 import DynamicForm from "@/components/DynamicForm";
+import DynamicModal from "@/components/DynamicModal";
 import * as Yup from "yup";
 import router from "../router/index";
 export default {
@@ -104,22 +120,29 @@ export default {
     };
     return {
       formSchema,
+      showModal: false
     };
   },
   components: {
     DynamicForm,
+    DynamicModal
   },
   methods: {
+    // redirect user to the login page
+    redirectToLogin() {
+        router.push("/login");
+    },
+    // toggle modal
+    toggledModal() {
+      this.showModal = !this.showModal;
+    },
+
     //register the new user in the database
     register(value) {
-      console.log(value);
       authServices
         .signupUser(value)
         .then(() => {
-          alert(
-            "Votre enregistrement a réussi, fermez cette fenêtre pour être rédirigé(e) vers la page de connexion"
-          );
-          router.push("/login");
+          this.toggledModal();
         })
         // alerts the user if the email or userName exist in database
         .catch((err) => {
