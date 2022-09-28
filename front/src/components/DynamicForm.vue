@@ -22,9 +22,9 @@
     <button
               type="reset"
               class="col-5 btn btn-danger bg-gradient rounded-5 mt-4 text-white fw-bold mb-3"
-              v-if="modifyProfile"
+              v-if="reset"
             >
-              Réinitialisez
+              Réinitialiser
             </button>
     <!-- submit -->
 
@@ -57,7 +57,7 @@ export default {
     submitFunction: {
       type: Function
     },
-    modifyProfile: {
+    reset: {
       type: Boolean
     },
     initialValues: {
