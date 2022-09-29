@@ -2,18 +2,93 @@
   <main class="h-100">
     <div class="container-fluid">
       <div class="row">
+
+        <!-- WELCOME CARD SECTION -->
+
         <div class="col-12 col-lg-3 mb-3 pt-3">
           <section id="home" class="shadow rounded-3 mb-3 p-3">
             <h1 class="text-start fs-3">Accueil</h1>
-            <WelcomeCard
-              :avatar-url="auth.user.imageUrl"
-              :user-name="auth.user.userName"
-              :created-at="$filters.formatDate(auth.user.createdAt)"
-              :followers-number="auth.followersNb"
-              :following-number="auth.followingNb"
-            />
+            <div
+              class="card w-100 flex-sm-row flex-lg-column align-items-center"
+            >
+              <div class="p-5 p-sm-3 p-lg-5">
+                <img
+                  :src="auth.user.imageUrl"
+                  class="
+                    img-fluid
+                    card-img-top
+                    shadow
+                    border border-white border-3
+                    rounded-circle
+                  "
+                  alt="mon avatar"
+                />
+              </div>
+
+              <div class="card-body">
+                <h5 class="card-title">
+                  Bonjour
+                  <span
+                    ><router-link to="/myProfile">{{
+                      auth.user.userName
+                    }}</router-link></span
+                  >
+                </h5>
+
+                <small class="card-text"
+                  >Membre depuis le
+                  <div>{{ formattedDate }}</div></small
+                >
+              </div>
+              <ul class="list-group list-group-flush small">
+                <li
+                  class="
+                    list-group-item
+                    d-flex
+                    flex-wrap
+                    align-items-center
+                    justify-content-between
+                  "
+                >
+                  <router-link to="/myProfile" class="fw-bold text-dark me-2">
+                    <span>{{ auth.followersNb }}</span>
+                    <span class="ms-1">Vous suivent</span>
+                  </router-link>
+                  <router-link to="/myProfile" class="fw-bold text-dark">
+                    <span>{{ auth.followingNb }}</span>
+                    <span class="ms-1">Suivis</span>
+                  </router-link>
+                </li>
+                <li class="list-group-item">
+                  <router-link to="/myProfile" class="fw-bold text-dark">
+                    <span>{{ postsNumber }}</span>
+                    <span class="ms-1">Publications</span>
+                  </router-link>
+                </li>
+
+                <li
+                  class="
+                    list-group-item
+                    d-flex
+                    flex-wrap
+                    align-items-center
+                    justify-content-evenly
+                  "
+                >
+                  <router-link
+                    to="/modifyProfile"
+                    class="btn btn-outline-dark py-2 px-3 rounded-pill shadow"
+                    >Modifier le profil</router-link
+                  >
+                </li>
+              </ul>
+            </div>
           </section>
         </div>
+
+        <!-- WELCOME CARD SECTION END -->
+        <!-- FEEDS AND CREATE POST SECTIONS -->
+
         <div
           class="h-100 col-12 col-md-8 col-lg-6 pt-3 border-start border-end"
         >
@@ -26,48 +101,44 @@
             <Post />
           </section>
         </div>
+
+        <!-- FEEDS AND CREATE POST SECTIONS END -->
+        <!-- MOST POPULAR SECTION -->
+
         <div class="col-12 col-md-4 col-lg-3 pt-3">
-          <section
-            id="most_popular"
-            class="shadow rounded-3 mb-3 py-3 ps-2 pe-4"
-          >
-            <h2 class="fs-4 text-start ms-2">Les plus populaires</h2>
-            <div class="col-12">
-              <MiniPost />
-            </div>
-            <div class="col-12">
-              <MiniPost />
-            </div>
-            <div class="col-12">
-              <MiniPost />
-            </div>
-          </section>
+          <MostPopular />
         </div>
+
+        <!-- MOST POPULAR SECTION END -->
+        
       </div>
     </div>
   </main>
 </template>
 
 <script>
-import WelcomeCard from "../components/WelcomeCard.vue";
 import CreatePost from "../components/CreatePost.vue";
 import Post from "../components/Post.vue";
-import MiniPost from "../components/MiniPost.vue";
+import MostPopular from "../components/MostPopular.vue";
 import { useAuthStore } from "../stores/authStore";
-import { userServices } from '@/_services';
 export default {
   name: "Home",
   components: {
     CreatePost,
-    WelcomeCard,
     Post,
-    MiniPost,
+    MostPopular,
   },
   setup() {
-    const auth = useAuthStore()
-    return { auth }
-  }
-}
+    const auth = useAuthStore();
+    return { auth };
+  },
+  computed: {
+    // formates the the user account's creation date
+    formattedDate() {
+      return this.$filters.formatDate(this.auth.user.createdAt);
+    },
+  },
+};
 </script>
 
 <style scoped></style>

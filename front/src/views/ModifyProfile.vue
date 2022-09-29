@@ -74,14 +74,19 @@
     <!-- Modal -->
     <div v-if="showModal">
       <DynamicModal
+        :modal-title="modalTitle"
         :modal-message="modalMessage"
         :dismiss-modal-text="dismissModalText"
         :submitModalText="submitModalText"
         @closed="toggledModal"
         @submitted="deleteMyProfile"
+        :reset="true"
+        :submit="true"
       >
-        <template v-slot:modalTitle>
-          <i class="fa-solid fa-triangle-exclamation fa-lg"></i>
+        <template v-slot:modalBody>
+          <p>
+            {{ modalMessage }}
+          </p>
         </template>
       </DynamicModal>
     </div>
@@ -176,6 +181,7 @@ export default {
     };
     return {
       formSchema,
+      modalTitle: "ATTENTION",
       modalMessage:
         "Votre profil sera supprimé définitivement. Etes-vous sûr(e) de vouloir continuer ?",
       dismissModalText: "Abandonner",

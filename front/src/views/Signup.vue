@@ -29,14 +29,16 @@
   </div>
  <div v-if="showModal">
       <DynamicModal
-        modal-message="Votre enregistrement a réussi, fermez cette fenêtre pour être rédirigé(e) vers la page de connexion"
-        submitModalText="Fermer"
+        :modal-title="modalTitle"
+        submit-modal-text="Fermer"
         @submitted="redirectToLogin"
         @closed="redirectToLogin"
+        :submit="true"
       >
-        <template v-slot:modalTitle>
-          <i class="fa-solid fa-triangle-exclamation fa-lg"></i>
-          FELICITATIONS !
+        <template v-slot:modalBody>
+          <p>
+            {{ modalMessage }}
+          </p>
         </template>
       </DynamicModal>
     </div>
@@ -120,7 +122,9 @@ export default {
     };
     return {
       formSchema,
-      showModal: false
+      showModal: false,
+      modalTitle: "FELICITATIONS !",
+      modalMessage: "Votre enregistrement a réussi, fermez cette fenêtre pour être rédirigé(e) vers la page de connexion"
     };
   },
   components: {

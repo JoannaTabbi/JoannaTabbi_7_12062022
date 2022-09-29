@@ -4,7 +4,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title text-primary" id="deleteProfileAlertLabel">
-            <slot name="modalTitle"></slot>
+            {{ modalTitle }}
           </h5>
           <button
             type="button"
@@ -13,8 +13,8 @@
             @click="closeModal"
           ></button>
         </div>
-        <div class="modal-body">
-          {{ modalMessage }}
+        <div class="modal-body text-start">
+          <slot name="modalBody"></slot>
         </div>
         <div class="modal-footer">
           <button
@@ -26,6 +26,7 @@
             {{ dismissModalText }}
           </button>
           <button
+            v-if="submit"
             type="button"
             class="btn btn-outline-danger"
             @click="submitModal"
@@ -41,7 +42,7 @@
 <script>
 export default {
   name: "DynamicModal",
-  props: ["modalMessage", "dismissModalText", "submitModalText"],
+  props: ["modalTitle", "dismissModalText", "submitModalText", "reset", "submit"],
   methods: {
     submitModal() {
       this.$emit("submitted");
