@@ -2,7 +2,8 @@
   
             <Profile
               :user="auth.user"
-              :user-profile="false"
+              :createdAt="formattedData"
+              
             />
           
 </template>
@@ -20,8 +21,12 @@ export default {
     const auth = useAuthStore()
     return { auth }
   },
-  computed() {
-    auth.user.createdAt = $filters.formatDate(auth.user.createdAt)
+  
+  computed: {
+    formattedData() {
+      return this.$filters.formatDate(this.auth.user.createdAt)
+    }
+    
   },
   mounted() {
     this.auth.editMyProfile()

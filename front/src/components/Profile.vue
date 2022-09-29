@@ -71,7 +71,7 @@
                 >
                   <h1 class="card-title fs-5 mb-0">{{ user.userName }}</h1>
                   <p class="card-text small">
-                    Membre depuis le <span>{{ user.createdAt }}</span>
+                    Membre depuis le <span>{{ createdAt }}</span>
                   </p>
                 </div>
                 <div v-if="userProfile" class="col-lg-1 dropdown">
@@ -255,7 +255,7 @@ export default {
     MiniPost,
     MiniProfile
   },
-  props: ["user"],
+  props: ["user", "createdAt"],
 };
 </script>
 
