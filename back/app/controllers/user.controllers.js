@@ -211,7 +211,8 @@ exports.readUser = (req, res, next) => {
                     aboutMe: user.aboutMe,
                     imageUrl: `${req.protocol}://${req.get("host")}${user.imageUrl}`,
                     followers: user.followers,
-                    following: user.following
+                    following: user.following,
+                    createdAt: user.createdAt
                 }
 
                 res.status(200).json(userFound,

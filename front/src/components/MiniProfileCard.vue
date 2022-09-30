@@ -17,8 +17,11 @@
   </div>
 </template>
 
-<script setup>
-  defineProps(['userName'])
+<script>
+export default {
+  name: "MiniProfileCard",
+  props: ['userName']
+}
 </script>
 
 <style></style>

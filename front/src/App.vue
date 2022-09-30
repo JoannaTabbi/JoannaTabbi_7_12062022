@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!-- if isConnected is false, the header will not be injected to the page -->
+    <!-- if no user stored in authstore, the header will not be injected to the page -->
      <Header v-if="auth.user" :user-name="auth.user.userName"/> 
     <router-view > </router-view>
     <!-- <Footer /> -->
