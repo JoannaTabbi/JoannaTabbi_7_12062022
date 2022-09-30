@@ -11,35 +11,14 @@
         </div>
       </div>
       <div class="row d-flex flex-column flex-lg-row mb-3 align-items-center">
-        <div
-          class="
-            avatar
-            col-6 col-sm-3 col-lg-2
-            ms-0 ms-lg-3
-            mb-3 mb-lg-0
-            position-relative
-          "
-        >
+        <div class="avatar col-6 col-sm-3 col-lg-2 ms-0 ms-lg-3 mb-3 mb-lg-0">
           <img
             :src="auth.user.imageUrl"
             class="img-fluid rounded-circle border border-white border-3 shadow"
             alt="mon avatar"
           />
-          <label
-            class="
-              btn btn-dark
-              bg-gradient
-              rounded-3
-              position-absolute
-              top-100
-              start-100
-              translate-middle
-            "
-          >
-            <i class="fa-solid fa-camera fa-lg"></i
-            ><input type="file" class="form-control" hidden />
-          </label>
         </div>
+
         <div class="d-flex col-12 col-lg-9">
           <div class="col-6 mt-3 mt-lg-0">
             <button class="btn btn-outline-dark py-2 px-3 rounded-pill shadow">
@@ -57,12 +36,51 @@
         </div>
       </div>
       <div class="container">
-        <div class="row mx-2 mx-sm-5">
+        <!-- upload files form -->
+
+        <div class="my-5 px-5">
+          <div class="col-12 border-bottom border-dark mb-5">
+            <label for="formFile" class="form-label fs-4 fw-bold"
+              >Modifiez la photo</label
+            >
+          </div>
+          <input
+            class="form-control mb-2"
+            name="image"
+            type="file"
+            id="formFile"
+            accept="image/*"
+            ref="file"
+            @change="selectImage"
+          />
+          <div v-if="message" class="alert alert-secondary" role="alert">
+            {{ message }}
+          </div>
+          <button
+            class="
+              col-5
+              btn btn-dark
+              bg-gradient
+              rounded-5
+              m-3
+              text-white
+              fw-bold
+            "
+            @click="upload"
+          >
+            Valider
+          </button>
+        </div>
+
+        <!-- upload files form end -->
+
+        <div class="row mx-2 mx-sm-5 my-5">
           <div class="col-12 border-bottom border-dark mb-5">
             <h1 class="fs-4 text-center">Modifiez le profil</h1>
           </div>
           <DynamicForm
             :schema="formSchema"
+            reset-message="Réinitialiser"
             submit-message="Modifier"
             :reset="true"
             :submit-function="onSubmit"
@@ -99,6 +117,7 @@ import DynamicForm from "@/components/DynamicForm";
 import DynamicModal from "@/components/DynamicModal";
 import * as Yup from "yup";
 import { userServices } from "@/_services";
+import { uploadServices } from "@/_services";
 import router from "@/router/index";
 
 export default {
@@ -180,14 +199,21 @@ export default {
       ],
     };
     return {
+      //form data
       formSchema,
+      userUpdate: this.auth.user,
+
+      //modal data
       modalTitle: "ATTENTION",
       modalMessage:
         "Votre profil sera supprimé définitivement. Etes-vous sûr(e) de vouloir continuer ?",
       dismissModalText: "Abandonner",
       submitModalText: "Supprimer",
       showModal: false,
-      userUpdate: this.auth.user,
+
+      //upload image date
+      currentImage: undefined,
+      message: "",
     };
   },
   components: {
@@ -217,6 +243,29 @@ export default {
 
         .catch((err) => {
           console.log(err);
+        });
+    },
+
+    //uploads a new user's avatar and update the data
+
+    selectImage() {
+      this.currentImage = this.$refs.file.files.item(0);
+      this.message = "";
+    },
+
+    upload() {
+      uploadServices
+        .upload(this.currentImage)
+        .then((response) => {
+          this.message = response.data.message;
+        })
+        .then((images) => {
+          console.log(images.data);
+        })
+        .catch((err) => {
+          this.progress = 0;
+          this.message = "L'image n'a pas pu être chargé! " + err;
+          this.currentImage = undefined;
         });
     },
 

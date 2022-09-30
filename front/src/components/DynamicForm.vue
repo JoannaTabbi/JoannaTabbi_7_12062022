@@ -1,36 +1,34 @@
 <template>
-  <Form class="form" @submit="submitFunction"
-          :initial-values="initialValues">
-    <div class="mb-2 text-start" v-for="{ as, name, label, ...attrs } in schema.fields" :key="name">
-      <label 
-        class="col-form-label px-2"
-        :for="name">{{ label }}</label>
+  <Form class="form" @submit="submitFunction" :initial-values="initialValues">
+    <div
+      class="mb-2 text-start"
+      v-for="{ as, name, label, ...attrs } in schema.fields"
+      :key="name"
+    >
+      <label class="col-form-label px-2" :for="name">{{ label }}</label>
       <Field
         class="form-control"
-        :as="as" 
-        :id="name" 
-        :name="name" 
+        :as="as"
+        :id="name"
+        :name="name"
         v-bind="attrs"
       />
-      <ErrorMessage 
-        class="px-2" 
-        as="small" 
-        :name="name" />
+      <ErrorMessage class="px-2" as="small" :name="name" />
     </div>
     <!-- reset -->
 
     <button
-              type="reset"
-              class="col-5 btn btn-danger bg-gradient rounded-5 mt-4 text-white fw-bold mb-3"
-              v-if="reset"
-            >
-              Réinitialiser
-            </button>
+      type="reset"
+      class="col-5 btn btn-danger bg-gradient rounded-5 m-3 text-white fw-bold"
+      v-if="reset"
+    >
+      {{ resetMessage }}
+    </button>
     <!-- submit -->
 
     <button
       type="submit"
-      class="btn btn-dark bg-gradient rounded-5 w-100 mt-4 text-white fw-bold"
+      class="col-5 btn btn-dark bg-gradient rounded-5 m-3 text-white fw-bold"
     >
       {{ submitMessage }}
     </button>
@@ -38,33 +36,35 @@
 </template>
 
 <script>
-import { Form, Field, ErrorMessage } from 'vee-validate';
+import { Form, Field, ErrorMessage } from "vee-validate";
 export default {
   name: "DynamicForm",
   components: {
     Form,
     Field,
-    ErrorMessage
+    ErrorMessage,
   },
   props: {
     schema: {
       type: Object,
-      required: true
+      required: true,
     },
     submitMessage: {
-      type: String
+      type: String,
+    },
+    resetMessage: {
+      type: String,
     },
     submitFunction: {
-      type: Function
+      type: Function,
     },
     reset: {
-      type: Boolean
+      type: Boolean,
     },
     initialValues: {
-      type: Object
-    }
+      type: Object,
+    },
   },
-
 };
 </script>
 

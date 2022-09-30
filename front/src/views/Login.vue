@@ -75,7 +75,7 @@ export default {
         
         // si pas de réponse, redirige l'utilisateur vers la page de login
         if(!res.ok) {
-           return router.push('/login')
+           router.push('/login')
         }
 
          //store the user and the token in AuthStore in order to reuse it 
