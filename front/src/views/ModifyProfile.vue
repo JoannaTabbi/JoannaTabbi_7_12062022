@@ -38,7 +38,7 @@
       <div class="container">
         <!-- upload files form -->
 
-        <div class="my-5 px-5">
+        <form class="my-5 px-5" @submit.prevent="uploadUserFiles">
           <div class="col-12 border-bottom border-dark mb-5">
             <label for="formFile" class="form-label fs-4 fw-bold"
               >Modifiez la photo</label
@@ -50,13 +50,13 @@
             type="file"
             id="formFile"
             accept="image/*"
-            ref="file"
             @change="selectImage"
           />
           <div v-if="message" class="alert alert-secondary" role="alert">
             {{ message }}
           </div>
           <button
+          type="submit"
             class="
               col-5
               btn btn-dark
@@ -66,11 +66,10 @@
               text-white
               fw-bold
             "
-            @click="upload"
           >
             Valider
           </button>
-        </div>
+        </form>
 
         <!-- upload files form end -->
 
@@ -240,7 +239,6 @@ export default {
           this.auth.user = res.data; // updates user in the store
           router.push("/myProfile");
         })
-
         .catch((err) => {
           console.log(err);
         });
@@ -248,23 +246,24 @@ export default {
 
     //uploads a new user's avatar and update the data
 
-    selectImage() {
-      this.currentImage = this.$refs.file.files.item(0);
+    selectImage(event) {
+      this.currentImage = event.target.files[0];
       this.message = "";
     },
 
-    upload() {
-      uploadServices
-        .upload(this.currentImage)
-        .then((response) => {
-          this.message = response.data.message;
-        })
-        .then((images) => {
-          console.log(images.data);
+    uploadUserFiles() {
+      
+      let formData = new FormData();
+      formData.append("user", this.userUpdate);
+      formData.append("image", this.currentImage);
+  
+      uploadServices.uploadFiles(formData)
+        .then((res) => { 
+          this.auth.user = res.data;
+          router.push("/myProfile");
         })
         .catch((err) => {
-          this.progress = 0;
-          this.message = "L'image n'a pas pu être chargé! " + err;
+          this.message = "L'image n'a pas pu être changée! " + err;
           this.currentImage = undefined;
         });
     },

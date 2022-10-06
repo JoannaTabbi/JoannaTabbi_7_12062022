@@ -124,7 +124,7 @@ exports.login = (req, res, next) => {
                         })}; 
                         res.cookie('jwt', newRefreshToken, {
                             httpOnly: true,
-                            maxAge: 24 * 60 * 60
+                            maxAge: 86400
                         });
                         res.status(200).json({
                                 userId: user._id,
@@ -281,7 +281,7 @@ exports.updateUser = (req, res, next) => {
                 res.status(404).json(error);
             } else {
                 const update = req.file ?
-                    JSON.parse(req.body.user) : req.body;
+                    req.body.user : req.body;
                 // the password is updated
                 if (update.password) {
                     const hash = await bcrypt.hash(update.password, 10); // the password is crypted
@@ -301,10 +301,12 @@ exports.updateUser = (req, res, next) => {
                     }
                 }
                 // check if image file is present
-                const userObject = req.file ? {
+                const userObject = req.file ? 
+                 {
                     ...update,
                     imageUrl: `/images/${req.file.filename}`
-                } : {
+                } 
+                  : {
                     ...update
                 };
                 const filename = user.imageUrl.split("/images/")[1];
