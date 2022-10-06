@@ -2,3 +2,4 @@ export * from './user.services';
 export * from './post.services';
 export * from './comment.services';
 export * from './auth.services';
+export * from './upload.services';

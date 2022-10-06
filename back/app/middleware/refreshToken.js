@@ -83,7 +83,7 @@ module.exports = async (req, res) => {
                 // provide responses
                 res.cookie('jwt', newRefreshToken, {
                     httpOnly: true,
-                    maxAge: 24 * 60 * 60
+                    maxAge: 86400
                 });
 
                 res.status(200).json({ 
