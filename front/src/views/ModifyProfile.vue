@@ -21,7 +21,7 @@
 
         <div class="d-flex col-12 col-lg-9">
           <div class="col-6 mt-3 mt-lg-0">
-            <button class="btn btn-outline-dark py-2 px-3 rounded-pill shadow">
+            <button class="btn btn-outline-dark py-2 px-3 rounded-pill shadow" @click="exportData">
               Exporter mes données
             </button>
           </div>
@@ -116,7 +116,7 @@ import DynamicForm from "@/components/DynamicForm";
 import DynamicModal from "@/components/DynamicModal";
 import * as Yup from "yup";
 import { userServices } from "@/_services";
-import { uploadServices } from "@/_services";
+import { loadServices } from "@/_services";
 import router from "@/router/index";
 
 export default {
@@ -257,7 +257,7 @@ export default {
       formData.append("user", this.userUpdate);
       formData.append("image", this.currentImage);
   
-      uploadServices.uploadFiles(formData)
+      loadServices.uploadFiles(formData)
         .then((res) => { 
           this.auth.user = res.data;
           router.push("/myProfile");
@@ -268,6 +268,17 @@ export default {
         });
     },
 
+
+    // exports user's data
+    exportData() {
+      userServices.getOneself()
+      .then((res) => {
+        loadServices.excelParser().exportDataFromJSON(res.data, null, null);
+      })
+      .catch((err) => console.log(err))
+    },
+    
+    
     //deletes the user
     async deleteMyProfile() {
       // deletes the user's data from the server
