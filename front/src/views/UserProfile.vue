@@ -7,8 +7,8 @@
             :user="this.user"
             :created-at="formattedDate"
             :user-profile="true"
-            :followers="followers"
-            :following="following"
+            :followers="followersArray"
+            :following="followingArray"
           />
         </div>
         <div class="col-12 col-md-4 col-lg-3 pt-3">
@@ -38,8 +38,11 @@ export default {
   data() {
     return {
       user: {},
-      followers: [],
-      following: []
+      followersArray: [],
+      followingArray: [],
+      isFollowed: false,
+      userFollowing: this.auth.user.following,
+      followButtonText: "Suivre"
     };
   },
   computed: {
@@ -48,14 +51,42 @@ export default {
       return this.$filters.formatDate(this.user.createdAt);
     },
   },
+  methods: {
+  
+  //follows user
+    followUser() {
+      userServices.followUser(this.id)
+        .then((res) => {
+          this.isFollowed = true;
+          this.userFollowing.push(this.id);
+          this.followButtonText = "Ne plus suivre";
+        })
+        .catch((err) => console.log(err))
+    },
+
+  //unfollows user
+    unfollowUser() {
+      userServices.unfollowUser(this.id)
+        .then(() => {
+          this.isFollowed = false;
+          this.userFollowing.pull(this.id);
+          this.followButtonText = "Suivre";
+        })
+        .catch((err) => console.log(err)) 
+    },
+  //toggles between following and unfollowing user
+    FollowToggle() {
+      this.isFollowed ? this.unfollowUser() : this.followUser()
+    }
+  },
   mounted() {
     // fetching information about user from database
     userServices
       .getUser(this.id)
       .then((res) => {
         this.user = res.data;
-        this.auth.getFollowers(this.user.followers, this.followers);
-        this.auth.getFollowing(this.user.following, this.following);
+        this.auth.getFollowers(this.user.followers, this.followersArray);
+        this.auth.getFollowing(this.user.following, this.followingArray);
       })
       .catch((error) => console.log(error));
   },
