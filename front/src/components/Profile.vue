@@ -23,19 +23,6 @@
             :src="user.imageUrl"
             alt="mon avatar"
           />
-          <div
-            v-if="userProfile"
-            class="
-              position-absolute
-              top-0
-              start-100
-              translate-middle
-              btn btn-outline-dark
-              rounded-circle
-            "
-          >
-            <i class="fa-regular fa-thumbs-up fa-lg"></i>
-          </div>
         </div>
         <div
           class="
@@ -52,6 +39,15 @@
             Membre depuis le <span>{{ createdAt }}</span>
           </p>
         </div>
+        <div
+            v-if="userProfile"
+            class="
+              w-25 btn btn-outline-dark rounded-pill shadow
+            "
+            @click="submitFollow"
+          >{{ followButtonText }}
+            
+          </div>
         <div v-if="userProfile" class="col-lg-1 dropdown">
           <a
             href="#"
@@ -63,7 +59,6 @@
           >
             ...
           </a>
-
           <ul
             class="dropdown-menu dropdown-menu-end"
             aria-labelledby="dropdownMenuLink"
@@ -200,8 +195,14 @@ export default {
     Post,
     MiniProfile,
   },
-  props: ["user", "followers", "following", "createdAt"]
+  props: ["user", "followers", "following", "createdAt", "userProfile", "followButtonText"],
+  methods: {
+    submitFollow() {
+        this.$emit("followToggle");
+    }
+}
 };
+
 </script>
 
 <style>
@@ -216,7 +217,7 @@ export default {
   box-shadow: 3px 3px 15px lightgrey;
 }
 .main-avatar-container img {
-    object-fit: scale-down;
+    object-fit: contain;
     object-position: 50% 50%;
 }
 </style>

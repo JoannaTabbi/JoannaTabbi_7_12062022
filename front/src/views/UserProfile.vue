@@ -9,6 +9,8 @@
             :user-profile="true"
             :followers="followersArray"
             :following="followingArray"
+            :followButtonText="followButtonText"
+            @followToggle="followToggle"
           />
         </div>
         <div class="col-12 col-md-4 col-lg-3 pt-3">
@@ -40,25 +42,36 @@ export default {
       user: {},
       followersArray: [],
       followingArray: [],
-      isFollowed: false,
-      userFollowing: this.auth.user.following,
-      followButtonText: "Suivre"
+      followButtonText: {
+        type: String
+      },
+      isFollowed: {
+        type: Boolean
+      }
     };
   },
   computed: {
     // formates the the user account's creation date
     formattedDate() {
       return this.$filters.formatDate(this.user.createdAt);
-    },
+    }
   },
   methods: {
-  
+  // checks if user is already followed, then switches isFollowed value between true and false,  
+  // followButtonText value between "Follow" and "unfollow" ; this will help to activate 
+  // the right method (follow / unfollow) while clicking on the follow button
+  userIsFollowed() {
+      if (this.auth.user.following.includes(this.id)) {
+        this.isFollowed = true, this.followButtonText = "Ne plus suivre"
+        } else { this.isFollowed = false, this.followButtonText = "Suivre" }
+    },
+
   //follows user
     followUser() {
       userServices.followUser(this.id)
-        .then((res) => {
+        .then(async () => {
+          await this.auth.user.following.push(this.id);
           this.isFollowed = true;
-          this.userFollowing.push(this.id);
           this.followButtonText = "Ne plus suivre";
         })
         .catch((err) => console.log(err))
@@ -67,15 +80,15 @@ export default {
   //unfollows user
     unfollowUser() {
       userServices.unfollowUser(this.id)
-        .then(() => {
+        .then(async () => {
+          this.auth.user.following = await this.auth.user.following.filter(id => id !== this.id);
           this.isFollowed = false;
-          this.userFollowing.pull(this.id);
           this.followButtonText = "Suivre";
         })
         .catch((err) => console.log(err)) 
     },
   //toggles between following and unfollowing user
-    FollowToggle() {
+    followToggle() {
       this.isFollowed ? this.unfollowUser() : this.followUser()
     }
   },
@@ -87,6 +100,8 @@ export default {
         this.user = res.data;
         this.auth.getFollowers(this.user.followers, this.followersArray);
         this.auth.getFollowing(this.user.following, this.followingArray);
+        this.userIsFollowed();
+        console.log(this.isFollowed, this.followButtonText);
       })
       .catch((error) => console.log(error));
   },

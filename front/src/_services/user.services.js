@@ -27,17 +27,17 @@ let exportData = () => {
 
 //adds followed user's id
 let followUser = (id) => {
-    return axios.patch('/auth/' + id + 'follow')
+    return axios.patch('/auth/' + id + '/follow')
 };
 
 //removes followed user's id
 let unfollowUser = (id) => {
-    return axios.patch('/auth/' + id + 'unfollow')
+    return axios.patch('/auth/' + id + '/unfollow')
 };
 
 //reports user for the id given
 let reportUser = (id) => {
-    return axios.patch('/auth/' + id + 'report')
+    return axios.patch('/auth/' + id + '/report')
 };
 
 
