@@ -207,6 +207,7 @@ exports.readUser = (req, res, next) => {
                 });
             } else {
                 const userFound = {
+                    _id: user._id,
                     userName: user.userName,
                     aboutMe: user.aboutMe,
                     imageUrl: `${req.protocol}://${req.get("host")}${user.imageUrl}`,
