@@ -47,8 +47,8 @@ export default {
   },
   mounted() {
     this.auth.editMyProfile();
-    this.auth.getFollowers(this.followers);
-    this.auth.getFollowing(this.following);
+    this.auth.getFollowers(this.auth.user.followers, this.followers);
+    this.auth.getFollowing(this.auth.user.following, this.following);
   },
 };
 </script>

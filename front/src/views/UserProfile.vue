@@ -31,6 +31,8 @@ export default {
   data() {
     return {
       user: {},
+      followers: [],
+      following: []
     };
   },
   computed: {
@@ -48,6 +50,9 @@ export default {
         this.user = res.data;
       })
       .catch((error) => console.log(error));
+      
+    this.auth.getFollowers(this.user.followers, this.followers);
+    this.auth.getFollowing(this.user.following, this.following);
   },
 };
 </script>
