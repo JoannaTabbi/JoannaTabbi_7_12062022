@@ -164,7 +164,7 @@
         >
           <div class="container">
             <div class="row g-3">
-              <MiniProfile />
+              <MiniProfile :mpUsers="followers"/>
             </div>
           </div>
         </div>
@@ -176,7 +176,7 @@
         >
           <div class="container">
             <div class="row g-3">
-              <MiniProfile />
+              <MiniProfile :mpUsers="following" />
             </div>
           </div>
         </div>
@@ -202,7 +202,7 @@ export default {
     Post,
     MiniProfile,
   },
-  props: ["user", "createdAt"],
+  props: ["user", "followers", "following", "createdAt"]
 };
 </script>
 

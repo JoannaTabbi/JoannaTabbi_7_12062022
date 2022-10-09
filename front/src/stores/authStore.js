@@ -31,6 +31,30 @@ actions: {
       .then((res) => {
           this.user = res.data})
       .catch(err => console.log(err))
+  },
+
+  getFollowers(followersArray) {
+    let userFollowers = this.user.followers;
+    userFollowers.forEach((followerId)=> {
+       userServices.getUser(followerId)
+       .then((res) => {
+        const foundFollower = res.data;
+        followersArray.push(foundFollower)
+       })
+       .catch(err => console.log(err))
+    }) 
+  },
+
+  getFollowing(followingArray) {
+    let userFollowing = this.user.following;
+    userFollowing.forEach((followingId) => {
+       userServices.getUser(followingId)
+       .then((res) => {
+        const foundFollowing = res.data;
+        followingArray.push(foundFollowing)
+       })
+       .catch(err => console.log(err))
+    }) 
   }
 }
 
