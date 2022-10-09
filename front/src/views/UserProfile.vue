@@ -7,6 +7,8 @@
             :user="this.user"
             :created-at="formattedDate"
             :user-profile="true"
+            :followers="followers"
+            :following="following"
           />
         </div>
         <div class="col-12 col-md-4 col-lg-3 pt-3">
@@ -20,6 +22,7 @@
 <script>
 import Profile from "@/components/Profile.vue";
 import MostPopular from "@/components/MostPopular.vue";
+import { useAuthStore } from '../stores/authStore';
 import { userServices } from "@/_services";
 export default {
   name: "UserProfile",
@@ -27,10 +30,16 @@ export default {
     Profile,
     MostPopular,
   },
+  setup() {
+    const auth = useAuthStore();
+    return { auth };
+  },
   props: ["id"],
   data() {
     return {
       user: {},
+      followers: [],
+      following: []
     };
   },
   computed: {
@@ -44,8 +53,9 @@ export default {
     userServices
       .getUser(this.id)
       .then((res) => {
-        console.log(res.data);
         this.user = res.data;
+        this.auth.getFollowers(this.user.followers, this.followers);
+        this.auth.getFollowing(this.user.following, this.following);
       })
       .catch((error) => console.log(error));
   },

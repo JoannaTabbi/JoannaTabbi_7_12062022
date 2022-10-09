@@ -13,16 +13,14 @@
       <div class="row d-flex flex-column flex-lg-row mb-3 align-items-center">
         <div
           class="
-            avatar
+            main-avatar-container
             col-6 col-sm-3 col-lg-2
             ms-0 ms-lg-3
             mb-3 mb-lg-0
-            position-relative
           "
         >
           <img
             :src="user.imageUrl"
-            class="img-fluid rounded-circle border border-white border-3 shadow"
             alt="mon avatar"
           />
           <div
@@ -164,7 +162,7 @@
         >
           <div class="container">
             <div class="row g-3">
-              <MiniProfile />
+              <MiniProfile :mpUsers="followers" />
             </div>
           </div>
         </div>
@@ -176,7 +174,7 @@
         >
           <div class="container">
             <div class="row g-3">
-              <MiniProfile />
+              <MiniProfile :mpUsers="following" />
             </div>
           </div>
         </div>
@@ -202,13 +200,23 @@ export default {
     Post,
     MiniProfile,
   },
-  props: ["user", "createdAt"],
+  props: ["user", "followers", "following", "createdAt"]
 };
 </script>
 
 <style>
-.avatar {
+.main-avatar-container {
   margin-top: -5%;
   margin-left: 30px;
+  width: 150px;
+  height: 150px;
+  overflow: hidden;
+  border-radius: 50%;
+  border: 3px solid white;
+  box-shadow: 3px 3px 15px lightgrey;
+}
+.main-avatar-container img {
+    object-fit: scale-down;
+    object-position: 50% 50%;
 }
 </style>

@@ -124,7 +124,7 @@ exports.login = (req, res, next) => {
                         })}; 
                         res.cookie('jwt', newRefreshToken, {
                             httpOnly: true,
-                            maxAge: 86400
+                            maxAge: 1000 * 60 * 60 * 8760
                         });
                         res.status(200).json({
                                 userId: user._id,
@@ -207,6 +207,7 @@ exports.readUser = (req, res, next) => {
                 });
             } else {
                 const userFound = {
+                    _id: user._id,
                     userName: user.userName,
                     aboutMe: user.aboutMe,
                     imageUrl: `${req.protocol}://${req.get("host")}${user.imageUrl}`,
