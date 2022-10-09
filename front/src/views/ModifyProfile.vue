@@ -86,6 +86,18 @@
             :initial-values="this.userUpdate"
           />
         </div>
+        <div class="row mx-2 mx-sm-5 my-5">
+          <div class="col-12 border-bottom border-dark mb-5">
+            <h1 class="fs-4 text-center">Modifiez le mot de passe</h1>
+          </div>
+          <DynamicForm
+            :schema="passwordSchema"
+            reset-message="Réinitialiser"
+            submit-message="Modifier"
+            :reset="true"
+            :submit-function="onSubmit"
+          />
+        </div>
       </div>
     </div>
     <!-- Modal -->
@@ -161,7 +173,11 @@ export default {
           type: "email",
           id: "email",
           rules: Yup.string().email("L'email n'est pas valide"),
-        },
+        }
+      ],
+    };
+    const passwordSchema = {
+      fields: [
         {
           label: "MOT DE PASSE",
           name: "password",
@@ -200,6 +216,7 @@ export default {
     return {
       //form data
       formSchema,
+      passwordSchema,
       userUpdate: this.auth.user,
 
       //modal data
@@ -228,7 +245,7 @@ export default {
     // updates user's data
     onSubmit(value) {
       // the new password will be submitted only if changed
-      if (value.password === this.auth.user.password) {
+      if (value.password && value.password === this.auth.user.password) {
         delete value.password;
       }
 
