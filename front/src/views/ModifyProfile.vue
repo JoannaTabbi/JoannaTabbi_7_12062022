@@ -217,7 +217,13 @@ export default {
       //form data
       formSchema,
       passwordSchema,
-      userUpdate: this.auth.user,
+      userUpdate: {
+        _id: this.auth.user._id,
+        userName: this.auth.user.userName,
+        aboutMe: this.auth.user.aboutMe,
+        email: this.auth.user.email,
+        password: this.auth.user.password
+      },
 
       //modal data
       modalTitle: "ATTENTION",
