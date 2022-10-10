@@ -34,6 +34,7 @@
         @submitted="redirectToLogin"
         @closed="redirectToLogin"
         :submit="true"
+        theme="success"
       >
         <template v-slot:modalBody>
           <p>

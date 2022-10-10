@@ -3,7 +3,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title text-primary" id="deleteProfileAlertLabel">
+          <h5 class="modal-title text-primary" :class="{'text-success': theme == 'success'}">
             {{ modalTitle }}
           </h5>
           <button
@@ -28,7 +28,7 @@
           <button
             v-if="submit"
             type="button"
-            class="btn btn-outline-danger"
+            class="btn btn-outline-dark"
             @click="submitModal"
           >
             {{ submitModalText }}
@@ -42,7 +42,7 @@
 <script>
 export default {
   name: "DynamicModal",
-  props: ["modalTitle", "dismissModalText", "submitModalText", "reset", "submit"],
+  props: ["modalTitle", "dismissModalText", "submitModalText", "reset", "submit", "theme"],
   methods: {
     submitModal() {
       this.$emit("submitted");
@@ -69,4 +69,5 @@ export default {
   width: 100%;
   height: 100%;
 }
+
 </style>
