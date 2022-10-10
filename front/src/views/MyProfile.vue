@@ -5,7 +5,6 @@
         <div class="col-12 col-md-8 col-lg-9 mb-3 pt-3 border-end">
           <Profile
             :user="auth.user"
-            :created-at="formattedDate"
             :followers="followers"
             :following="following"
           />
@@ -38,12 +37,6 @@ export default {
       followers: [],
       following: [],
     };
-  },
-  computed: {
-    // formates the the user account's creation date
-    formattedDate() {
-      return this.$filters.formatDate(this.auth.user.createdAt);
-    },
   },
   mounted() {
     this.auth.editMyProfile();

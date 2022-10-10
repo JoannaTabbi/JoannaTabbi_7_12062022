@@ -36,7 +36,7 @@
         >
           <h1 class="card-title fs-5 mb-0">{{ user.userName }}</h1>
           <p class="card-text small">
-            Membre depuis le <span>{{ createdAt }}</span>
+            Membre depuis le <span>{{ formattedDate }}</span>
           </p>
         </div>
         <div
@@ -195,7 +195,13 @@ export default {
     Post,
     MiniProfile,
   },
-  props: ["user", "followers", "following", "createdAt", "userProfile", "followButtonText"],
+  props: ["user", "followers", "following", "userProfile", "followButtonText"],
+  computed: {
+    // formates the the user account's creation date
+    formattedDate() {
+      return this.$filters.formatDate(this.user.createdAt);
+    },
+  },
   methods: {
     submitFollow() {
         this.$emit("followToggle");
