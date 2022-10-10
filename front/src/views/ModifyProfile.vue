@@ -294,7 +294,7 @@ export default {
 
     // exports user's data
     exportData() {
-      userServices.getOneself()
+      userServices.exportData()
       .then((res) => {
         loadServices.excelParser().exportDataFromJSON(res.data, null, null);
       })

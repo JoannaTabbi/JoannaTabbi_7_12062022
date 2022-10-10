@@ -258,11 +258,17 @@ exports.exportData = (req, res, next) => {
                     error: "User not found!"
                 });
             } else {
-                user.email = decryptMail(user.email); // decrypts user's email
-                const text = user.toString(); // returns the user object to string format
+                console.log(user);
+                const userToExport = {
+                    userName: user.userName,
+                    email: decryptMail(user.email),
+                    aboutMe: user.aboutMe
+                }
+                //user.email = decryptMail(user.email); // decrypts user's email
+                const text = userToExport.toString(); // returns the user object to string format
                 res.attachment("user-data.txt");
                 res.type("txt");
-                return res.status(200).send(text);
+                res.status(200).send(userToExport);
             }
         })
         .catch((error) => res.status(404).json({
