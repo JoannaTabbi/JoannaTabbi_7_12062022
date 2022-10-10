@@ -12,17 +12,6 @@ function uploadUserFiles(formData) {
   })
 }
 
-//upload post image service: 
-
-function uploadPostFiles(formData) {
-
-  return Axios.put("/auth/", formData, {
-    headers: {
-      "Content-Type": "multipart/form-data"
-    }
-  })
-}
-
 // parse data in order to download it
 
 function excelParser() {

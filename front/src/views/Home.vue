@@ -108,6 +108,7 @@
                     placeholder="When I woke up this morning..."
                     rows="2"
                   ></textarea>
+                  <div v-if="message" class="alert alert-secondary" role="alert">{{loadMessage}}</div>
                 </div>
               </div>
               <ul class="nav d-flex justify-content-around">
@@ -118,9 +119,9 @@
                   </label>
                 </li>
                 <li class="nav-item">
-                  <div type="button">
+                  <button type="submit">
                     <i class="fa-regular fa-paper-plane fa-2x"></i
-                  ></div>
+                  ></button>
                 </li>
               </ul>
             </form>
@@ -148,7 +149,7 @@
 import Post from "../components/Post.vue";
 import MostPopular from "../components/MostPopular.vue";
 import { useAuthStore } from "../stores/authStore";
-import { loadServices } from "../_services";
+import { postServices } from "../_services";
 export default {
   name: "Home",
   components: {
@@ -165,7 +166,9 @@ export default {
          userId: this.auth.user._id,
          imageUrl: "",
          message: ""
-       }
+       },
+       currentImage: undefined,
+       loadMessage: "",
     }
   },
   computed: {
@@ -178,22 +181,21 @@ export default {
     // create new post
     selectImage(event) {
       this.currentImage = event.target.files[0];
-      this.message = "";
+      this.loadMessage = "";
     },
 
-    uploadUserFiles() {
+    addPost() {
       
       let formData = new FormData();
       formData.append("post", this.post.message);
       formData.append("image", this.currentImage);
   
-      loadServices.uploadFiles(formData)
+      postServices.createPost(formData)
         .then((res) => { 
-          this.auth.user = res.data;
-          router.push("/myProfile");
+          console.log(res);
         })
         .catch((err) => {
-          this.message = "L'image n'a pas pu être changée! " + err;
+          this.loadMessage = "L'image n'a pas pu être changée! " + err;
           this.currentImage = undefined;
         });
     },
