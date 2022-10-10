@@ -62,8 +62,9 @@ export default {
   //follows user
     followUser() {
       userServices.followUser(this.id)
-        .then(async () => {
-          await this.auth.user.following.push(this.id);
+        .then((res) => {
+          this.auth.user.following = res.data.userFollowing.following;
+          this.user.followers = res.data.userFollowed.followers;
           this.isFollowed = true;
           this.followButtonText = "Ne plus suivre";
         })
@@ -73,8 +74,9 @@ export default {
   //unfollows user
     unfollowUser() {
       userServices.unfollowUser(this.id)
-        .then(async () => {
-          this.auth.user.following = await this.auth.user.following.filter(id => id !== this.id);
+        .then((res) => {
+          this.auth.user.following = res.data.userUnfollowing.following;
+          this.user.followers = res.data.userUnfollowed.followers;
           this.isFollowed = false;
           this.followButtonText = "Suivre";
         })

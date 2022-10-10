@@ -200,6 +200,7 @@ exports.logout = (req, res, next) => {
  */
 exports.readUser = (req, res, next) => {
     User.findById(req.params.id)
+        .populate(['following', 'followers'])
         .then((user) => {
             if (!user) {
                 res.status(404).json({
@@ -231,6 +232,7 @@ exports.readUser = (req, res, next) => {
  */
 exports.readOneself = (req, res, next) => {
     User.findById(req.auth.userId)
+        .populate(['following', 'followers'])
         .then((user) => {
             if (!user) {
                 res.status(404).json({
@@ -395,7 +397,7 @@ exports.follow = (req, res, next) => {
                             upsert: true,
                             setDefaultsOnInsert: true
                         })
-                    .then(() => {
+                    .then((userFollowed) => {
                         User.findByIdAndUpdate(req.auth.userId, {
                                 $push: {
                                     following: req.params.id
@@ -405,7 +407,10 @@ exports.follow = (req, res, next) => {
                                 upsert: true,
                                 setDefaultsOnInsert: true
                             })
-                            .then((userFollowing) => res.status(200).json(userFollowing,
+                            .then((userFollowing) => res.status(200).json({
+                                userFollowing,
+                                userFollowed
+                            },
                                 hateoasLinks(req, userFollowing._id)))
                             .catch((error) => res.status({
                                 error
@@ -441,7 +446,7 @@ exports.unfollow = (req, res, next) => {
                             upsert: true,
                             setDefaultsOnInsert: true
                         })
-                    .then(() => {
+                    .then((userUnfollowed) => {
                         User.findByIdAndUpdate(req.auth.userId, {
                                 $pull: {
                                     following: req.params.id
@@ -451,7 +456,10 @@ exports.unfollow = (req, res, next) => {
                                 upsert: true,
                                 setDefaultsOnInsert: true
                             })
-                            .then((userUnfollowing) => res.status(200).json(userUnfollowing,
+                            .then((userUnfollowing) => res.status(200).json({
+                                userUnfollowing,
+                                userUnfollowed
+                            },
                                 hateoasLinks(req, userUnfollowing._id)))
                             .catch((error) => res.status(400).json(error))
                     })

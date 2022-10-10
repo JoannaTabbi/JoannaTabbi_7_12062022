@@ -37,12 +37,12 @@ const userSchema = new mongoose.Schema({
         default: "/images/avatar-200.png"
     },
     followers: [{
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         default: 0,
         ref: "User" 
     }],
     following: [{
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         default: 0,
         ref: "User"
     }],
@@ -51,7 +51,7 @@ const userSchema = new mongoose.Schema({
         default: 0
     },
     usersWhoReported: [{
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "User"
     }],
     refreshToken: [String]
