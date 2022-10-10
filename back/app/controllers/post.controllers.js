@@ -60,9 +60,11 @@ exports.createPost = (req, res, next) => {
     });
     post
         .save()
-        .then((newPost) =>
+        .then((newPost) => {
+            if (newPost.imageUrl) {
+                newPost.imageUrl = `${req.protocol}://${req.get("host")}${newPost.imageUrl}`; }
             res.status(201).json(newPost, hateoasLinks(req, newPost._id))
-        )
+        })
         .catch((error) =>
             res.status(400).json(
                 error

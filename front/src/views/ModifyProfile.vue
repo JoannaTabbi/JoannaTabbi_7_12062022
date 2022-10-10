@@ -280,7 +280,7 @@ export default {
       formData.append("user", this.userUpdate);
       formData.append("image", this.currentImage);
   
-      loadServices.uploadFiles(formData)
+      loadServices.uploadUserFiles(formData)
         .then((res) => { 
           this.auth.user = res.data;
           router.push("/myProfile");

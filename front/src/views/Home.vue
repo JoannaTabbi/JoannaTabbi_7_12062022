@@ -148,6 +148,7 @@
 import Post from "../components/Post.vue";
 import MostPopular from "../components/MostPopular.vue";
 import { useAuthStore } from "../stores/authStore";
+import { loadServices } from "../_services";
 export default {
   name: "Home",
   components: {
@@ -173,6 +174,31 @@ export default {
       return this.$filters.formatDate(this.auth.user.createdAt);
     },
   },
+  methods: {
+    // create new post
+    selectImage(event) {
+      this.currentImage = event.target.files[0];
+      this.message = "";
+    },
+
+    uploadUserFiles() {
+      
+      let formData = new FormData();
+      formData.append("post", this.post.message);
+      formData.append("image", this.currentImage);
+  
+      loadServices.uploadFiles(formData)
+        .then((res) => { 
+          this.auth.user = res.data;
+          router.push("/myProfile");
+        })
+        .catch((err) => {
+          this.message = "L'image n'a pas pu être changée! " + err;
+          this.currentImage = undefined;
+        });
+    },
+
+  }
 };
 </script>
 

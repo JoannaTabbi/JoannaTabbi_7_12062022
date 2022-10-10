@@ -1,9 +1,20 @@
 import Axios from "@/_interceptors/axios";
 import exportFromJSON from "export-from-json";
 
-//upload image service
+//upload user image service
 
-function uploadFiles(formData) {
+function uploadUserFiles(formData) {
+
+  return Axios.put("/auth/", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data"
+    }
+  })
+}
+
+//upload post image service: 
+
+function uploadPostFiles(formData) {
 
   return Axios.put("/auth/", formData, {
     headers: {
@@ -35,6 +46,6 @@ function excelParser() {
 };
 
 export const loadServices = {
-  uploadFiles,
+  uploadUserFiles,
   excelParser
 }
