@@ -2,7 +2,6 @@
   <main class="h-100">
     <div class="container-fluid">
       <div class="row">
-
         <!-- WELCOME CARD SECTION -->
 
         <div class="col-12 col-lg-3 mb-3 pt-3">
@@ -94,7 +93,37 @@
         >
           <section id="create_post" class="shadow rounded-3 mb-3 p-3">
             <h2 class="text-start fs-4">Créez une publication</h2>
-            <CreatePost />
+            <form @submit.prevent="addPost" class="card card-body border-0">
+              <div class="d-flex mb-3 border-bottom pb-2">
+                <div class="img-sm-container me-3">
+                  <img
+                    class="mw-100 shadow rounded-3"
+                    :src="auth.user.imageUrl"
+                    alt="avatar"
+                  />
+                </div>
+                <div class="w-100">
+                  <textarea v-model="post.message"
+                    class="form-control border-0 p-2"
+                    placeholder="When I woke up this morning..."
+                    rows="2"
+                  ></textarea>
+                </div>
+              </div>
+              <ul class="nav d-flex justify-content-around">
+                <li class="nav-item">
+                  <label type="button">
+                    <i class="fa-regular fa-image fa-2x"></i>
+                    <input @change="selectImage" type="file" class="form-control" hidden />
+                  </label>
+                </li>
+                <li class="nav-item">
+                  <div type="button">
+                    <i class="fa-regular fa-paper-plane fa-2x"></i
+                  ></div>
+                </li>
+              </ul>
+            </form>
           </section>
           <section id="feeds" class="shadow rounded-3 mb-3 p-3">
             <h2 class="text-start fs-4 fw-bolder">Fil d'actualité</h2>
@@ -110,27 +139,33 @@
         </div>
 
         <!-- MOST POPULAR SECTION END -->
-        
       </div>
     </div>
   </main>
 </template>
 
 <script>
-import CreatePost from "../components/CreatePost.vue";
 import Post from "../components/Post.vue";
 import MostPopular from "../components/MostPopular.vue";
 import { useAuthStore } from "../stores/authStore";
 export default {
   name: "Home",
   components: {
-    CreatePost,
     Post,
     MostPopular,
   },
   setup() {
     const auth = useAuthStore();
     return { auth };
+  },
+  data() {
+    return {
+       post: {
+         userId: this.auth.user._id,
+         imageUrl: "",
+         message: ""
+       }
+    }
   },
   computed: {
     // formates the the user account's creation date
@@ -141,4 +176,8 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.fa-image:hover, .fa-paper-plane:hover {
+    color: #FD2D01;
+}
+</style>
