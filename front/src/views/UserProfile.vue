@@ -6,8 +6,6 @@
           <Profile
             :user="user"
             :user-profile="true"
-            :followers="followersArray"
-            :following="followingArray"
             :followButtonText="followButtonText"
             @followToggle="followToggle"
           />
@@ -63,8 +61,9 @@ export default {
     followUser() {
       userServices.followUser(this.id)
         .then((res) => {
-          this.auth.user.following = res.data.userFollowing.following;
-          this.user.followers = res.data.userFollowed.followers;
+          console.log(res.data);
+          //this.auth.user.following = res.data.userFollowing.following;
+          //this.user.followers = res.data.userFollowed.followers;
           this.isFollowed = true;
           this.followButtonText = "Ne plus suivre";
         })
@@ -93,8 +92,6 @@ export default {
       .getUser(this.id)
       .then((res) => {
         this.user = res.data;
-        this.auth.getFollowers(this.user.followers, this.followersArray);
-        this.auth.getFollowing(this.user.following, this.followingArray);
         this.userIsFollowed();
         console.log(this.isFollowed, this.followButtonText);
       })

@@ -81,6 +81,10 @@ exports.login = (req, res, next) => {
   User.findOne({
     email: emailEncrypted,
   })
+    .populate([
+      { path: "following", select: ["userName", "imageUrl"] },
+      { path: "followers", select: ["userName", "imageUrl"] },
+    ])
     .then((user) => {
       if (!user) {
         return res.status(401).json({
@@ -89,6 +93,16 @@ exports.login = (req, res, next) => {
       }
       user.imageUrl = `${req.protocol}://${req.get("host")}${user.imageUrl}`;
       user.email = decryptMail(user.email);
+      user.followers.forEach((follower) => {
+        follower.imageUrl = `${req.protocol}://${req.get("host")}${
+          follower.imageUrl
+        }`;
+      });
+      user.following.forEach((following) => {
+        following.imageUrl = `${req.protocol}://${req.get("host")}${
+          following.imageUrl
+        }`;
+      });
       //checks if the password given matches the one assigned
       //to the user in database. If correct, returns userId and a token.
       bcrypt
@@ -230,10 +244,14 @@ exports.readUser = (req, res, next) => {
         });
       } else {
         user.followers.forEach((follower) => {
-            follower.imageUrl = `${req.protocol}://${req.get("host")}${follower.imageUrl}`;
+          follower.imageUrl = `${req.protocol}://${req.get("host")}${
+            follower.imageUrl
+          }`;
         });
         user.following.forEach((following) => {
-            following.imageUrl = `${req.protocol}://${req.get("host")}${following.imageUrl}`;
+          following.imageUrl = `${req.protocol}://${req.get("host")}${
+            following.imageUrl
+          }`;
         });
         console.log(user.followers);
         const userFound = {
@@ -258,6 +276,10 @@ exports.readUser = (req, res, next) => {
  */
 exports.readOneself = (req, res, next) => {
   User.findById(req.auth.userId)
+    .populate([
+      { path: "following", select: ["userName", "imageUrl"] },
+      { path: "followers", select: ["userName", "imageUrl"] },
+    ])
     .then((user) => {
       if (!user) {
         res.status(404).json({
@@ -266,6 +288,16 @@ exports.readOneself = (req, res, next) => {
       } else {
         user.email = decryptMail(user.email); // decrypts user's email
         user.imageUrl = `${req.protocol}://${req.get("host")}${user.imageUrl}`;
+        user.followers.forEach((follower) => {
+          follower.imageUrl = `${req.protocol}://${req.get("host")}${
+            follower.imageUrl
+          }`;
+        });
+        user.following.forEach((following) => {
+          following.imageUrl = `${req.protocol}://${req.get("host")}${
+            following.imageUrl
+          }`;
+        });
         res.status(200).json(user, hateoasLinks(req, user._id));
       }
     })

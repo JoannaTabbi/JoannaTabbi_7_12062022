@@ -157,7 +157,7 @@
         >
           <div class="container">
             <div class="row g-3">
-              <MiniProfile :mpUsers="followers" />
+              <MiniProfile :mpUsers="user.followers" />
             </div>
           </div>
         </div>
@@ -169,7 +169,7 @@
         >
           <div class="container">
             <div class="row g-3">
-              <MiniProfile :mpUsers="following" />
+              <MiniProfile :mpUsers="user.following" />
             </div>
           </div>
         </div>
@@ -195,7 +195,7 @@ export default {
     Post,
     MiniProfile,
   },
-  props: ["user", "followers", "following", "userProfile", "followButtonText"],
+  props: ["user", "userProfile", "followButtonText"],
   computed: {
     // formates the the user account's creation date
     formattedDate() {
