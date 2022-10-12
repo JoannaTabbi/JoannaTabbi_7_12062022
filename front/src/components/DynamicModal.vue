@@ -3,7 +3,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title text-primary" :class="{'text-success': theme == 'success'}">
+          <h5 class="modal-title text-dark">
             {{ modalTitle }}
           </h5>
           <button
@@ -13,7 +13,7 @@
             @click="closeModal"
           ></button>
         </div>
-        <div class="modal-body text-start">
+        <div class="modal-body text-start" :class="theme">
           <slot name="modalBody"></slot>
         </div>
         <div class="modal-footer">
@@ -55,11 +55,7 @@ export default {
 </script>
 
 <style>
-.modal__dialog {
-  width: 400px;
-  padding: 20px;
-  margin: 100px auto;
-  background: white;
+.modal-dialog {
   border-radius: 10px;
 }
 .modal__backdrop {
@@ -68,6 +64,14 @@ export default {
   background: rgba(0, 0, 0, 0.5);
   width: 100%;
   height: 100%;
+}
+.modal-body.success {
+  background-color: #023b19;
+  color: white;
+}
+.modal-body.warning {
+  background-color: #FD2D01;
+  color: white;
 }
 
 </style>

@@ -111,6 +111,7 @@
         @submitted="deleteMyProfile"
         :reset="true"
         :submit="true"
+        theme="warning"
       >
         <template v-slot:modalBody>
           <p>

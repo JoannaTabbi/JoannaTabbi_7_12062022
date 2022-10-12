@@ -135,6 +135,7 @@ export default {
   methods: {
     // redirect user to the login page
     redirectToLogin() {
+      //if (this.theme === "success") 
         router.push("/login");
     },
     // toggle modal
@@ -146,16 +147,16 @@ export default {
     register(value) {
       authServices
         .signupUser(value)
-        .then(() => {
-          this.toggledModal();
+        .then((res) => {
+          console.log(`la réponse est ${res}`);
+          //this.toggledModal();
         })
-        // alerts the user if the email or userName exist in database
-        .catch((err) => {
-          if (err.response.data.message.includes("unique")) {
-            alert(
-              "L'email ou le nom d'utilisateur existe déjà. Veuillez en saisir un autre ou connectez-vous"
-            );
-          }
+        .catch((err) => {  // alerts the user if the email or userName exist in database
+          console.log(`l'erreur est ${err}`);
+          //this.theme = 'warning';
+          //this.modalTitle = "ATTENTION!";
+          //this.modalMessage = `Une erreur est survenue : ${err}`;
+          //this.toggledModal();
         });
     },
   },

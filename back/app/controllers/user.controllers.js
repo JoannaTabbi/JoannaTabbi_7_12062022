@@ -59,12 +59,12 @@ exports.signup = (req, res, next) => {
         userName: req.body.userName,
         email: encryptMail(req.body.email),
         password: hash,
-        isAdmin: req.body.isAdmin, // see front
+        isAdmin: req.body.isAdmin // see front
       });
       user
         .save()
         .then((user) => res.status(201).json(user))
-        .catch((error) => res.status(400).json(error));
+        .catch((error) => res.status(400).json(error))
     })
     .catch((error) => res.status(500).json(error));
 };
@@ -79,16 +79,16 @@ exports.login = (req, res, next) => {
   //in the Users collection
   const emailEncrypted = encryptMail(req.body.email);
   User.findOne({
-    email: emailEncrypted,
+    email: emailEncrypted
   })
     .populate([
       { path: "following", select: ["userName", "imageUrl"] },
-      { path: "followers", select: ["userName", "imageUrl"] },
+      { path: "followers", select: ["userName", "imageUrl"] }
     ])
     .then((user) => {
       if (!user) {
         return res.status(401).json({
-          error: "User not found",
+          error: "User not found"
         });
       }
       user.imageUrl = `${req.protocol}://${req.get("host")}${user.imageUrl}`;
