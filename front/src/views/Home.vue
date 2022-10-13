@@ -93,7 +93,7 @@
         >
           <section id="create_post" class="shadow rounded-3 mb-3 p-3">
             <h2 class="text-start fs-4">Créez une publication</h2>
-            <form @submit.prevent="addPost" class="card card-body border-0">
+            <form class="card card-body border-0">
               <div class="d-flex mb-3 border-bottom pb-2">
                 <div class="img-sm-container me-3">
                   <img
@@ -103,25 +103,37 @@
                   />
                 </div>
                 <div class="w-100">
-                  <textarea v-model="post.message"
+                  <textarea
+                    v-model="this.newPost.message"
                     class="form-control border-0 p-2"
                     placeholder="When I woke up this morning..."
                     rows="2"
                   ></textarea>
-                  <div v-if="message" class="alert alert-secondary" role="alert">{{loadMessage}}</div>
+                  <div
+                    v-if="message"
+                    class="alert alert-secondary"
+                    role="alert"
+                  >
+                    {{ loadMessage }}
+                  </div>
                 </div>
               </div>
               <ul class="nav d-flex justify-content-around">
                 <li class="nav-item">
                   <label type="button">
                     <i class="fa-regular fa-image fa-2x"></i>
-                    <input @change="selectImage" type="file" class="form-control" hidden />
+                    <input
+                      @change="selectImage"
+                      type="file"
+                      class="form-control"
+                      hidden
+                    />
                   </label>
                 </li>
                 <li class="nav-item">
-                  <button type="submit">
-                    <i class="fa-regular fa-paper-plane fa-2x"></i
-                  ></button>
+                  <button type="submit" @submit.prevent="createPost" >
+                    <i class="fa-regular fa-paper-plane fa-2x"></i>
+                  </button>
                 </li>
               </ul>
             </form>
@@ -162,14 +174,14 @@ export default {
   },
   data() {
     return {
-       post: {
-         userId: this.auth.user._id,
-         imageUrl: "",
-         message: ""
-       },
-       currentImage: undefined,
-       loadMessage: "",
-    }
+      posts: [],
+      newPost: {
+        userId: this.auth.user._id,
+        imageUrl: "",
+        message: "",
+      },
+      loadMessage: "",
+    };
   },
   computed: {
     // formates the the user account's creation date
@@ -180,32 +192,49 @@ export default {
   methods: {
     // create new post
     selectImage(event) {
-      this.currentImage = event.target.files[0];
+      this.newPost.imageUrl = event.target.files[0];
       this.loadMessage = "";
     },
 
-    addPost() {
-      
+    createPost() {
       let formData = new FormData();
-      formData.append("post", this.post.message);
-      formData.append("image", this.currentImage);
-  
-      postServices.createPost(formData)
-        .then((res) => { 
+      if ((this.newPost.message = "" && this.newPost.imageUrl == "")) {
+        this.loadMessage = "Veuillez saisir un message ou choisir une photo";
+      } else {
+        if (this.newPost.message) {
+          if (this.newPost.message.length > 500) {
+            this.loadMessage = "Le message ne doit pas dépasser 500 mots";
+          } else {
+            formData.append("post", this.newPost.message);
+          }
+        }
+      }
+      if (this.newPost.imageUrl) {
+        if (this.newPost.imageUrl.size > 500000) {
+          this.loadMessage = "Attention, la taille de l'image ne doit pas dépasser 500ko"
+        } else {
+          formData.append("image", this.newPost.imageUrl);
+        }
+      }
+      postServices
+        .createPost(formData)
+        .then((res) => {
           console.log(res);
+          this.newPost = res.data;
+          //this.posts = getPosts()
         })
         .catch((err) => {
-          this.loadMessage = "L'image n'a pas pu être changée! " + err;
-          this.currentImage = undefined;
+          this.loadMessage = "L'image n'a pas pu être chargée! " + err;
+          this.newPost.imageUrl = "";
         });
     },
-
-  }
+  },
 };
 </script>
 
 <style scoped>
-.fa-image:hover, .fa-paper-plane:hover {
-    color: #FD2D01;
+.fa-image:hover,
+.fa-paper-plane:hover {
+  color: #fd2d01;
 }
 </style>
