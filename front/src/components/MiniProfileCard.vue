@@ -1,7 +1,7 @@
 <template>
 <div>
   <div v-for="mpUser in mpUsers" :key="mpUser._id" class="col-12 col-sm-6 col-md-4 col-lg-3">
-    <router-link :to="{ name: 'UserProfile', params: { id: mpUser._id } }">
+    <router-link :to="profilePage(mpUser._id)">
       <div class="card border-0 align-items-center p-2">
         <div class="avatar-container col-8 mb-3 d-flex justify-content-center">
           <img
@@ -19,9 +19,26 @@
 </template>
 
 <script>
+import { useAuthStore } from '@/stores/authStore';
 export default {
   name: "MiniProfileCard",
-  props: ['mpUsers']
+  setup() {
+    const auth = useAuthStore();
+    return { auth };
+  },
+  props: ['mpUsers'],
+  methods: {
+     // switches the link to myProfile page if the profile card belongs to the authenticated user 
+    // or to userProfile page if it belongs to other user
+     profilePage(uid) {
+      if (uid === this.auth.user._id) {
+        return { name: 'MyProfile' }
+        } else {
+        return { name: 'UserProfile', params: { id: uid } }
+        }
+     }
+  }
+  
 }
 </script>
 

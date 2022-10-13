@@ -37,8 +37,6 @@ export default {
   data() {
     return {
       user: {},
-      followersArray: [],
-      followingArray: [],
       followButtonText: {
         type: String
       },
@@ -52,18 +50,23 @@ export default {
   // followButtonText value between "Follow" and "unfollow" ; this will help to activate 
   // the right method (follow / unfollow) while clicking on the follow button
   userIsFollowed() {
-      if (this.auth.user.following.includes(this.id)) {
-        this.isFollowed = true, this.followButtonText = "Ne plus suivre"
-        } else { this.isFollowed = false, this.followButtonText = "Suivre" }
+    const followingArr = Object.values(this.auth.user.following);
+    const found = followingArr.find(elt => elt._id === this.id);
+      if (found) {
+        this.isFollowed = true; 
+        this.followButtonText = "Ne plus suivre";
+        } else {
+          this.isFollowed = false; 
+          this.followButtonText = "Suivre"
+        }
     },
 
   //follows user
     followUser() {
       userServices.followUser(this.id)
-        .then((res) => {
-          console.log(res.data);
-          //this.auth.user.following = res.data.userFollowing.following;
-          //this.user.followers = res.data.userFollowed.followers;
+        .then(async (res) => {
+          this.auth.user.following = await res.data.userFollowing.following;
+          this.user.followers = await res.data.userFollowed.followers;
           this.isFollowed = true;
           this.followButtonText = "Ne plus suivre";
         })
@@ -73,9 +76,9 @@ export default {
   //unfollows user
     unfollowUser() {
       userServices.unfollowUser(this.id)
-        .then((res) => {
-          this.auth.user.following = res.data.userUnfollowing.following;
-          this.user.followers = res.data.userUnfollowed.followers;
+        .then(async (res) => {
+          this.auth.user.following = await res.data.userUnfollowing.following;
+          this.user.followers = await res.data.userUnfollowed.followers;
           this.isFollowed = false;
           this.followButtonText = "Suivre";
         })
@@ -93,7 +96,6 @@ export default {
       .then((res) => {
         this.user = res.data;
         this.userIsFollowed();
-        console.log(this.isFollowed, this.followButtonText);
       })
       .catch((error) => console.log(error));
   },
