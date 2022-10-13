@@ -34,7 +34,7 @@
         @submitted="redirectToLogin"
         @closed="redirectToLogin"
         :submit="true"
-        theme="success"
+        :theme="theme"
       >
         <template v-slot:modalBody>
           <p>
@@ -122,10 +122,11 @@ export default {
       ],
     };
     return {
-      formSchema,
       showModal: false,
-      modalTitle: "FELICITATIONS !",
-      modalMessage: "Votre enregistrement a réussi, fermez cette fenêtre pour être rédirigé(e) vers la page de connexion"
+      formSchema,
+      theme: "",
+      modalTitle: "",
+      modalMessage: ""
     };
   },
   components: {
@@ -133,30 +134,36 @@ export default {
     DynamicModal
   },
   methods: {
-    // redirect user to the login page
-    redirectToLogin() {
-      //if (this.theme === "success") 
-        router.push("/login");
-    },
+
     // toggle modal
     toggledModal() {
       this.showModal = !this.showModal;
+    },
+
+    // redirect user to the login page
+    redirectToLogin() {
+      if (this.theme === "success") {
+        router.push("/login");
+      } else {
+        this.toggledModal()
+      }
     },
 
     //register the new user in the database
     register(value) {
       authServices
         .signupUser(value)
-        .then((res) => {
-          console.log(`la réponse est ${res}`);
-          //this.toggledModal();
+        .then(() => {
+          this.theme = "success",
+          this.modalTitle = "FELICITATIONS !",
+          this.modalMessage = "Votre enregistrement a réussi, fermez cette fenêtre pour être rédirigé(e) vers la page de connexion"
+          this.toggledModal();
         })
-        .catch((err) => {  // alerts the user if the email or userName exist in database
-          console.log(`l'erreur est ${err}`);
-          //this.theme = 'warning';
-          //this.modalTitle = "ATTENTION!";
-          //this.modalMessage = `Une erreur est survenue : ${err}`;
-          //this.toggledModal();
+        .catch(() => {  // alerts the user if the email or userName exist in database
+          this.theme = 'warning';
+          this.modalTitle = "ATTENTION!";
+          this.modalMessage = "L'email ou le nom d'utilisateur existe déjà. Veuillez en saisir un autre ou connectez-vous";
+          this.toggledModal();
         });
     },
   },
