@@ -45,13 +45,13 @@ exports.readAllPosts = (req, res, next) => {
 /**
  * creates a new post.
  */
-exports.createPost = (req, res, next) => {
-    if (!req.body.post) {
+ exports.createPost = (req, res, next) => {
+    if (!req.body.post && !req.body.image) {
         return res.status(422).json({
             error: "The post is mandatory!"
         });
     };
-    const postObject = JSON.parse(req.body.post);
+    const postObject = req.body.post;
     delete postObject._id;
     const post = new Post({
         ...postObject,
@@ -60,11 +60,9 @@ exports.createPost = (req, res, next) => {
     });
     post
         .save()
-        .then((newPost) => {
-            if (newPost.imageUrl) {
-                newPost.imageUrl = `${req.protocol}://${req.get("host")}${newPost.imageUrl}`; }
+        .then((newPost) =>
             res.status(201).json(newPost, hateoasLinks(req, newPost._id))
-        })
+        )
         .catch((error) =>
             res.status(400).json(
                 error

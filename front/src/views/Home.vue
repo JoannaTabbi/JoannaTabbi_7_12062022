@@ -93,7 +93,7 @@
         >
           <section id="create_post" class="shadow rounded-3 mb-3 p-3">
             <h2 class="text-start fs-4">Créez une publication</h2>
-            <form class="card card-body border-0">
+            <form class="card card-body border-0"  @submit.prevent="createPost()">
               <div class="d-flex mb-3 border-bottom pb-2">
                 <div class="img-sm-container me-3">
                   <img
@@ -102,15 +102,17 @@
                     alt="avatar"
                   />
                 </div>
-                <div class="w-100">
+                <div class="w-100 form-group">
                   <textarea
-                    v-model="this.newPost.message"
+                    v-model="newPost.message"
+                    id="post"
+                    name="post"
                     class="form-control border-0 p-2"
                     placeholder="When I woke up this morning..."
                     rows="2"
                   ></textarea>
                   <div
-                    v-if="message"
+                    v-if="loadMessage"
                     class="alert alert-secondary"
                     role="alert"
                   >
@@ -120,18 +122,21 @@
               </div>
               <ul class="nav d-flex justify-content-around">
                 <li class="nav-item">
-                  <label type="button">
+                  <label type="button" for="formFile">
                     <i class="fa-regular fa-image fa-2x"></i>
                     <input
                       @change="selectImage"
                       type="file"
                       class="form-control"
+                      name="image"
+                      id="formFile"
+                      accept="image/*"
                       hidden
                     />
                   </label>
                 </li>
                 <li class="nav-item">
-                  <button type="submit" @submit.prevent="createPost" >
+                  <button type="submit">
                     <i class="fa-regular fa-paper-plane fa-2x"></i>
                   </button>
                 </li>
@@ -176,7 +181,6 @@ export default {
     return {
       posts: [],
       newPost: {
-        userId: this.auth.user._id,
         imageUrl: "",
         message: "",
       },
@@ -197,25 +201,27 @@ export default {
     },
 
     createPost() {
+      console.log(this.newPost.message);
+      console.log(this.newPost.imageUrl);
       let formData = new FormData();
-      if ((this.newPost.message = "" && this.newPost.imageUrl == "")) {
+      formData.append("post", this.newPost.message);
+      formData.append("image", this.newPost.imageUrl);
+      /* if ((this.newPost.message = "" && this.newPost.imageUrl == "")) {
         this.loadMessage = "Veuillez saisir un message ou choisir une photo";
       } else {
-        if (this.newPost.message) {
           if (this.newPost.message.length > 500) {
             this.loadMessage = "Le message ne doit pas dépasser 500 mots";
           } else {
-            formData.append("post", this.newPost.message);
+            formData.append("post", this.newPost.message)
           }
-        }
-      }
+      };
       if (this.newPost.imageUrl) {
         if (this.newPost.imageUrl.size > 500000) {
           this.loadMessage = "Attention, la taille de l'image ne doit pas dépasser 500ko"
         } else {
           formData.append("image", this.newPost.imageUrl);
         }
-      }
+      }; */
       postServices
         .createPost(formData)
         .then((res) => {
@@ -225,6 +231,7 @@ export default {
         })
         .catch((err) => {
           this.loadMessage = "L'image n'a pas pu être chargée! " + err;
+          this.newPost.message = "";
           this.newPost.imageUrl = "";
         });
     },
