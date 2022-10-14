@@ -8,6 +8,11 @@ const fs = require("fs");
  */
 exports.readOnePost = (req, res, next) => {
     Post.findById(req.params.id)
+    .populate([
+        { path: "userId", select: ["userName", "imageUrl"] },
+        { path: "usersLiked", select: ["userName", "imageUrl"] },
+        { path: "comments " }
+      ])
         .then((post) => {
             if (req.body.imageUrl) {
                 post.imageUrl = `${req.protocol}://${req.get("host")}${post.imageUrl}`;
@@ -26,13 +31,18 @@ exports.readOnePost = (req, res, next) => {
  */
 exports.readAllPosts = (req, res, next) => {
     Post.find()
+    .populate([
+        { path: "userId", select: ["userName", "imageUrl"] },
+        { path: "usersLiked", select: ["userName", "imageUrl"] },
+        { path: "comments" }
+      ])
         .then((posts) => {
-            posts = posts.map((post) => {
+            posts.forEach((post) => {
                 post.imageUrl = `${req.protocol}://${req.get("host")}${post.imageUrl}`;
-                return {
-                    ...post._doc
-                };
+                post.userId.imageUrl = `${req.protocol}://${req.get("host")}${post.userId.imageUrl}`;
+                post.usersLiked.imageUrl = `${req.protocol}://${req.get("host")}${post.usersLiked.imageUrl}`;
             });
+    
             res.status(200).json(posts);
         })
         .catch((error) =>

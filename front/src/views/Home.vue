@@ -145,7 +145,8 @@
           </section>
           <section id="feeds" class="shadow rounded-3 mb-3 p-3">
             <h2 class="text-start fs-4 fw-bolder">Fil d'actualité</h2>
-            <Post />
+            <Post 
+             :posts="posts"/>
           </section>
         </div>
 
@@ -193,7 +194,22 @@ export default {
       return this.$filters.formatDate(this.auth.user.createdAt);
     },
   },
+  mounted() {
+    this.getPosts();
+  },
   methods: {
+    //display all the posts
+    getPosts() {
+        postServices.getPosts()
+        .then((res) => {
+          console.log(res.data);
+          this.posts = res.data;
+    })
+    .catch((err) => console.log(err));
+    
+    },
+
+
     // create new post
     selectImage(event) {
       this.newPost.imageUrl = event.target.files[0];

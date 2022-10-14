@@ -11,7 +11,7 @@ let createPost = (formData) => {
 
 // gets all the posts published
 let getPosts = () => {
-    return Axios.get("/posts")
+    return Axios.get("/posts/")
 };
 
 //gets ont post

@@ -134,7 +134,6 @@
             role="tab"
             aria-controls="posts"
             aria-selected="false"
-            @click="loadPosts"
           >
             Publications
           </button>
