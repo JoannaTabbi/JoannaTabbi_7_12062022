@@ -8,11 +8,18 @@ const fs = require("fs");
  */
 exports.readOnePost = (req, res, next) => {
     Post.findById(req.params.id)
-    .populate([
-        { path: "userId", select: ["userName", "imageUrl"] },
-        { path: "usersLiked", select: ["userName", "imageUrl"] },
-        { path: "comments " }
-      ])
+        .populate([{
+                path: "userId",
+                select: ["userName", "imageUrl"]
+            },
+            {
+                path: "usersLiked",
+                select: ["userName", "imageUrl"]
+            },
+            {
+                path: "comments "
+            }
+        ])
         .then((post) => {
             if (req.body.imageUrl) {
                 post.imageUrl = `${req.protocol}://${req.get("host")}${post.imageUrl}`;
@@ -31,18 +38,28 @@ exports.readOnePost = (req, res, next) => {
  */
 exports.readAllPosts = (req, res, next) => {
     Post.find()
-    .populate([
-        { path: "userId", select: ["userName", "imageUrl"] },
-        { path: "usersLiked", select: ["userName", "imageUrl"] },
-        { path: "comments" }
-      ])
+        .populate([{
+                path: "userId",
+                select: ["userName", "imageUrl"]
+            },
+            {
+                path: "usersLiked",
+                select: ["userName", "imageUrl"]
+            },
+            {
+                path: "comments"
+            }
+        ])
+        .sort({
+            createdAt: -1
+        })
         .then((posts) => {
             posts.forEach((post) => {
-                post.imageUrl = `${req.protocol}://${req.get("host")}${post.imageUrl}`;
+                post.imageUrl ? post.imageUrl =`${req.protocol}://${req.get("host")}${post.imageUrl}` : post.imageUrl = "";
                 post.userId.imageUrl = `${req.protocol}://${req.get("host")}${post.userId.imageUrl}`;
                 post.usersLiked.imageUrl = `${req.protocol}://${req.get("host")}${post.usersLiked.imageUrl}`;
             });
-    
+
             res.status(200).json(posts);
         })
         .catch((error) =>
@@ -55,13 +72,13 @@ exports.readAllPosts = (req, res, next) => {
 /**
  * creates a new post.
  */
- exports.createPost = (req, res, next) => {
+exports.createPost = (req, res, next) => {
     if (!req.body.message && !req.body.image) {
         return res.status(422).json({
             error: "The post is mandatory!"
         });
     };
-    
+
     const post = new Post({
         ...req.body,
         imageUrl: req.file ? `/images/${req.file.filename}` : "",
@@ -69,9 +86,10 @@ exports.readAllPosts = (req, res, next) => {
     });
     post
         .save()
-        .then((newPost) =>
+        .then((newPost) => {
+            newPost.imageUrl ? newPost.imageUrl = `${req.protocol}://${req.get("host")}${newPost.imageUrl}` : newPost.imageUrl = ""
             res.status(201).json(newPost, hateoasLinks(req, newPost._id))
-        )
+        })
         .catch((error) =>
             res.status(400).json(
                 error
@@ -231,9 +249,11 @@ exports.deletePost = (req, res, next) => {
             fs.unlink(`images/${filename}`, function (err) {
                 if (err) throw err;
                 // if no error, file has been deleted successfully
-                Comment.deleteMany({ postId: req.params.id })
-                .then(() => res.sendStatus(204))
-                .catch((error) => res.status(400).json(error))
+                Comment.deleteMany({
+                        postId: req.params.id
+                    })
+                    .then(() => res.sendStatus(204))
+                    .catch((error) => res.status(400).json(error))
             });
         })
         .catch((error) =>

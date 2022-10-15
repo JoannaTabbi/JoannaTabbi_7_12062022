@@ -238,15 +238,13 @@ export default {
       }; */
       postServices
         .createPost(formData)
-        .then((res) => {
+        .then(async (res) => {
           console.log(res);
-          this.newPost = res.data;
-          this.posts = this.post.push(this.newPost);
+          await this.posts.unshift(res.data);
+          this.newPost = "";
         })
         .catch((err) => {
-          this.loadMessage = "L'image n'a pas pu être chargée! " + err;
-          this.newPost.message = "";
-          this.newPost.imageUrl = "";
+          console.log(err);
         });
     },
   },

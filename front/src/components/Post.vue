@@ -44,7 +44,7 @@
           </ul>
         </div>
       </div>
-      <div class="card-img mb-3">
+      <div v-if="post.imageUrl || post.imageUrl != ''" class="card-img mb-3">
         <img
           class="w-100"
           :src="post.imageUrl"
