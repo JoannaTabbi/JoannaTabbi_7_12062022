@@ -12,7 +12,7 @@
         </div>
         <div class="w-100 text-start">
           <router-link to="/profile">
-            <h5 class="fs-6 mb-0">{{ post.userId.userName }}</h5>
+            <h5 class="fs-6 mb-0">"{{ post.userId.userName }}"</h5>
           </router-link>
           <p class="mb-0 fw-light small fst-italic">{{ post.createdAt }}</p>
         </div>

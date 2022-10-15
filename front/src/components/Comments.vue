@@ -10,7 +10,7 @@
       </div>
       <form class="w-100">
         <textarea
-        v-model="comment.message"
+        
           class="form-control border-0 p-2"
           placeholder="Qu'en dites-vous?"
           rows="1"
@@ -25,16 +25,16 @@
         <div class="d-flex img-sm-container me-3 align-items-start">
           <img
             class="mw-100 shadow rounded-3"
-            :src="comment.imageURL"
-            :alt="`avatar de ${comment.userId.userName}`"
+            src=""
+            alt="avatar"
           />
         </div>
         <div>
           <div class="w-100 text-start bg-light rounded-3 p-2">
             <div class="d-flex align-items-baseline justify-content-between">
-              <router-link to="/profile">
+              <div>
                 <h5 class="fs-6 mb-0">Jean_Dupont</h5>
-              </router-link>
+              </div>
               <div class="dropdown fs-5 fw-bold ">
                 <a
                   href="#"
@@ -69,7 +69,7 @@
               </div>
             </div>
             <p class="fs-6 mb-0">
-              {{ post.comment }}
+              
             </p>
           </div>
           <ul
