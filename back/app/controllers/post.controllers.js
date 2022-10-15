@@ -56,15 +56,14 @@ exports.readAllPosts = (req, res, next) => {
  * creates a new post.
  */
  exports.createPost = (req, res, next) => {
-    if (!req.body.post && !req.body.image) {
+    if (!req.body.message && !req.body.image) {
         return res.status(422).json({
             error: "The post is mandatory!"
         });
     };
-    const postObject = req.body.post;
-    delete postObject._id;
+    
     const post = new Post({
-        ...postObject,
+        ...req.body,
         imageUrl: req.file ? `/images/${req.file.filename}` : "",
         userId: req.auth.userId
     });

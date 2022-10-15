@@ -217,10 +217,8 @@ export default {
     },
 
     createPost() {
-      console.log(this.newPost.message);
-      console.log(this.newPost.imageUrl);
       let formData = new FormData();
-      formData.append("post", this.newPost.message);
+      formData.append("message", this.newPost.message);
       formData.append("image", this.newPost.imageUrl);
       /* if ((this.newPost.message = "" && this.newPost.imageUrl == "")) {
         this.loadMessage = "Veuillez saisir un message ou choisir une photo";
@@ -243,7 +241,7 @@ export default {
         .then((res) => {
           console.log(res);
           this.newPost = res.data;
-          //this.posts = getPosts()
+          this.posts = this.post.push(this.newPost);
         })
         .catch((err) => {
           this.loadMessage = "L'image n'a pas pu être chargée! " + err;
