@@ -233,6 +233,7 @@ exports.logout = (req, res, next) => {
  */
 exports.readUser = (req, res, next) => {
   User.findById(req.params.id)
+    .select('userName aboutMe imageUrl followers following createdAt')
     .populate([
       { path: "following", select: ["userName", "imageUrl"] },
       { path: "followers", select: ["userName", "imageUrl"] },
@@ -253,17 +254,8 @@ exports.readUser = (req, res, next) => {
             following.imageUrl
           }`;
         });
-        console.log(user.followers);
-        const userFound = {
-          _id: user._id,
-          userName: user.userName,
-          aboutMe: user.aboutMe,
-          imageUrl: `${req.protocol}://${req.get("host")}${user.imageUrl}`,
-          followers: user.followers,
-          following: user.following,
-          createdAt: user.createdAt,
-        };
-        res.status(200).json(userFound, hateoasLinks(req, userFound._id));
+        user.imageUrl = `${req.protocol}://${req.get("host")}${user.imageUrl}`;
+        res.status(200).json(user, hateoasLinks(req, user._id));
       }
     })
     .catch((error) => res.status(404).json(error));
@@ -310,23 +302,18 @@ exports.readOneself = (req, res, next) => {
  */
 exports.exportData = (req, res, next) => {
   User.findById(req.auth.userId)
+    .select('userName email aboutMe')
     .then((user) => {
       if (!user) {
         res.status(404).json({
           error: "User not found!",
         });
       } else {
-        console.log(user);
-        const userToExport = {
-          userName: user.userName,
-          email: decryptMail(user.email),
-          aboutMe: user.aboutMe,
-        };
-        //user.email = decryptMail(user.email); // decrypts user's email
-        const text = userToExport.toString(); // returns the user object to string format
+        user.email = decryptMail(user.email); // decrypts user's email
+        const text = user.toString(); // returns the user object to string format
         res.attachment("user-data.txt");
         res.type("txt");
-        res.status(200).send(userToExport);
+        res.status(200).send(user);
       }
     })
     .catch((error) =>
