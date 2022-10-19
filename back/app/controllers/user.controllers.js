@@ -390,7 +390,7 @@ exports.updateUser = (req, res, next) => {
           )
           .then((userUpdated) => {
             userUpdated.imageUrl = `${req.protocol}://${req.get("host")}${
-              user.imageUrl
+              userUpdated.imageUrl
             }`;
             userUpdated.email = decryptMail(userUpdated.email); // decrypts user's email
             res
@@ -483,14 +483,34 @@ exports.follow = (req, res, next) => {
                   select: ["userName", "imageUrl"]
                 },
               ])
-              .then((userFollowing) =>
+              .then((userFollowing) => {
+                userFollowing.imageUrl = `${req.protocol}://${req.get("host")}${
+                  userFollowing.imageUrl}`;
+                userFollowed.imageUrl = `${req.protocol}://${req.get("host")}${
+                  userFollowed.imageUrl}`;
+                userFollowing.following.forEach((user) => {
+                  user.imageUrl = `${req.protocol}://${req.get("host")}${
+                    user.imageUrl}`
+                });
+                userFollowing.followers.forEach((user) => {
+                  user.imageUrl = `${req.protocol}://${req.get("host")}${
+                    user.imageUrl}`
+                });
+                userFollowed.following.forEach((user) => {
+                  user.imageUrl = `${req.protocol}://${req.get("host")}${
+                    user.imageUrl}`
+                });
+                userFollowed.followers.forEach((user) => {
+                  user.imageUrl = `${req.protocol}://${req.get("host")}${
+                    user.imageUrl}`
+                });
                 res.status(200).json({
                     userFollowing,
                     userFollowed
                   },
                   hateoasLinks(req, userFollowing._id)
                 )
-              )
+                })
               .catch((error) =>
                 res.status({
                   error
@@ -560,14 +580,33 @@ exports.unfollow = (req, res, next) => {
                   select: ["userName", "imageUrl"]
                 }
               ])
-              .then((userUnfollowing) =>
+              .then((userUnfollowing) => {
+                userUnfollowing.imageUrl = `${req.protocol}://${req.get("host")}${
+                  userUnfollowing.imageUrl}`;
+                userUnfollowed.imageUrl = `${req.protocol}://${req.get("host")}${
+                  userUnfollowed.imageUrl}`;
+                userUnfollowing.following.forEach((user) => {
+                  user.imageUrl = `${req.protocol}://${req.get("host")}${
+                    user.imageUrl}`
+                });
+                userUnfollowing.followers.forEach((user) => {
+                  user.imageUrl = `${req.protocol}://${req.get("host")}${
+                    user.imageUrl}`
+                });
+                userUnfollowed.following.forEach((user) => {
+                  user.imageUrl = `${req.protocol}://${req.get("host")}${
+                    user.imageUrl}`
+                });
+                userUnfollowed.followers.forEach((user) => {
+                  user.imageUrl = `${req.protocol}://${req.get("host")}${
+                    user.imageUrl}`
+                });
                 res.status(200).json({
-                    userUnfollowing,
-                    userUnfollowed
-                  },
-                  hateoasLinks(req, userUnfollowing._id)
-                )
-              )
+                  userUnfollowing,
+                  userUnfollowed
+                },
+                hateoasLinks(req, userUnfollowing._id)
+              )})
               .catch((error) => res.status(400).json(error));
           })
           .catch((error) => res.status(400).json(error));

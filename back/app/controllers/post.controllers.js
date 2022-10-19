@@ -59,9 +59,6 @@ exports.readAllPosts = (req, res, next) => {
                 if (post.userId.imageUrl.startsWith(`${req.protocol}://${req.get("host")}`)) {
                     return post.userId.imageUrl } else { post.userId.imageUrl = `${req.protocol}://${req.get("host")}${post.userId.imageUrl}`;
                 };
-                if (post.usersLiked.imageUrl.startsWith(`${req.protocol}://${req.get("host")}`)) {
-                    return post.usersLiked.imageUrl } else { post.usersLiked.imageUrl = `${req.protocol}://${req.get("host")}${post.usersLiked.imageUrl}`;
-                };
             });
 
             res.status(200).json(posts);
