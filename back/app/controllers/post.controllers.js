@@ -56,8 +56,12 @@ exports.readAllPosts = (req, res, next) => {
         .then((posts) => {
             posts.forEach((post) => {
                 post.imageUrl ? post.imageUrl =`${req.protocol}://${req.get("host")}${post.imageUrl}` : post.imageUrl = "";
-                post.userId.imageUrl = `${req.protocol}://${req.get("host")}${post.userId.imageUrl}`;
-                post.usersLiked.imageUrl = `${req.protocol}://${req.get("host")}${post.usersLiked.imageUrl}`;
+                if (post.userId.imageUrl.startsWith(`${req.protocol}://${req.get("host")}`)) {
+                    return post.userId.imageUrl } else { post.userId.imageUrl = `${req.protocol}://${req.get("host")}${post.userId.imageUrl}`;
+                };
+                if (post.usersLiked.imageUrl.startsWith(`${req.protocol}://${req.get("host")}`)) {
+                    return post.usersLiked.imageUrl } else { post.usersLiked.imageUrl = `${req.protocol}://${req.get("host")}${post.usersLiked.imageUrl}`;
+                };
             });
 
             res.status(200).json(posts);
