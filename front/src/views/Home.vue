@@ -93,7 +93,10 @@
         >
           <section id="create_post" class="shadow rounded-3 mb-3 p-3">
             <h2 class="text-start fs-4">Créez une publication</h2>
-            <form class="card card-body border-0"  @submit.prevent="createPost()">
+            <form
+              class="card card-body border-0"
+              @submit.prevent="createPost()"
+            >
               <div class="d-flex mb-3 border-bottom pb-2">
                 <div class="img-sm-container me-3">
                   <img
@@ -145,8 +148,7 @@
           </section>
           <section id="feeds" class="shadow rounded-3 mb-3 p-3">
             <h2 class="text-start fs-4 fw-bolder">Fil d'actualité</h2>
-            <Post 
-             :posts="posts"/>
+            <Post :posts="posts" />
           </section>
         </div>
 
@@ -200,15 +202,14 @@ export default {
   methods: {
     //display all the posts
     getPosts() {
-        postServices.getPosts()
+      postServices
+        .getPosts()
         .then((res) => {
           console.log(res.data);
           this.posts = res.data;
-    })
-    .catch((err) => console.log(err));
-    
+        })
+        .catch((err) => console.log(err));
     },
-
 
     // create new post
     selectImage(event) {
@@ -218,34 +219,34 @@ export default {
 
     createPost() {
       let formData = new FormData();
-      formData.append("message", this.newPost.message);
-      formData.append("image", this.newPost.imageUrl);
-      /* if ((this.newPost.message = "" && this.newPost.imageUrl == "")) {
+      //formData.append("image", this.newPost.imageUrl);
+      if (this.newPost.message == "" && this.newPost.imageUrl == "") {
         this.loadMessage = "Veuillez saisir un message ou choisir une photo";
       } else {
-          if (this.newPost.message.length > 500) {
-            this.loadMessage = "Le message ne doit pas dépasser 500 mots";
-          } else {
-            formData.append("post", this.newPost.message)
-          }
-      };
-      if (this.newPost.imageUrl) {
-        if (this.newPost.imageUrl.size > 500000) {
-          this.loadMessage = "Attention, la taille de l'image ne doit pas dépasser 500ko"
+        if (this.newPost.message.length > 1500) {
+          this.loadMessage = "Le message ne doit pas dépasser 1500 mots";
         } else {
-          formData.append("image", this.newPost.imageUrl);
+          formData.append("message", this.newPost.message);
         }
-      }; */
-      postServices
-        .createPost(formData)
-        .then(async (res) => {
-          console.log(res);
-          await this.posts.unshift(res.data);
-          this.newPost = "";
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+        if (this.newPost.imageUrl) {
+          if (this.newPost.imageUrl.size > 500000) {
+            this.loadMessage =
+              "Attention, la taille de l'image ne doit pas dépasser 500ko";
+          } else {
+            formData.append("image", this.newPost.imageUrl);
+          }
+        }
+        postServices
+          .createPost(formData)
+          .then(async (res) => {
+            console.log(res);
+            await this.posts.unshift(res.data);
+            this.newPost = "";
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
     },
   },
 };

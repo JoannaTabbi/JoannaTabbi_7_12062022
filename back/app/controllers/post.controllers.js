@@ -87,15 +87,23 @@ exports.createPost = (req, res, next) => {
     });
     post
         .save()
-        .then((newPost) => {
-            newPost.imageUrl ? newPost.imageUrl = `${req.protocol}://${req.get("host")}${newPost.imageUrl}` : newPost.imageUrl = ""
+        .then(() => {
+           Post.populate(post, { path: "userId", select: ["userName", "imageUrl"]})
+           .then((newPost) => {
+            newPost.imageUrl ? newPost.imageUrl = `${req.protocol}://${req.get("host")}${newPost.imageUrl}` : newPost.imageUrl = "";
+            newPost.userId.imageUrl = `${req.protocol}://${req.get("host")}${newPost.userId.imageUrl}`
             res.status(201).json(newPost, hateoasLinks(req, newPost._id))
+            })
+            .catch((error) =>
+            res.status(400).json(
+                error
+            ))
         })
         .catch((error) =>
             res.status(400).json(
                 error
-            )
-        );
+            ))
+        
 };
 
 /**
