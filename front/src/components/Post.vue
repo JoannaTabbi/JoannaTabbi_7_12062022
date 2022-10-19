@@ -14,7 +14,7 @@
           <router-link to="/profile">
             <h5 class="fs-6 mb-0">"{{ post.userId.userName }}"</h5>
           </router-link>
-          <p class="mb-0 fw-light small fst-italic">{{ post.createdAt }}</p>
+          <p class="mb-0 fw-light small fst-italic">{{ formattedDate(post.createdAt) }}</p>
         </div>
         <!-- dropdown menu -->
         <div class="dropdown fs-2">
@@ -92,6 +92,10 @@ export default {
     return { auth }
   },
   methods: {
+     // formates the the user account's creation date
+    formattedDate(date) {
+      return this.$filters.formatDate(date);
+    },
     isCurrentUserPost(id) {
       id == this.auth.user._id ? true : false
     }
