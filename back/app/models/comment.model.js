@@ -6,12 +6,12 @@ const User = require("./user.model");
 
 const commentSchema = new mongoose.Schema({
     userId: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true
     },
     postId: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "Post",
         required: true
     },
@@ -24,7 +24,7 @@ const commentSchema = new mongoose.Schema({
         type: Number
     },
     usersLiked: [{
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "User"
     }],
     reports: {
@@ -32,7 +32,7 @@ const commentSchema = new mongoose.Schema({
         default: 0
     },
     usersWhoReported: [{
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "User"
     }]
 }, {

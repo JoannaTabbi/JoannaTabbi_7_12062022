@@ -2,7 +2,6 @@
   <main class="h-100">
     <div class="container-fluid">
       <div class="row">
-
         <!-- WELCOME CARD SECTION -->
 
         <div class="col-12 col-lg-3 mb-3 pt-3">
@@ -94,11 +93,62 @@
         >
           <section id="create_post" class="shadow rounded-3 mb-3 p-3">
             <h2 class="text-start fs-4">Créez une publication</h2>
-            <CreatePost />
+            <form
+              class="card card-body border-0"
+              @submit.prevent="createPost()"
+            >
+              <div class="d-flex mb-3 border-bottom pb-2">
+                <div class="img-sm-container me-3">
+                  <img
+                    class="mw-100 shadow rounded-3"
+                    :src="auth.user.imageUrl"
+                    alt="avatar"
+                  />
+                </div>
+                <div class="w-100 form-group">
+                  <textarea
+                    v-model="newPost.message"
+                    id="post"
+                    name="post"
+                    class="form-control border-0 p-2"
+                    placeholder="When I woke up this morning..."
+                    rows="2"
+                  ></textarea>
+                  <div
+                    v-if="loadMessage"
+                    class="alert alert-secondary"
+                    role="alert"
+                  >
+                    {{ loadMessage }}
+                  </div>
+                </div>
+              </div>
+              <ul class="nav d-flex justify-content-around">
+                <li class="nav-item">
+                  <label type="button" for="formFile">
+                    <i class="fa-regular fa-image fa-2x"></i>
+                    <input
+                      @change="selectImage"
+                      type="file"
+                      class="form-control"
+                      name="image"
+                      id="formFile"
+                      accept="image/*"
+                      hidden
+                    />
+                  </label>
+                </li>
+                <li class="nav-item">
+                  <button type="submit">
+                    <i class="fa-regular fa-paper-plane fa-2x"></i>
+                  </button>
+                </li>
+              </ul>
+            </form>
           </section>
           <section id="feeds" class="shadow rounded-3 mb-3 p-3">
             <h2 class="text-start fs-4 fw-bolder">Fil d'actualité</h2>
-            <Post />
+            <Post :posts="posts" />
           </section>
         </div>
 
@@ -110,21 +160,19 @@
         </div>
 
         <!-- MOST POPULAR SECTION END -->
-        
       </div>
     </div>
   </main>
 </template>
 
 <script>
-import CreatePost from "../components/CreatePost.vue";
 import Post from "../components/Post.vue";
 import MostPopular from "../components/MostPopular.vue";
 import { useAuthStore } from "../stores/authStore";
+import { postServices } from "../_services";
 export default {
   name: "Home",
   components: {
-    CreatePost,
     Post,
     MostPopular,
   },
@@ -132,13 +180,81 @@ export default {
     const auth = useAuthStore();
     return { auth };
   },
+  data() {
+    return {
+      posts: [],
+      newPost: {
+        imageUrl: "",
+        message: "",
+      },
+      loadMessage: "",
+    };
+  },
   computed: {
     // formates the the user account's creation date
     formattedDate() {
       return this.$filters.formatDate(this.auth.user.createdAt);
     },
   },
+  mounted() {
+    this.getPosts();
+  },
+  methods: {
+    //display all the posts
+    getPosts() {
+      postServices
+        .getPosts()
+        .then((res) => {
+          console.log(res.data);
+          this.posts = res.data;
+        })
+        .catch((err) => console.log(err));
+    },
+
+    // create new post
+    selectImage(event) {
+      this.newPost.imageUrl = event.target.files[0];
+      this.loadMessage = "";
+    },
+
+    createPost() {
+      let formData = new FormData();
+      //formData.append("image", this.newPost.imageUrl);
+      if (this.newPost.message == "" && this.newPost.imageUrl == "") {
+        this.loadMessage = "Veuillez saisir un message ou choisir une photo";
+      } else {
+        if (this.newPost.message.length > 1500) {
+          this.loadMessage = "Le message ne doit pas dépasser 1500 mots";
+        } else {
+          formData.append("message", this.newPost.message);
+        }
+        if (this.newPost.imageUrl) {
+          if (this.newPost.imageUrl.size > 500000) {
+            this.loadMessage =
+              "Attention, la taille de l'image ne doit pas dépasser 500ko";
+          } else {
+            formData.append("image", this.newPost.imageUrl);
+          }
+        }
+        postServices
+          .createPost(formData)
+          .then(async (res) => {
+            console.log(res);
+            await this.posts.unshift(res.data);
+            this.newPost = "";
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+    },
+  },
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.fa-image:hover,
+.fa-paper-plane:hover {
+  color: #fd2d01;
+}
+</style>

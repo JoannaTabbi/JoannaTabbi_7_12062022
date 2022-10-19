@@ -4,12 +4,13 @@
       <div class="img-sm-container me-3">
         <img
           class="mw-100 shadow rounded-3"
-          src="../assets/avatar-200.png"
-          alt="avatar"
+          :src="auth.user.imageUrl"
+          :alt="`avatar de ${auth.user.userName}`"
         />
       </div>
       <form class="w-100">
         <textarea
+        
           class="form-control border-0 p-2"
           placeholder="Qu'en dites-vous?"
           rows="1"
@@ -24,16 +25,16 @@
         <div class="d-flex img-sm-container me-3 align-items-start">
           <img
             class="mw-100 shadow rounded-3"
-            src="../assets/avatar-200.png"
+            src=""
             alt="avatar"
           />
         </div>
         <div>
           <div class="w-100 text-start bg-light rounded-3 p-2">
             <div class="d-flex align-items-baseline justify-content-between">
-              <router-link to="/profile">
+              <div>
                 <h5 class="fs-6 mb-0">Jean_Dupont</h5>
-              </router-link>
+              </div>
               <div class="dropdown fs-5 fw-bold ">
                 <a
                   href="#"
@@ -59,7 +60,6 @@
                       >Supprimez votre commentaire</a
                     >
                   </li>
-                  <li><hr class="dropdown-divider" /></li>
                   <li>
                     <a class="dropdown-item" href="#"
                       >Signalez ce commentaire</a
@@ -69,8 +69,7 @@
               </div>
             </div>
             <p class="fs-6 mb-0">
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Commodi
-              nam libero eveniet totam nulla.
+              
             </p>
           </div>
           <ul
@@ -94,7 +93,23 @@
 </template>
 
 <script>
-export default {};
+import { useAuthStore } from "@/stores/authStore";
+export default {
+  name: "Comments",
+  props: ['comment', "post"],
+  data() {
+    return {
+      comment: {
+        message: "",
+
+      }
+    }
+  },
+  setup() {
+    const auth = useAuthStore();
+    return { auth }
+  }
+};
 </script>
 
 <style></style>

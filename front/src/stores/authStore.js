@@ -31,29 +31,6 @@ actions: {
       .then((res) => {
           this.user = res.data})
       .catch(err => console.log(err))
-  },
-
-  getFollowers(followers, followersArray) {
-    
-    followers.forEach((followerId)=> {
-       userServices.getUser(followerId)
-       .then((res) => {
-        const foundFollower = res.data;
-        followersArray.push(foundFollower)
-       })
-       .catch(err => console.log(err))
-    }) 
-  },
-
-  getFollowing(following, followingArray) {
-    following.forEach((followingId) => {
-       userServices.getUser(followingId)
-       .then((res) => {
-        const foundFollowing = res.data;
-        followingArray.push(foundFollowing)
-       })
-       .catch(err => console.log(err))
-    }) 
   }
 }
 

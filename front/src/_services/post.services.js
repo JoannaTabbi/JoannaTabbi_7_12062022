@@ -1,35 +1,48 @@
-import {
-    ref
-} from 'vue'
-import axios from 'axios'
-import {
-    useAuthStore
-} from '@/stores/authStore'
+import Axios from '@/_interceptors/axios'
 
-// gets all posts
-const getPosts = () => {
-    const posts = ref([])
-    const error = ref(null)
-    const loadPosts = async () => {
-
-        const auth = useAuthStore()
-        const authOptions = {
-            headers: {
-                'Authorization': 'Bearer ' + auth.token
-            }
+//upload post image and message: 
+let createPost = (formData) => {
+    return Axios.post("/posts", formData, {
+        headers: {
+            "Content-Type": "multipart/form-data"
         }
-        const res = await axios.get(process.env.VUE_APP_API_URL + "/posts/", {
-                withCredentials: true
-            }, authOptions)
-        posts.value = res.data
-        console.log(posts.value)
+    })
+};
 
-    }
-    return {
-        posts,
-        error,
-        loadPosts
-    }
+// gets all the posts published
+let getPosts = () => {
+    return Axios.get("/posts/")
+};
+
+//gets ont post
+let getOnePost = (id) => {
+    return Axios.get("/posts/" + id)
 }
 
-export default getPosts
+//updates one post
+let updatePost = (id, formData) => {
+    return Axios.put("/posts/" + id, formData, {
+        headers: {
+            "Content-Type": "multipart/form-data"
+        }
+    })
+}
+
+// likes one post
+let likePost = (id) => {
+    return Axios.post("/posts/" + id + "/like")
+}
+
+//deletes one post 
+let deletePost = (id) => {
+    return Axios.delete("/posts/" + id)
+}
+
+export const postServices = {
+    createPost,
+    getPosts,
+    getOnePost,
+    updatePost,
+    likePost,
+    deletePost
+}

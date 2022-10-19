@@ -36,7 +36,7 @@
         >
           <h1 class="card-title fs-5 mb-0">{{ user.userName }}</h1>
           <p class="card-text small">
-            Membre depuis le <span>{{ createdAt }}</span>
+            Membre depuis le <span>{{ formattedDate }}</span>
           </p>
         </div>
         <div
@@ -134,7 +134,6 @@
             role="tab"
             aria-controls="posts"
             aria-selected="false"
-            @click="loadPosts"
           >
             Publications
           </button>
@@ -157,7 +156,7 @@
         >
           <div class="container">
             <div class="row g-3">
-              <MiniProfile :mpUsers="followers" />
+              <MiniProfile :mpUsers="user.followers" />
             </div>
           </div>
         </div>
@@ -169,7 +168,7 @@
         >
           <div class="container">
             <div class="row g-3">
-              <MiniProfile :mpUsers="following" />
+              <MiniProfile :mpUsers="user.following" />
             </div>
           </div>
         </div>
@@ -195,10 +194,16 @@ export default {
     Post,
     MiniProfile,
   },
-  props: ["user", "followers", "following", "createdAt", "userProfile", "followButtonText"],
+  props: ["user", "userProfile", "followButtonText"],
+  computed: {
+    // formates the the user account's creation date
+    formattedDate() {
+      return this.$filters.formatDate(this.user.createdAt);
+    },
+  },
   methods: {
     submitFollow() {
-        this.$emit("followToggle");
+        this.$emit("submitFollow");
     }
 }
 };

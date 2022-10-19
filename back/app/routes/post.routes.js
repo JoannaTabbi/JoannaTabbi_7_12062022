@@ -10,9 +10,9 @@ const multer = require('../middleware/multer-config');
  * and methods given in the request, then call the callback functions
  * that match the request (read one, read all, create etc...)
  */
-router.get("/:id", auth, postCtrl.readOnePost);
 router.get("/", auth, postCtrl.readAllPosts);
 router.post("/", auth, multer, postCtrl.createPost);
+router.get("/:id", auth, postCtrl.readOnePost);
 router.post("/:id/like", auth, postCtrl.likePost);
 router.put("/:id", auth, multer, postCtrl.updatePost);
 router.delete("/:id", auth, postCtrl.deletePost);

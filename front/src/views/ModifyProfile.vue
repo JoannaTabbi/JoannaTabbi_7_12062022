@@ -111,6 +111,7 @@
         @submitted="deleteMyProfile"
         :reset="true"
         :submit="true"
+        theme="warning"
       >
         <template v-slot:modalBody>
           <p>
@@ -280,7 +281,7 @@ export default {
       formData.append("user", this.userUpdate);
       formData.append("image", this.currentImage);
   
-      loadServices.uploadFiles(formData)
+      loadServices.uploadUserFiles(formData)
         .then((res) => { 
           this.auth.user = res.data;
           router.push("/myProfile");
@@ -294,7 +295,7 @@ export default {
 
     // exports user's data
     exportData() {
-      userServices.getOneself()
+      userServices.exportData()
       .then((res) => {
         loadServices.excelParser().exportDataFromJSON(res.data, null, null);
       })

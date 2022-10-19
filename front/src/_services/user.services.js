@@ -1,8 +1,8 @@
 import axios from '@/_interceptors/axios';
 
 // gets user's data by id given
-let getUser = (id) => {
-  return axios.get('/auth/' + id)
+let getUser = (uid) => {
+  return axios.get('/auth/' + uid)
 };
 
 // gets authenticated user's data
@@ -26,18 +26,18 @@ let exportData = () => {
 };
 
 //adds followed user's id
-let followUser = (id) => {
-    return axios.patch('/auth/' + id + '/follow')
+let followUser = (uid) => {
+    return axios.patch('/auth/' + uid + '/follow')
 };
 
 //removes followed user's id
-let unfollowUser = (id) => {
-    return axios.patch('/auth/' + id + '/unfollow')
+let unfollowUser = (uid) => {
+    return axios.patch('/auth/' + uid + '/unfollow')
 };
 
 //reports user for the id given
-let reportUser = (id) => {
-    return axios.patch('/auth/' + id + '/report')
+let reportUser = (uid) => {
+    return axios.patch('/auth/' + uid + '/report')
 };
 
 

@@ -26,12 +26,6 @@ const routes = [
         component: Login
     },
     {
-        path: '/userProfile/:id', 
-        name: "UserProfile",
-        component: UserProfile,
-        props: true
-    },
-    {
         path: '/myProfile', 
         name: "MyProfile",
         component: MyProfile
@@ -40,6 +34,12 @@ const routes = [
         path: '/modifyProfile', 
         name: "ModifyProfile",
         component: ModifyProfile
+    },
+    {
+        path: '/userProfile/:id', 
+        name: "UserProfile",
+        component: UserProfile,
+        props: true
     },
     {
         path: '/:pathMatch(.*)*',
