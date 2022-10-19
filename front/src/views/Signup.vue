@@ -162,7 +162,7 @@ export default {
         .catch(() => {  // alerts the user if the email or userName exist in database
           this.theme = 'warning';
           this.modalTitle = "ATTENTION!";
-          this.modalMessage = "L'email ou le nom d'utilisateur existe déjà. Veuillez en saisir un autre ou connectez-vous";
+          this.modalMessage = "L'email ou le nom d'utilisateur existe  déjà. Veuillez en saisir un autre ou connectez-vous";
           this.toggledModal();
         });
     },
