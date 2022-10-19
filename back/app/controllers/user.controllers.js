@@ -13,8 +13,7 @@ const validator = require("validator");
 function encryptMail(content) {
   const encrypted = cryptoJS.AES.encrypt(
     content,
-    cryptoJS.enc.Utf8.parse(process.env.EMAIL_KEY),
-    {
+    cryptoJS.enc.Utf8.parse(process.env.EMAIL_KEY), {
       iv: cryptoJS.enc.Utf8.parse(process.env.IV),
       mode: cryptoJS.mode.ECB,
       padding: cryptoJS.pad.Pkcs7,
@@ -28,8 +27,7 @@ function encryptMail(content) {
 function decryptMail(encryptedContent) {
   const decrypted = cryptoJS.AES.decrypt(
     encryptedContent,
-    cryptoJS.enc.Utf8.parse(process.env.EMAIL_KEY),
-    {
+    cryptoJS.enc.Utf8.parse(process.env.EMAIL_KEY), {
       iv: cryptoJS.enc.Utf8.parse(process.env.IV),
       mode: cryptoJS.mode.ECB,
       padding: cryptoJS.pad.Pkcs7,
@@ -79,11 +77,16 @@ exports.login = (req, res, next) => {
   //in the Users collection
   const emailEncrypted = encryptMail(req.body.email);
   User.findOne({
-    email: emailEncrypted
-  })
-    .populate([
-      { path: "following", select: ["userName", "imageUrl"] },
-      { path: "followers", select: ["userName", "imageUrl"] }
+      email: emailEncrypted
+    })
+    .populate([{
+        path: "following",
+        select: ["userName", "imageUrl"]
+      },
+      {
+        path: "followers",
+        select: ["userName", "imageUrl"]
+      }
     ])
     .then((user) => {
       if (!user) {
@@ -114,24 +117,20 @@ exports.login = (req, res, next) => {
             });
           }
           // creating a refresh token stored in cookie, that will allow us to regenerate the token once expired;
-          const newRefreshToken = jwt.sign(
-            {
+          const newRefreshToken = jwt.sign({
               userId: user._id, // the method takes two arguments :
             }, // a response object and
-            process.env.REFRESH_TOKEN_SECRET,
-            {
+            process.env.REFRESH_TOKEN_SECRET, {
               // a secret key
               expiresIn: process.env.REFRESH_TOKEN_EXPIRATION,
             }
           );
           User.findByIdAndUpdate(
-            user._id,
-            {
+            user._id, {
               $push: {
                 refreshToken: newRefreshToken,
               },
-            },
-            {
+            }, {
               new: true,
               upsert: true,
               setDefaultsOnInsert: true,
@@ -147,16 +146,13 @@ exports.login = (req, res, next) => {
               httpOnly: true,
               maxAge: 1000 * 60 * 60 * 8760,
             });
-            res.status(200).json(
-              {
+            res.status(200).json({
                 userId: user._id,
                 // creating a token for a new session
-                token: jwt.sign(
-                  {
+                token: jwt.sign({
                     userId: user._id, // the method takes two arguments :
                   }, // a response object and
-                  process.env.TOKEN_SECRET,
-                  {
+                  process.env.TOKEN_SECRET, {
                     // a secret key
                     expiresIn: process.env.TOKEN_EXPIRATION,
                   }
@@ -190,23 +186,23 @@ exports.logout = (req, res, next) => {
   const cookies = req.cookies;
   if (!cookies?.jwt) return res.sendStatus(204);
 
-  User.findOne({ refreshToken: cookies.jwt })
+  User.findOne({
+      refreshToken: cookies.jwt
+    })
     .then((userFound) => {
       //delete refresh token from datatbase
 
       User.findByIdAndUpdate(
-        userFound._id,
-        {
-          $pull: {
-            refreshToken: cookies.jwt,
-          },
-        },
-        {
-          new: true,
-          upsert: true,
-          setDefaultsOnInsert: true,
-        }
-      )
+          userFound._id, {
+            $pull: {
+              refreshToken: cookies.jwt,
+            },
+          }, {
+            new: true,
+            upsert: true,
+            setDefaultsOnInsert: true,
+          }
+        )
         .then(() => {
           res.clearCookie("jwt", {
             //removes refresh token
@@ -234,9 +230,14 @@ exports.logout = (req, res, next) => {
 exports.readUser = (req, res, next) => {
   User.findById(req.params.id)
     .select('userName aboutMe imageUrl followers following createdAt')
-    .populate([
-      { path: "following", select: ["userName", "imageUrl"] },
-      { path: "followers", select: ["userName", "imageUrl"] },
+    .populate([{
+        path: "following",
+        select: ["userName", "imageUrl"]
+      },
+      {
+        path: "followers",
+        select: ["userName", "imageUrl"]
+      },
     ])
     .then((user) => {
       if (!user) {
@@ -268,9 +269,14 @@ exports.readUser = (req, res, next) => {
  */
 exports.readOneself = (req, res, next) => {
   User.findById(req.auth.userId)
-    .populate([
-      { path: "following", select: ["userName", "imageUrl"] },
-      { path: "followers", select: ["userName", "imageUrl"] },
+    .populate([{
+        path: "following",
+        select: ["userName", "imageUrl"]
+      },
+      {
+        path: "followers",
+        select: ["userName", "imageUrl"]
+      },
     ])
     .then((user) => {
       if (!user) {
@@ -354,14 +360,14 @@ exports.updateUser = (req, res, next) => {
           }
         }
         // check if image file is present
-        const userObject = req.file
-          ? {
-              ...update,
-              imageUrl: `/images/${req.file.filename}`,
-            }
-          : {
-              ...update,
-            };
+        const userObject = req.file ?
+          {
+            ...update,
+            imageUrl: `/images/${req.file.filename}`,
+          } :
+          {
+            ...update,
+          };
         const filename = user.imageUrl.split("/images/")[1];
         try {
           if (
@@ -373,17 +379,15 @@ exports.updateUser = (req, res, next) => {
         } catch (error) {
           console.log(error);
         }
-        User.findByIdAndUpdate(
-          {
-            _id: req.auth.userId,
-          },
-          userObject,
-          {
-            new: true,
-            upsert: true,
-            setDefaultsOnInsert: true,
-          }
-        )
+        User.findByIdAndUpdate({
+              _id: req.auth.userId,
+            },
+            userObject, {
+              new: true,
+              upsert: true,
+              setDefaultsOnInsert: true,
+            }
+          )
           .then((userUpdated) => {
             userUpdated.imageUrl = `${req.protocol}://${req.get("host")}${
               user.imageUrl
@@ -439,61 +443,74 @@ exports.follow = (req, res, next) => {
     .then((userToFollow) => {
       if (!userToFollow.followers.includes(req.auth.userId)) {
         User.findByIdAndUpdate(
-          req.params.id,
-          {
-            $push: {
-              followers: req.auth.userId,
+            req.params.id, {
+              $push: {
+                followers: req.auth.userId
+              },
+            }, {
+              new: true,
+              upsert: true,
+              setDefaultsOnInsert: true
+            }
+          )
+          .populate([{
+              path: "following",
+              select: ["userName", "imageUrl"]
             },
-          },
-          {
-            new: true,
-            upsert: true,
-            setDefaultsOnInsert: true,
-          }
-        )
+            {
+              path: "followers",
+              select: ["userName", "imageUrl"]
+            }
+          ])
           .then((userFollowed) => {
             User.findByIdAndUpdate(
-              req.auth.userId,
-              {
-                $push: {
-                  following: req.params.id,
+                req.auth.userId, {
+                  $push: {
+                    following: req.params.id
+                  },
+                }, {
+                  new: true,
+                  upsert: true,
+                  setDefaultsOnInsert: true
+                }
+              )
+              .populate([{
+                  path: "following",
+                  select: ["userName", "imageUrl"]
                 },
-              },
-              {
-                new: true,
-                upsert: true,
-                setDefaultsOnInsert: true,
-              }
-            )
+                {
+                  path: "followers",
+                  select: ["userName", "imageUrl"]
+                },
+              ])
               .then((userFollowing) =>
-                res.status(200).json(
-                  {
+                res.status(200).json({
                     userFollowing,
-                    userFollowed,
+                    userFollowed
                   },
                   hateoasLinks(req, userFollowing._id)
                 )
               )
               .catch((error) =>
                 res.status({
-                  error,
+                  error
                 })
               );
           })
           .catch((error) =>
             res.status(400).json({
-              error,
+              error
             })
           );
       } else {
         res.status(200).json({
-          message: "You already follow this user",
+          message: "You already follow this user"
         });
       }
     })
     .catch((error) =>
       res.status(400).json({
-        error,
+        error
       })
     );
 };
@@ -503,37 +520,50 @@ exports.unfollow = (req, res, next) => {
     .then((userToUnfollow) => {
       if (userToUnfollow.followers.includes(req.auth.userId)) {
         User.findByIdAndUpdate(
-          req.params.id,
-          {
-            $pull: {
-              followers: req.auth.userId,
+            req.params.id, {
+              $pull: {
+                followers: req.auth.userId
+              }
+            }, {
+              new: true,
+              upsert: true,
+              setDefaultsOnInsert: true
+            }
+          )
+          .populate([{
+              path: "following",
+              select: ["userName", "imageUrl"]
             },
-          },
-          {
-            new: true,
-            upsert: true,
-            setDefaultsOnInsert: true,
-          }
-        )
+            {
+              path: "followers",
+              select: ["userName", "imageUrl"]
+            }
+          ])
           .then((userUnfollowed) => {
             User.findByIdAndUpdate(
-              req.auth.userId,
-              {
-                $pull: {
-                  following: req.params.id,
+                req.auth.userId, {
+                  $pull: {
+                    following: req.params.id
+                  }
+                }, {
+                  new: true,
+                  upsert: true,
+                  setDefaultsOnInsert: true,
+                }
+              )
+              .populate([{
+                  path: "following",
+                  select: ["userName", "imageUrl"]
                 },
-              },
-              {
-                new: true,
-                upsert: true,
-                setDefaultsOnInsert: true,
-              }
-            )
+                {
+                  path: "followers",
+                  select: ["userName", "imageUrl"]
+                }
+              ])
               .then((userUnfollowing) =>
-                res.status(200).json(
-                  {
+                res.status(200).json({
                     userUnfollowing,
-                    userUnfollowed,
+                    userUnfollowed
                   },
                   hateoasLinks(req, userUnfollowing._id)
                 )
@@ -543,7 +573,7 @@ exports.unfollow = (req, res, next) => {
           .catch((error) => res.status(400).json(error));
       } else {
         res.status(200).json({
-          message: "You do not follow this user",
+          message: "You do not follow this user"
         });
       }
     })
@@ -560,28 +590,24 @@ exports.reportUser = (req, res, next) => {
   User.findById(req.params.id)
     .then((user) => {
       if (!user.usersWhoReported.includes(req.auth.userId)) {
-        User.findByIdAndUpdate(
-          {
+        User.findByIdAndUpdate({
             _id: req.params.id,
-          },
-          {
+          }, {
             $inc: {
               reports: 1,
             },
             $push: {
               usersWhoReported: req.auth.userId,
             },
-          },
-          {
+          }, {
             new: true,
             upsert: true,
             setDefaultsOnInsert: true,
-          }
-        )
+          })
           .then((userUpdated) =>
             res
-              .status(200)
-              .json(userUpdated, hateoasLinks(req, req.auth.userId))
+            .status(200)
+            .json(userUpdated, hateoasLinks(req, req.auth.userId))
           )
           .catch((error) =>
             res.status(400).json({
@@ -602,8 +628,7 @@ exports.reportUser = (req, res, next) => {
  */
 const hateoasLinks = (req, id) => {
   const URI = `${req.protocol}://${req.get("host") + "/api/auth/"}`;
-  return [
-    {
+  return [{
       rel: "signup",
       title: "Signup",
       href: URI + "signup",

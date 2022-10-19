@@ -203,7 +203,7 @@ export default {
   },
   methods: {
     submitFollow() {
-        this.$emit("followToggle");
+        this.$emit("submitFollow");
     }
 }
 };
