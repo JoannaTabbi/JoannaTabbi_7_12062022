@@ -174,7 +174,7 @@ export default {
   name: "Home",
   components: {
     Post,
-    MostPopular,
+    MostPopular
   },
   setup() {
     const auth = useAuthStore();
@@ -188,6 +188,8 @@ export default {
         message: "",
       },
       loadMessage: "",
+      showModal: false,
+      modalTitle: "Publication"
     };
   },
   computed: {
@@ -200,6 +202,7 @@ export default {
     this.getPosts();
   },
   methods: {
+  
     //display all the posts
     getPosts() {
       postServices
@@ -211,24 +214,26 @@ export default {
         .catch((err) => console.log(err));
     },
 
-    // create new post
+    // selects image for new post
     selectImage(event) {
       this.newPost.imageUrl = event.target.files[0];
       this.loadMessage = "";
     },
-
+    // creates a new post
     createPost() {
       let formData = new FormData();
-      //formData.append("image", this.newPost.imageUrl);
+      //throw an error if neither message nor image posted
       if (this.newPost.message == "" && this.newPost.imageUrl == "") {
         this.loadMessage = "Veuillez saisir un message ou choisir une photo";
       } else {
+        //throw an error if the message is too long (over 1500 letters)
         if (this.newPost.message.length > 1500) {
           this.loadMessage = "Le message ne doit pas dépasser 1500 mots";
         } else {
           formData.append("message", this.newPost.message);
         }
         if (this.newPost.imageUrl) {
+          //throw an error if the image size is too important (over 500ko)
           if (this.newPost.imageUrl.size > 500000) {
             this.loadMessage =
               "Attention, la taille de l'image ne doit pas dépasser 500ko";
