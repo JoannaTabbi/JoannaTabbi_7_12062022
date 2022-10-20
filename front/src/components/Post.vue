@@ -32,10 +32,10 @@
             class="dropdown-menu dropdown-menu-end text-end"
             aria-labelledby="dropdownMenuLink"
           >
-            <li v-if="isCurrentUserPost(post.userId._id)">
+            <li>
               <div class="dropdown-item">Modifiez votre publication</div>
             </li>
-            <li v-if="isCurrentUserPost(post.userId._id)">
+            <li>
               <div class="dropdown-item">Supprimez votre publication</div>
             </li>
             <li>
@@ -75,6 +75,7 @@
       <!--  COMMENTS  -->
       <Comments />
     </div>
+  <div v-if="posts.length" v-observe-visibility="handleInfiniteScroll"></div>  
   </div>
 </template>
 
@@ -86,7 +87,15 @@ export default {
   components: {
     Comments,
   },
-  props: ["posts"],
+  props: {
+        posts: {
+          type: Array
+        }},
+  data() {
+    return {
+      page: 1
+    } 
+  },
   setup() {
     const auth = useAuthStore();
     return { auth }
@@ -96,9 +105,17 @@ export default {
     formattedDate(date) {
       return this.$filters.formatDate(date);
     },
-    isCurrentUserPost(id) {
-      id == this.auth.user._id ? true : false
+    // isCurrentUserPost(id) {
+    //   id == this.auth.user._id ? true : false
+    // }
+    
+    //handles scroll to bottom
+    handleInfiniteScroll(isVisible) {
+      if (!isVisible) { return }
+      this.page++
+      this.$emit('getPosts', this.page)
     }
+    
   }
 }
 </script>

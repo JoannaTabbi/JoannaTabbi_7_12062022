@@ -4,6 +4,7 @@ import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import App from './App.vue'
 import router from './router'
+import VueObserveVisibility from 'vue-observe-visibility'
 import moment from 'moment'
 import 'moment/locale/fr'
 
@@ -12,6 +13,7 @@ pinia.use(piniaPluginPersistedstate)
 const app = createApp(App)
 app.use(pinia)
 app.use(router)
+app.use(VueObserveVisibility)
 
 app.config.globalProperties.$filters = {
     formatDate(value) {

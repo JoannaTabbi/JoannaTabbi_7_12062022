@@ -83,7 +83,7 @@ exports.readAllPosts = async (req, res, next) => {
         // return response with posts, total of pages and current page
         res.status(200).json({
             posts,
-            totalpages: Math.ceil(count / limit),
+            totalPages: Math.ceil(count / limit),
             currentPage: page
         });
 
