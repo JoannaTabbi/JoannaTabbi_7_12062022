@@ -208,8 +208,7 @@ export default {
       postServices
         .getPosts()
         .then((res) => {
-          console.log(res.data);
-          this.posts = res.data;
+          this.posts = res.data.posts;
         })
         .catch((err) => console.log(err));
     },

@@ -36,38 +36,60 @@ exports.readOnePost = (req, res, next) => {
 /**
  * displays all the posts
  */
-exports.readAllPosts = (req, res, next) => {
-    Post.find()
-        .populate([{
-                path: "userId",
-                select: ["userName", "imageUrl"]
-            },
-            {
-                path: "usersLiked",
-                select: ["userName", "imageUrl"]
-            },
-            {
-                path: "comments"
-            }
-        ])
-        .sort({
-            createdAt: -1
-        })
-        .then((posts) => {
-            posts.forEach((post) => {
-                post.imageUrl ? post.imageUrl =`${req.protocol}://${req.get("host")}${post.imageUrl}` : post.imageUrl = "";
-                if (post.userId.imageUrl.startsWith(`${req.protocol}://${req.get("host")}`)) {
-                    return post.userId.imageUrl } else { post.userId.imageUrl = `${req.protocol}://${req.get("host")}${post.userId.imageUrl}`;
-                };
-            });
+exports.readAllPosts = async (req, res, next) => {
 
-            res.status(200).json(posts);
-        })
-        .catch((error) =>
-            res.status(404).json({
-                error
+    //destructure page and limit with the default value
+    const {
+        page = 1, limit = 10
+    } = req.query;
+
+    try {
+
+        //execute query with page and limit values, documents sorted from newest to oldest,
+        //populated for userId, iusersLiked and comments
+        const posts = await Post.find()
+            .populate([{
+                    path: "userId",
+                    select: ["userName", "imageUrl"]
+                },
+                {
+                    path: "usersLiked",
+                    select: ["userName", "imageUrl"]
+                },
+                {
+                    path: "comments"
+                }
+            ])
+            .sort({
+                createdAt: -1
             })
-        );
+            .limit(limit * 1)
+            .skip((page - 1) * limit)
+            .exec()
+
+        //configure imageUrls to match with the current protocol and host
+        posts.forEach((post) => {
+            post.imageUrl ? post.imageUrl = `${req.protocol}://${req.get("host")}${post.imageUrl}` : post.imageUrl = "";
+            if (post.userId.imageUrl.startsWith(`${req.protocol}://${req.get("host")}`)) {
+                return post.userId.imageUrl
+            } else {
+                post.userId.imageUrl = `${req.protocol}://${req.get("host")}${post.userId.imageUrl}`;
+            };
+        });
+
+        // get total documents in Post collection
+        const count = await Post.countDocuments()
+
+        // return response with posts, total of pages and current page
+        res.status(200).json({
+            posts,
+            totalpages: Math.ceil(count / limit),
+            currentPage: page
+        });
+
+    } catch (err) {
+        console.error(err.message);
+    }
 };
 
 /**
@@ -88,22 +110,25 @@ exports.createPost = (req, res, next) => {
     post
         .save()
         .then(() => {
-           Post.populate(post, { path: "userId", select: ["userName", "imageUrl"]})
-           .then((newPost) => {
-            newPost.imageUrl ? newPost.imageUrl = `${req.protocol}://${req.get("host")}${newPost.imageUrl}` : newPost.imageUrl = "";
-            newPost.userId.imageUrl = `${req.protocol}://${req.get("host")}${newPost.userId.imageUrl}`
-            res.status(201).json(newPost, hateoasLinks(req, newPost._id))
-            })
-            .catch((error) =>
-            res.status(400).json(
-                error
-            ))
+            Post.populate(post, {
+                    path: "userId",
+                    select: ["userName", "imageUrl"]
+                })
+                .then((newPost) => {
+                    newPost.imageUrl ? newPost.imageUrl = `${req.protocol}://${req.get("host")}${newPost.imageUrl}` : newPost.imageUrl = "";
+                    newPost.userId.imageUrl = `${req.protocol}://${req.get("host")}${newPost.userId.imageUrl}`
+                    res.status(201).json(newPost, hateoasLinks(req, newPost._id))
+                })
+                .catch((error) =>
+                    res.status(400).json(
+                        error
+                    ))
         })
         .catch((error) =>
             res.status(400).json(
                 error
             ))
-        
+
 };
 
 /**
