@@ -15,12 +15,11 @@
               <router-link to="/profile">
                 <h5 class="fs-6 mb-0">Jean_Dupont</h5>
               </router-link>
-              <a
+              <div
                 href=""
                 type="button"
-                data-bs-toggle="modal"
-                data-bs-target="#ModalPost"
                 class="d-block"
+                @click="toggledModal"
               >
                 <p class="text-start mb-0 text-truncate">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. Illo, quas.
@@ -30,35 +29,38 @@
                   nostrum aliquam odit rerum, hic corporis animi provident magni, quam
                   architecto autem delectus numquam blanditiis iste.
                 </p>
-              </a>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </section>
-
-     <!-- Modal 
-
-    <DynamicModal
+    <!-- Modal -->
+    <div v-if="showModal">
+      <DynamicModal
       :modal-title="modalTitle"
+      :submit="true"
+      submit-modal-text="Fermer"
+      @submitted="toggledModal"
       @closed="toggledModal">
         <template v-slot:modalBody>
           <p>
             <Post />
           </p>
         </template>
-    </DynamicModal>  -->
+     </DynamicModal>
+    </div>
   </div>
 </template>
 
 <script>
 import Post from "./Post.vue";
-import DynamicModal from "./DynamicModal.vue";
+import DynamicModal from "@/components/DynamicModal.vue";
 export default {
-  name: "MiniPost",
+  name: "MostPopular",
   components: {
     Post,
-    DynamicModal,
+    DynamicModal
   },
   data() {
     return {

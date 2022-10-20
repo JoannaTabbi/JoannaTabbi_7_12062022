@@ -41,16 +41,10 @@ export default {
   },
   computed: {
     isFollowed: function() { 
-      console.log(this.auth.user.following);
-      console.log(typeof this.auth.user.following);
       const followingArr = Object.values(this.auth.user.following);
-      console.log(followingArr);
-      console.log(typeof followingArr);
       const found = followingArr.find((follower) => 
         follower._id == this.$route.params.id
       );
-      console.log(found);
-      console.log(typeof found);
      if (found) {
         return true;
       } else {
@@ -74,7 +68,6 @@ export default {
         .getUser(this.$route.params.id)
         .then((res) => {
           this.user = res.data;
-          console.log(this.isFollowed)
         })
         .catch((error) => console.log(error));
     },
@@ -86,9 +79,6 @@ export default {
         .then((res) => {
           this.auth.user.following = res.data.userFollowing.following;
           this.user.followers = res.data.userFollowed.followers;
-          console.log(this.isFollowed);
-          console.log(this.followButtonText);
-          
         })
         .catch((err) => console.log(err));
     },
@@ -97,11 +87,9 @@ export default {
     unfollowUser() {
       userServices
         .unfollowUser(this.$route.params.id)
-        .then(async (res) => {
-          this.auth.user.following = await res.data.userUnfollowing.following;
-          this.user.followers = await res.data.userUnfollowed.followers;
-          console.log(this.isFollowed);
-          console.log(this.followButtonText);
+        .then((res) => {
+          this.auth.user.following = res.data.userUnfollowing.following;
+          this.user.followers = res.data.userUnfollowed.followers;
         })
         .catch((err) => console.log(err));
     },
