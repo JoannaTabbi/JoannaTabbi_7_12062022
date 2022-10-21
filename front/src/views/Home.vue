@@ -148,7 +148,7 @@
           </section>
           <section id="feeds" class="shadow rounded-3 mb-3 p-3">
             <h2 class="text-start fs-4 fw-bolder">Fil d'actualité</h2>
-            <Post :posts="posts" />
+            <Post :posts="posts" @getPosts="getPosts" />
           </section>
         </div>
 
@@ -183,6 +183,7 @@ export default {
   data() {
     return {
       posts: [],
+      lastPage: 1,
       newPost: {
         imageUrl: "",
         message: "",
@@ -193,23 +194,21 @@ export default {
     };
   },
   computed: {
-    // formates the the user account's creation date
+    // formates the user account's creation date
     formattedDate() {
       return this.$filters.formatDate(this.auth.user.createdAt);
     },
   },
-  mounted() {
-    this.getPosts();
-  },
   methods: {
   
     //display all the posts
-    getPosts() {
+    getPosts(page) {
+      if (page > this.lastPage) { return };
       postServices
-        .getPosts()
+        .getPosts(page)
         .then((res) => {
-          console.log(res.data);
-          this.posts = res.data;
+          this.posts.push(...res.data.posts);
+          this.lastPage = res.data.totalPages;
         })
         .catch((err) => console.log(err));
     },
@@ -253,6 +252,9 @@ export default {
           });
       }
     },
+  },
+  mounted() {
+    this.getPosts(1);
   },
 };
 </script>
