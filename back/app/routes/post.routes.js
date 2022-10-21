@@ -11,6 +11,7 @@ const multer = require('../middleware/multer-config');
  * that match the request (read one, read all, create etc...)
  */
 router.get("/", auth, postCtrl.readAllPosts);
+router.get("/userPosts", auth, postCtrl.readUserPosts);
 router.post("/", auth, multer, postCtrl.createPost);
 router.get("/:id", auth, postCtrl.readOnePost);
 router.post("/:id/like", auth, postCtrl.likePost);

@@ -46,7 +46,7 @@ exports.readAllPosts = async (req, res, next) => {
     try {
 
         //execute query with page and limit values, documents sorted from newest to oldest,
-        //populated for userId, iusersLiked and comments
+        //populated for userId, usersLiked and comments
         const posts = await Post.find()
             .populate([{
                     path: "userId",
@@ -88,9 +88,72 @@ exports.readAllPosts = async (req, res, next) => {
         });
 
     } catch (err) {
-        console.error(err.message);
+        res.status(404).json({
+            error
+        })
     }
 };
+
+/**
+ * gets all the posts of one user.
+ */
+exports.readUserPosts = async (req, res, next) => {
+
+    //destructure page and limit with the default value
+    const {
+        page = 1, limit = 10
+    } = req.query;
+
+    //execute query with page and limit values, documents sorted from newest to oldest,
+    //populated for userId, usersLiked and comments
+    try {
+        const userPosts = await Post.find({userId: req.body.userId})
+            .populate([{
+                    path: "userId",
+                    select: ["userName", "imageUrl"]
+                },
+                {
+                    path: "usersLiked",
+                    select: ["userName", "imageUrl"]
+                },
+                {
+                    path: "comments"
+                }
+            ])
+            .sort({
+                createdAt: -1
+            })
+            .limit(limit * 1)
+            .skip((page - 1) * limit)
+            .exec()
+
+        //configure imageUrls to match with the current protocol and host
+        userPosts.forEach((post) => {
+            post.imageUrl ? post.imageUrl = `${req.protocol}://${req.get("host")}${post.imageUrl}` : post.imageUrl = "";
+            if (post.userId.imageUrl.startsWith(`${req.protocol}://${req.get("host")}`)) {
+                return post.userId.imageUrl
+            } else {
+                post.userId.imageUrl = `${req.protocol}://${req.get("host")}${post.userId.imageUrl}`;
+            };
+        });    
+       
+        // get total documents in Post collection
+        const count = await Post.countDocuments()
+
+        res.status(200).json({
+            userPosts,
+            totalPages: Math.ceil(count / limit),
+            currentPage: page
+        })
+
+    } catch (err) {
+        res.status(404).json({
+            error
+        })
+    }
+
+}
+
 
 /**
  * creates a new post.

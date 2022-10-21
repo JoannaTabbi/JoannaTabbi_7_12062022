@@ -109,7 +109,9 @@ export default {
     //   id == this.auth.user._id ? true : false
     // }
     
-    //handles scroll to bottom
+    //handles scroll to bottom;
+    //when visibility observer on the bottom of the page is visible, 
+    //the page is incremented and getPosts function called
     handleInfiniteScroll(isVisible) {
       if (!isVisible) { return }
       this.page++
