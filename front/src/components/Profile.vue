@@ -134,6 +134,7 @@
             role="tab"
             aria-controls="posts"
             aria-selected="false"
+            
           >
             Publications
           </button>
@@ -178,7 +179,7 @@
           role="tabpanel"
           aria-labelledby="posts-tab"
         >
-          <Post />
+          <Post :posts="posts" @getPosts="getUserPosts"/>
         </div>
       </div>
     </div>
@@ -188,13 +189,30 @@
 <script>
 import Post from "@/components/Post.vue";
 import MiniProfile from "@/components/MiniProfileCard";
+import { postServices } from "@/_services";
 export default {
   name: "Profile",
   components: {
     Post,
     MiniProfile,
   },
-  props: ["user", "userProfile", "followButtonText"],
+  props: {
+    user: {
+        type: Object
+    }, 
+    userProfile: {
+        type: Boolean
+    }, 
+    followButtonText: {
+        type: String
+    }
+  },
+  data() {
+     return {
+        posts: [], 
+        lastPage: 1
+     }
+  },
   computed: {
     // formates the the user account's creation date
     formattedDate() {
@@ -204,8 +222,26 @@ export default {
   methods: {
     submitFollow() {
         this.$emit("submitFollow");
+    },
+
+    //display the posts from one page;
+    // displays the first page of posts when clicked on "publication" tag, then the next page every time 
+    //the scroll reaches the visibility observer at the bottom of the page till the last page
+    getUserPosts(page) {
+        //stops fetching data when the last page is displayed
+      if (page > this.lastPage) { return };
+      postServices
+        .getUserPosts(page, {postUser: this.user._id})
+        .then((res) => {
+          this.posts.push(...res.data.userPosts);
+          this.lastPage = res.data.totalPages;
+        })
+        .catch((err) => console.log(err));
     }
-}
+  },
+  mounted() {
+    this.getUserPosts(1)
+  }
 };
 
 </script>

@@ -201,7 +201,9 @@ export default {
   },
   methods: {
   
-    //display all the posts
+    //display the posts from one page;
+    // called once for the page 1 at mounted lifecycle hook, then the next page every time 
+    //the scroll reaches the visibility observer at the bottom of the page
     getPosts(page) {
       if (page > this.lastPage) { return };
       postServices

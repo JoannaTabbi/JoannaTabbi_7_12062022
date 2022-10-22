@@ -151,6 +151,7 @@ export default {
 
     //register the new user in the database
     register(value) {
+      console.log(value);
       authServices
         .signupUser(value)
         .then(() => {
