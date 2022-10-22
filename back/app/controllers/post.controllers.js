@@ -107,7 +107,7 @@ exports.readUserPosts = async (req, res, next) => {
     //execute query with page and limit values, documents sorted from newest to oldest,
     //populated for userId, usersLiked and comments
     try {
-        const userPosts = await Post.find({userId: req.body.userId})
+        const userPosts = await Post.find({ userId: req.body.userId })
             .populate([{
                     path: "userId",
                     select: ["userName", "imageUrl"]
@@ -138,7 +138,7 @@ exports.readUserPosts = async (req, res, next) => {
         });    
        
         // get total documents in Post collection
-        const count = await Post.countDocuments()
+        const count = await Post.countDocuments({ userId: req.body.userId })
 
         res.status(200).json({
             userPosts,

@@ -47,9 +47,7 @@ export default {
       );
      if (found) {
         return true;
-      } else {
-        return false;
-      } 
+      }
     },
      followButtonText: function() {
       if (this.isFollowed === true)

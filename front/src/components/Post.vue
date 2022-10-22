@@ -75,7 +75,7 @@
       <!--  COMMENTS  -->
       <Comments />
     </div>
-  <div v-if="posts.length" v-observe-visibility="handleInfiniteScroll"></div>  
+  <div v-if="posts && posts.length" v-observe-visibility="handleInfiniteScroll"></div>  
   </div>
 </template>
 
