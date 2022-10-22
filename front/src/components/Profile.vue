@@ -231,9 +231,8 @@ export default {
         //stops fetching data when the last page is displayed
       if (page > this.lastPage) { return };
       postServices
-        .getUserPosts(page, {userId: this.user._id})
+        .getUserPosts(page, {postUser: this.user._id})
         .then((res) => {
-            console.log(res.data.userPosts);
           this.posts.push(...res.data.userPosts);
           this.lastPage = res.data.totalPages;
         })

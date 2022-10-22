@@ -107,7 +107,7 @@ exports.readUserPosts = async (req, res, next) => {
     //execute query with page and limit values, documents sorted from newest to oldest,
     //populated for userId, usersLiked and comments
     try {
-        const userPosts = await Post.find({ userId: req.body.userId })
+        const userPosts = await Post.find({ userId: req.body.postUser })
             .populate([{
                     path: "userId",
                     select: ["userName", "imageUrl"]
