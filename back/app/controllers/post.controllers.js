@@ -57,7 +57,11 @@ exports.readAllPosts = async (req, res, next) => {
                     select: ["userName", "imageUrl"]
                 },
                 {
-                    path: "comments"
+                    path: "comments",
+                    populate: {
+                        path: "userId",
+                        select: ["userName", "imageUrl"]
+                    }
                 }
             ])
             .sort({
@@ -75,6 +79,13 @@ exports.readAllPosts = async (req, res, next) => {
             } else {
                 post.userId.imageUrl = `${req.protocol}://${req.get("host")}${post.userId.imageUrl}`;
             };
+            post.comments.forEach ((comment) => {
+                if (comment.userId.imageUrl.startsWith(`${req.protocol}://${req.get("host")}`)) {
+                return comment.userId.imageUrl
+            } else {
+                comment.userId.imageUrl = `${req.protocol}://${req.get("host")}${comment.userId.imageUrl}`;
+            };
+            });
         });
 
         // get total documents in Post collection
@@ -117,7 +128,11 @@ exports.readUserPosts = async (req, res, next) => {
                     select: ["userName", "imageUrl"]
                 },
                 {
-                    path: "comments"
+                    path: "comments",
+                    populate: {
+                        path: "userId",
+                        select: ["userName", "imageUrl"]
+                    }
                 }
             ])
             .sort({
@@ -135,6 +150,13 @@ exports.readUserPosts = async (req, res, next) => {
             } else {
                 post.userId.imageUrl = `${req.protocol}://${req.get("host")}${post.userId.imageUrl}`;
             };
+            post.comments.forEach ((comment) => {
+                if (comment.userId.imageUrl.startsWith(`${req.protocol}://${req.get("host")}`)) {
+                return comment.userId.imageUrl
+            } else {
+                comment.userId.imageUrl = `${req.protocol}://${req.get("host")}${comment.userId.imageUrl}`;
+            };
+            })
         });    
        
         // get total documents in Post collection
