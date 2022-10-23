@@ -101,20 +101,6 @@ export default {
     const auth = useAuthStore();
     return { auth }
   },
-  computed: {
-    //verifies if user has already liked one post; returns true or false
-    isLiked() {
-       this.posts.forEach((post) => {
-        const postArr = Object.values(post.usersLiked);
-        const found = postArr.find((liker) => 
-        liker._id == this.auth.user._id
-          );
-        if (found) {
-            return true;
-          }
-        })
-    },
-  },
   methods: {
      // formates the the user account's creation date
     formattedDate(date) {
@@ -138,26 +124,15 @@ export default {
     //the user retrieves his like.
     likeToggle(post) {
       const postArr = Object.values(post.usersLiked);
-      const found = postArr.find(elt => elt._id == this.auth.user._id);
-        if (found) {
-         postServices.likePost(post._id, { like: false })
+      const found = postArr.some(elt => elt._id == this.auth.user._id);
+       
+         postServices.likePost(post._id, { like: !found })
            .then((res => {
-             console.log(res.data);
-             post.usersLiked.filter(el => el._id != this.auth.user._id)
+             post.usersLiked = res.data.usersLiked;
+             post.likes = res.data.likes
            }))
            .catch((error) => console.log(error))
-        } else {
-           postServices.likePost(post._id, { like: true })
-           .then((res => {
-             console.log(res.data);
-             post.usersLiked.push({
-              _id: this.auth.user._id,
-              userName: this.auth.user.userName,
-              imageUrl: this.auth.user.imageUrl
-             })
-           }))
-           .catch((error) => console.log(error))
-        }
+    
   }
 }
 }
