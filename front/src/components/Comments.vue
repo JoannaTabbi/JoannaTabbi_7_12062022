@@ -19,13 +19,13 @@
     </div>
 
     <!-- User's comments area -->
-    <div class="my-4">
+    <div v-for="comment in comments" :key="comment._id" class="my-4">
       <!-- one comment -->
-      <div class="d-flex my-2 py-2">
+      <div class="d-flex my-2 py-2" >
         <div class="d-flex img-sm-container me-3 align-items-start">
           <img
             class="mw-100 shadow rounded-3"
-            src=""
+            :src="comment.userId.imageUrl"
             alt="avatar"
           />
         </div>
@@ -33,7 +33,7 @@
           <div class="w-100 text-start bg-light rounded-3 p-2">
             <div class="d-flex align-items-baseline justify-content-between">
               <div>
-                <h5 class="fs-6 mb-0">Jean_Dupont</h5>
+                <h5 class="fs-6 mb-0">{{ comment.userId.userName }}</h5>
               </div>
               <div class="dropdown fs-5 fw-bold ">
                 <a
@@ -69,7 +69,7 @@
               </div>
             </div>
             <p class="fs-6 mb-0">
-              
+              {{ comment.message }}
             </p>
           </div>
           <ul
@@ -80,7 +80,7 @@
             </li>
             <li class="nav-item">
               <a class="p-1 d-flex align-items-baseline">
-                <span class="me-2">1</span>
+                <span class="me-2">{{ comment.likes }}</span>
                 <i class="fa-solid fa-thumbs-up fa-lg"></i>
               </a>
             </li>
@@ -96,15 +96,10 @@
 import { useAuthStore } from "@/stores/authStore";
 export default {
   name: "Comments",
-  props: ['comment', "post"],
-  data() {
-    return {
-      comment: {
-        message: "",
-
-      }
-    }
-  },
+  props: {
+        comments : {
+          type: Array
+        }},
   setup() {
     const auth = useAuthStore();
     return { auth }

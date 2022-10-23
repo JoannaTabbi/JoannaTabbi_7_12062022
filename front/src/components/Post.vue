@@ -73,7 +73,7 @@
         </li>
       </ul>
       <!--  COMMENTS  -->
-      <Comments />
+      <Comments :comments="post.comments" />
     </div>
   <div v-if="posts && posts.length" v-observe-visibility="handleInfiniteScroll"></div>  
   </div>
