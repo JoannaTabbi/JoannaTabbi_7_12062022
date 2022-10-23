@@ -58,18 +58,18 @@
       </div>
       <ul class="nav d-flex justify-content-start mb-4 small">
         <li class="nav-item me-3">
-          <a href="">
+          <div @click="likeToggle(post)">
             <i class="fa-solid fa-thumbs-up fa-lg"></i>
             J'aime
             <span>{{post.likes}}</span>
-          </a>
+          </div>
         </li>
         <li class="nav-item">
-          <a href="">
+          <div>
             <i class="fa-solid fa-comment fa-lg"></i>
             Commentaire(s)
             <span>{{post.comments.length}}</span>
-          </a>
+          </div>
         </li>
       </ul>
       <!--  COMMENTS  -->
@@ -82,6 +82,7 @@
 <script>
 import Comments from "./Comments.vue";
 import { useAuthStore } from "@/stores/authStore";
+import { postServices } from '../_services';
 export default {
   name: "Post",
   components: {
@@ -100,6 +101,20 @@ export default {
     const auth = useAuthStore();
     return { auth }
   },
+  computed: {
+    //verifies if user has already liked one post; returns true or false
+    isLiked() {
+       this.posts.forEach((post) => {
+        const postArr = Object.values(post.usersLiked);
+        const found = postArr.find((liker) => 
+        liker._id == this.auth.user._id
+          );
+        if (found) {
+            return true;
+          }
+        })
+    },
+  },
   methods: {
      // formates the the user account's creation date
     formattedDate(date) {
@@ -116,12 +131,37 @@ export default {
       if (!isVisible) { return }
       this.page++
       this.$emit('getPosts', this.page)
-    }
-    
+    },
+
+    //likes or unlikes someone's post. Note that if the payload = "like": true, 
+    //the current user gives his like, if the payload = "like": false, 
+    //the user retrieves his like.
+    likeToggle(post) {
+      const postArr = Object.values(post.usersLiked);
+      const found = postArr.find(elt => elt._id == this.auth.user._id);
+        if (found) {
+         postServices.likePost(post._id, { like: false })
+           .then((res => {
+             console.log(res.data);
+             post.usersLiked.filter(el => el._id != this.auth.user._id)
+           }))
+           .catch((error) => console.log(error))
+        } else {
+           postServices.likePost(post._id, { like: true })
+           .then((res => {
+             console.log(res.data);
+             post.usersLiked.push({
+              _id: this.auth.user._id,
+              userName: this.auth.user.userName,
+              imageUrl: this.auth.user.imageUrl
+             })
+           }))
+           .catch((error) => console.log(error))
+        }
   }
+}
 }
 </script>
 
 <style>
 </style>
->

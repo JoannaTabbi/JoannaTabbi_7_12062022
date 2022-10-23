@@ -217,10 +217,10 @@ exports.createPost = (req, res, next) => {
 };
 
 /**
- * Controls one post's likes. The "like" key value equal to 1 gives 
+ * Controls one post's likes. The "like" key value equal to false gives 
  * a like to the chosen post : the "likes" value is incremented and 
  * the liker's id is added to the userLiked array. 
- * The "like key value equal to 0 removes the like already given : 
+ * The "like key value equal to true removes the like already given : 
  * the "likes" value is decremented and the liker's id is removed from 
  * the usersLiked array. 
  */
@@ -228,7 +228,7 @@ exports.likePost = (req, res, next) => {
     Post.findById(req.params.id)
         .then((postFound) => {
             switch (req.body.like) {
-                case 1:
+                case true:
                     if (!postFound.usersLiked.includes(req.auth.userId)) {
                         Post.findByIdAndUpdate({
                                 _id: req.params.id
@@ -244,11 +244,22 @@ exports.likePost = (req, res, next) => {
                                 upsert: true,
                                 setDefaultsOnInsert: true
                             })
-                            .then((postUpdated) =>
+                            .populate({
+                                path: "usersLiked",
+                                select: ["userName", "imageUrl"]
+                            })
+                            .then((postUpdated) => {
+                                postUpdated.usersLiked.forEach((user) => {
+                                    if (user.imageUrl.startsWith(`${req.protocol}://${req.get("host")}`)) {
+                                    return user.imageUrl
+                                } else {
+                                    user.imageUrl = `${req.protocol}://${req.get("host")}${user.imageUrl}`;
+                                };
+                                });
                                 res
                                 .status(200)
                                 .json(postUpdated, hateoasLinks(req, postUpdated._id))
-                            )
+                            })
                             .catch((error) =>
                                 res.status(400).json({
                                     error
@@ -260,7 +271,7 @@ exports.likePost = (req, res, next) => {
                         });
                     }
                     break;
-                case 0:
+                case false:
                     if (postFound.usersLiked.includes(req.auth.userId)) {
                         Post.findByIdAndUpdate({
                                 _id: req.params.id
@@ -276,11 +287,22 @@ exports.likePost = (req, res, next) => {
                                 upsert: true,
                                 setDefaultsOnInsert: true
                             })
-                            .then((postUpdated) =>
+                            .populate({
+                                path: "usersLiked",
+                                select: ["userName", "imageUrl"]
+                            })
+                            .then((postUpdated) => {
+                                postUpdated.usersLiked.forEach((user) => {
+                                    if (user.imageUrl.startsWith(`${req.protocol}://${req.get("host")}`)) {
+                                    return user.imageUrl
+                                } else {
+                                    user.imageUrl = `${req.protocol}://${req.get("host")}${user.imageUrl}`;
+                                };
+                                });
                                 res
                                 .status(200)
                                 .json(postUpdated, hateoasLinks(req, postUpdated._id))
-                            )
+                            })
                             .catch((error) =>
                                 res.status(400).json({
                                     error
