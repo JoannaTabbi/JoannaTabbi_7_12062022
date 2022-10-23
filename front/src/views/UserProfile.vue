@@ -40,17 +40,17 @@ export default {
     }
   },
   computed: {
+    //transforms user.following object in array, then checks if params.id is present 
+    //inside
     isFollowed: function() { 
       const followingArr = Object.values(this.auth.user.following);
-      const found = followingArr.find((follower) => 
+      const found = followingArr.some((follower) => 
         follower._id == this.$route.params.id
       );
-     if (found) {
-        return true;
-      }
+      return found
     },
      followButtonText: function() {
-      if (this.isFollowed === true)
+      if (this.isFollowed)
      { return "Ne plus suivre" } 
      else {return "Suivre" }  
      }
@@ -93,7 +93,7 @@ export default {
     },
     //toggles between following and unfollowing user
     followToggle() {
-      if(this.isFollowed === true) {
+      if(this.isFollowed) {
         return this.unfollowUser()
       } else {
         return this.followUser()
