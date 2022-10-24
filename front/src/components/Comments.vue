@@ -51,18 +51,18 @@
                   aria-labelledby="dropdownMenuLink"
                 >
                   <li>
-                    <a class="dropdown-item" href="#"
-                      >Modifiez votre commentaire</a
+                    <div class="dropdown-item" href="#"
+                      >Modifiez votre commentaire</div
                     >
                   </li>
                   <li>
-                    <a class="dropdown-item" href="#"
-                      >Supprimez votre commentaire</a
+                    <div class="dropdown-item" href="#"
+                      >Supprimez votre commentaire</div
                     >
                   </li>
                   <li>
-                    <a class="dropdown-item" href="#"
-                      >Signalez ce commentaire</a
+                    <div class="dropdown-item" href="#"
+                      >Signalez ce commentaire</div
                     >
                   </li>
                 </ul>
@@ -75,14 +75,14 @@
           <ul
             class="nav nav-divider small justify-content-between align-items-center px-2"
           >
-            <li class="nav-item">
-              <a href="">J'aime</a>
+            <li class="nav-item pointer">
+              <div href="">J'aime</div>
             </li>
             <li class="nav-item">
-              <a class="p-1 d-flex align-items-baseline">
-                <span class="me-2">{{ comment.likes }}</span>
+              <div class="p-1 d-flex align-items-baseline">
+                <span v-if="comment.likes" class="me-2">{{ comment.likes }}</span>
                 <i class="fa-solid fa-thumbs-up fa-lg"></i>
-              </a>
+              </div>
             </li>
           </ul>
         </div>

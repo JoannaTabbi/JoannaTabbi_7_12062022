@@ -57,11 +57,11 @@
         </p>
       </div>
       <ul class="nav d-flex justify-content-start mb-4 small">
-        <li class="nav-item me-3">
+        <li class="nav-item me-3 pointer">
           <div @click="likeToggle(post)">
             <i class="fa-solid fa-thumbs-up fa-lg"></i>
             J'aime
-            <span>{{post.likes}}</span>
+            <span v-if="post.likes">{{post.likes}}</span>
           </div>
         </li>
         <li class="nav-item">

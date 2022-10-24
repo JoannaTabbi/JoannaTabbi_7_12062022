@@ -62,4 +62,10 @@ a:hover {
 input:focus, textarea:focus {
   background-image: radial-gradient(ellipse at 40% 50%, #ffebeb 30%, #fff 80%);
 }
+.pointer {
+  cursor: pointer;
+}
+.pointer:hover {
+  color: #FD2D01;
+}
 </style>
