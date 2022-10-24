@@ -57,19 +57,19 @@
         </p>
       </div>
       <ul class="nav d-flex justify-content-start mb-4 small">
-        <li class="nav-item me-3">
-          <a href="">
+        <li class="nav-item me-3 pointer">
+          <div @click="likeToggle(post)">
             <i class="fa-solid fa-thumbs-up fa-lg"></i>
             J'aime
-            <span>{{post.likes}}</span>
-          </a>
+            <span v-if="post.likes">{{post.likes}}</span>
+          </div>
         </li>
         <li class="nav-item">
-          <a href="">
+          <div>
             <i class="fa-solid fa-comment fa-lg"></i>
             Commentaire(s)
             <span>{{post.comments.length}}</span>
-          </a>
+          </div>
         </li>
       </ul>
       <!--  COMMENTS  -->
@@ -82,6 +82,7 @@
 <script>
 import Comments from "./Comments.vue";
 import { useAuthStore } from "@/stores/authStore";
+import { postServices } from '../_services';
 export default {
   name: "Post",
   components: {
@@ -116,12 +117,26 @@ export default {
       if (!isVisible) { return }
       this.page++
       this.$emit('getPosts', this.page)
-    }
+    },
+
+    //likes or unlikes someone's post. Note that if the payload = "like": true, 
+    //the current user gives his like, if the payload = "like": false, 
+    //the user retrieves his like.
+    likeToggle(post) {
+      const postArr = Object.values(post.usersLiked);
+      const found = postArr.some(elt => elt._id == this.auth.user._id);
+       
+         postServices.likePost(post._id, { like: !found })
+           .then((res => {
+             post.usersLiked = res.data.usersLiked;
+             post.likes = res.data.likes
+           }))
+           .catch((error) => console.log(error))
     
   }
+}
 }
 </script>
 
 <style>
 </style>
->

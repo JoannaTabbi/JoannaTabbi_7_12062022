@@ -37,8 +37,8 @@ let updatePost = (id, formData) => {
 }
 
 // likes one post
-let likePost = (id) => {
-    return Axios.post("/posts/" + id + "/like")
+let likePost = (id, payload) => {
+    return Axios.post("/posts/" + id + "/like", payload)
 }
 
 //deletes one post 
