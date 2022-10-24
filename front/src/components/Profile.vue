@@ -189,6 +189,7 @@
 <script>
 import Post from "@/components/Post.vue";
 import MiniProfile from "@/components/MiniProfileCard";
+import { useAuthStore } from "@/stores/authStore";
 import { postServices } from "@/_services";
 export default {
   name: "Profile",
@@ -212,6 +213,10 @@ export default {
         posts: [], 
         lastPage: 1
      }
+  },
+  setup() {
+    const auth = useAuthStore();
+    return { auth }
   },
   computed: {
     // formates the the user account's creation date

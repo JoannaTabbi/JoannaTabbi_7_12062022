@@ -332,13 +332,9 @@ exports.updatePost = (req, res, next) => {
             res.status(404).json({
                 error: "No such post !"
             });
-        } else if (post.userId !== req.auth.userId) {
-            res.status(403).json({
-                error: "Unauthorized request!"
-            });
         } else {
             const postObject = req.file ? {
-                ...JSON.parse(req.body.post),
+                ...req.body,
                 imageUrl: `/images/${req.file.filename}`
             } : {
                 ...req.body
@@ -379,11 +375,6 @@ exports.deletePost = (req, res, next) => {
             if (!post) {
                 return res.status(404).json({
                     error: "No such post !"
-                });
-            }
-            if (post.userId !== req.auth.userId) {
-                return res.status(403).json({
-                    error: "Unauthorized request!"
                 });
             }
             const filename = post.imageUrl.split("/images/")[1];

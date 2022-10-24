@@ -12,10 +12,12 @@ module.exports = (req, res, next) => {
     // then returns a decoded object that we stored the token in
     const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
     const userId = decodedToken.userId;
+    const isAdmin = decodedToken.isAdmin;
     req.auth = {
-      userId
+      userId,
+      isAdmin
     };
-    if (req.body.userId && req.body.userId !== userId) {
+    if ((req.body.userId && req.body.userId !== userId) || req.auth.isAdmin === false) {
       throw 'Invalid user ID';
     } else {
       next();

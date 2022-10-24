@@ -118,7 +118,7 @@ exports.login = (req, res, next) => {
           }
           // creating a refresh token stored in cookie, that will allow us to regenerate the token once expired;
           const newRefreshToken = jwt.sign({
-              userId: user._id, // the method takes two arguments :
+             userId: user._id, isAdmin: user.isAdmin // the method takes two arguments :
             }, // a response object and
             process.env.REFRESH_TOKEN_SECRET, {
               // a secret key
@@ -150,7 +150,7 @@ exports.login = (req, res, next) => {
                 userId: user._id,
                 // creating a token for a new session
                 token: jwt.sign({
-                    userId: user._id, // the method takes two arguments :
+                    userId: user._id, isAdmin: user.isAdmin// the method takes two arguments :
                   }, // a response object and
                   process.env.TOKEN_SECRET, {
                     // a secret key
