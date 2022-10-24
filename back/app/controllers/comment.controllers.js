@@ -43,8 +43,14 @@ exports.createComment = (req, res, next) => {
     });
     comment
         .save()
-        .then((newComment) => {
-            Post.findByIdAndUpdate(newComment.postId, {
+        .then(() => {
+            Comment.populate(comment, {
+                path: "userId",
+                select: ["userName", "imageUrl"]
+            })
+            .then((newComment) => {
+                newComment.userId.imageUrl = `${req.protocol}://${req.get("host")}${newComment.userId.imageUrl}`
+                Post.findByIdAndUpdate(newComment.postId, {
                     $push: {
                         comments: newComment._id
                     }
@@ -55,6 +61,8 @@ exports.createComment = (req, res, next) => {
                 })
                 .then(() => res.status(201).json(newComment, hateoasLinks(req, newComment._id)))
                 .catch((error) => res.status(400).json(error));
+            })
+            .catch((error) => res.status(400).json(error));
         })
         .catch((error) => res.status(400).json(error));
 };

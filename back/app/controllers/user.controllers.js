@@ -418,7 +418,6 @@ exports.deleteUser = (req, res, next) => {
           error: new Error("User not found!"),
         });
       } else {
-        console.log(user.imageUrl);
         if (user.imageUrl !== "/images/avatar-200.png") {
           const filename = user.imageUrl.split("/images/")[1];
           fs.unlinkSync(`images/${filename}`);

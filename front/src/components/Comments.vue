@@ -50,17 +50,17 @@
                   aria-labelledby="dropdownMenuLink"
                 >
                   <li>
-                    <div v-if="comment.userId._id === auth.user._id || auth.user.isAdmin" class="dropdown-item" href="#">
+                    <div type="button" v-if="comment.userId._id === auth.user._id || auth.user.isAdmin" class="dropdown-item" href="#">
                       Modifiez le commentaire
                     </div>
                   </li>
                   <li>
-                    <div v-if="comment.userId._id === auth.user._id || auth.user.isAdmin" class="dropdown-item" href="#">
+                    <div type="button" v-if="comment.userId._id === auth.user._id || auth.user.isAdmin" class="dropdown-item" href="#">
                       Supprimez le commentaire
                     </div>
                   </li>
                   <li>
-                    <div v-if="comment.userId._id !== auth.user._id || auth.user.isAdmin" class="dropdown-item" href="#">
+                    <div type="button" v-if="comment.userId._id !== auth.user._id || auth.user.isAdmin" class="dropdown-item" href="#">
                       Signalez le commentaire
                     </div>
                   </li>
@@ -81,7 +81,7 @@
             "
           >
             <li class="nav-item pointer" @click="likeToggle(comment)">
-              <div href="">J'aime</div>
+              <div>J'aime</div>
             </li>
             <li class="nav-item">
               <div class="p-1 d-flex align-items-baseline">

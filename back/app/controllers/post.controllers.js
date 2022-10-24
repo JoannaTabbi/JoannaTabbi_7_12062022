@@ -79,12 +79,12 @@ exports.readAllPosts = async (req, res, next) => {
             } else {
                 post.userId.imageUrl = `${req.protocol}://${req.get("host")}${post.userId.imageUrl}`;
             };
-            post.comments.forEach ((comment) => {
+            post.comments.forEach((comment) => {
                 if (comment.userId.imageUrl.startsWith(`${req.protocol}://${req.get("host")}`)) {
-                return comment.userId.imageUrl
-            } else {
-                comment.userId.imageUrl = `${req.protocol}://${req.get("host")}${comment.userId.imageUrl}`;
-            };
+                    return comment.userId.imageUrl
+                } else {
+                    comment.userId.imageUrl = `${req.protocol}://${req.get("host")}${comment.userId.imageUrl}`;
+                };
             });
         });
 
@@ -118,7 +118,9 @@ exports.readUserPosts = async (req, res, next) => {
     //execute query with page and limit values, documents sorted from newest to oldest,
     //populated for userId, usersLiked and comments
     try {
-        const userPosts = await Post.find({ userId: req.body.postUser })
+        const userPosts = await Post.find({
+                userId: req.body.postUser
+            })
             .populate([{
                     path: "userId",
                     select: ["userName", "imageUrl"]
@@ -150,17 +152,19 @@ exports.readUserPosts = async (req, res, next) => {
             } else {
                 post.userId.imageUrl = `${req.protocol}://${req.get("host")}${post.userId.imageUrl}`;
             };
-            post.comments.forEach ((comment) => {
+            post.comments.forEach((comment) => {
                 if (comment.userId.imageUrl.startsWith(`${req.protocol}://${req.get("host")}`)) {
-                return comment.userId.imageUrl
-            } else {
-                comment.userId.imageUrl = `${req.protocol}://${req.get("host")}${comment.userId.imageUrl}`;
-            };
+                    return comment.userId.imageUrl
+                } else {
+                    comment.userId.imageUrl = `${req.protocol}://${req.get("host")}${comment.userId.imageUrl}`;
+                };
             })
-        });    
-       
+        });
+
         // get total documents in Post collection
-        const count = await Post.countDocuments({ userId: req.body.userId })
+        const count = await Post.countDocuments({
+            userId: req.body.userId
+        })
 
         res.status(200).json({
             userPosts,
@@ -251,14 +255,14 @@ exports.likePost = (req, res, next) => {
                             .then((postUpdated) => {
                                 postUpdated.usersLiked.forEach((user) => {
                                     if (user.imageUrl.startsWith(`${req.protocol}://${req.get("host")}`)) {
-                                    return user.imageUrl
-                                } else {
-                                    user.imageUrl = `${req.protocol}://${req.get("host")}${user.imageUrl}`;
-                                };
+                                        return user.imageUrl
+                                    } else {
+                                        user.imageUrl = `${req.protocol}://${req.get("host")}${user.imageUrl}`;
+                                    };
                                 });
                                 res
-                                .status(200)
-                                .json(postUpdated, hateoasLinks(req, postUpdated._id))
+                                    .status(200)
+                                    .json(postUpdated, hateoasLinks(req, postUpdated._id))
                             })
                             .catch((error) =>
                                 res.status(400).json({
@@ -294,14 +298,14 @@ exports.likePost = (req, res, next) => {
                             .then((postUpdated) => {
                                 postUpdated.usersLiked.forEach((user) => {
                                     if (user.imageUrl.startsWith(`${req.protocol}://${req.get("host")}`)) {
-                                    return user.imageUrl
-                                } else {
-                                    user.imageUrl = `${req.protocol}://${req.get("host")}${user.imageUrl}`;
-                                };
+                                        return user.imageUrl
+                                    } else {
+                                        user.imageUrl = `${req.protocol}://${req.get("host")}${user.imageUrl}`;
+                                    };
                                 });
                                 res
-                                .status(200)
-                                .json(postUpdated, hateoasLinks(req, postUpdated._id))
+                                    .status(200)
+                                    .json(postUpdated, hateoasLinks(req, postUpdated._id))
                             })
                             .catch((error) =>
                                 res.status(400).json({
@@ -377,16 +381,16 @@ exports.deletePost = (req, res, next) => {
                     error: "No such post !"
                 });
             }
-            const filename = post.imageUrl.split("/images/")[1];
-            fs.unlink(`images/${filename}`, function (err) {
-                if (err) throw err;
-                // if no error, file has been deleted successfully
-                Comment.deleteMany({
-                        postId: req.params.id
-                    })
-                    .then(() => res.sendStatus(204))
-                    .catch((error) => res.status(400).json(error))
-            });
+            if (post.imageUrl) {
+                const filename = post.imageUrl.split("/images/")[1];
+                fs.unlinkSync(`images/${filename}`)
+            }
+            Comment.deleteMany({
+                    postId: req.params.id
+                })
+                .then(() => res.sendStatus(204))
+                .catch((error) => res.status(400).json(error))
+
         })
         .catch((error) =>
             res.status(500).json({
