@@ -60,10 +60,10 @@ exports.createComment = (req, res, next) => {
 };
 
 /**
- * Controls one comment likes. The "like" key value equal to 1 gives 
+ * Controls one comment likes. The "like" key value equal to true gives 
  * a like to the chosen comment : the "likes" value is incremented and 
  * the liker's id is added to the userLiked array. 
- * The "like" key value equal to 0 removes the like already given : 
+ * The "like" key value equal to false removes the like already given : 
  * the "likes" value is decremented and the liker's id is removed from 
  * the usersLiked array. 
  */
@@ -72,7 +72,7 @@ exports.likeComment = (req, res, next) => {
     Comment.findById(req.params.id)
         .then((commentFound) => {
             switch (req.body.like) {
-                case 1:
+                case true:
                     if (!commentFound.usersLiked.includes(req.auth.userId)) {
                         Comment.findByIdAndUpdate({
                                 _id: req.params.id
@@ -88,9 +88,21 @@ exports.likeComment = (req, res, next) => {
                                 upsert: true,
                                 setDefaultsOnInsert: true
                             })
-                            .then((commentUpdated) => res.status(200).json(
+                            .populate({
+                                path: "usersLiked",
+                                select: ["userName", "imageUrl"]
+                            })
+                            .then((commentUpdated) => {
+                                commentUpdated.usersLiked.forEach((user) => {
+                                    if (user.imageUrl.startsWith(`${req.protocol}://${req.get("host")}`)) {
+                                    return user.imageUrl
+                                } else {
+                                    user.imageUrl = `${req.protocol}://${req.get("host")}${user.imageUrl}`;
+                                };
+                                });
+                                res.status(200).json(
                                 commentUpdated, hateoasLinks(req, commentUpdated._id)
-                            ))
+                            )})
                             .catch((error) => res.status(400).json({
                                 error
                             }));
@@ -102,7 +114,7 @@ exports.likeComment = (req, res, next) => {
                             });
                     }
                     break;
-                case 0:
+                case false:
                     if (commentFound.usersLiked.includes(req.auth.userId)) {
                         Comment.findByIdAndUpdate({
                                 _id: req.params.id
@@ -118,9 +130,21 @@ exports.likeComment = (req, res, next) => {
                                 upsert: true,
                                 setDefaultsOnInsert: true
                             })
-                            .then((commentUpdated) => res.status(200).json(
+                            .populate({
+                                path: "usersLiked",
+                                select: ["userName", "imageUrl"]
+                            })
+                            .then((commentUpdated) => { 
+                                commentUpdated.usersLiked.forEach((user) => {
+                                    if (user.imageUrl.startsWith(`${req.protocol}://${req.get("host")}`)) {
+                                    return user.imageUrl
+                                } else {
+                                    user.imageUrl = `${req.protocol}://${req.get("host")}${user.imageUrl}`;
+                                };
+                                });
+                                res.status(200).json(
                                 commentUpdated, hateoasLinks(req, commentUpdated._id)
-                            ))
+                            )}) 
                             .catch((error) => res.status(400).json({
                                 error
                             }));
