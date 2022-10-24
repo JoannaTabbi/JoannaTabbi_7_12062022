@@ -31,7 +31,7 @@ You can test this API with an API client, like POSTMAN or Thunder client which i
 You'll find below the routes that you can test with an API client. Note that the responses contain the HATEOAS links that allow you to directly reach the object related routes.
 The *create*, *like*, *follow*, *unfollow* or *report* routes are available to any authenticated user. 
 The *readOneself*, *exportData* and all *update* and *delete* routes are not available to the user who didn't create this data.
-Finally, for moderation purposes, admin user can modify or change post or comment content.  
+Finally, for moderation purposes, admin user can modify or delete post or comment content.  
 
 ### USER
 

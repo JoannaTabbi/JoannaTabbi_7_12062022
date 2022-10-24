@@ -172,11 +172,6 @@ exports.updateComment = (req, res, next) => {
                     error: "No such comment !"
                 });
             };
-            if (comment.userId !== req.auth.userId) {
-                return res.status(403).json({
-                    error: "Unauthorized request!"
-                });
-            };
             Comment.findByIdAndUpdate(
                     req.params.id, {
                         message: req.body.message
