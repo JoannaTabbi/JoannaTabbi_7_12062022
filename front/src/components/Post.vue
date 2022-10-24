@@ -33,13 +33,13 @@
             aria-labelledby="dropdownMenuLink"
           >
             <li>
-              <div class="dropdown-item">Modifiez votre publication</div>
+              <div v-if="post.userId._id === auth.user._id || auth.user.isAdmin" class="dropdown-item">Modifiez la publication</div>
             </li>
             <li>
-              <div class="dropdown-item">Supprimez votre publication</div>
+              <div v-if="post.userId._id === auth.user._id || auth.user.isAdmin" class="dropdown-item">Supprimez la publication</div>
             </li>
             <li>
-              <div class="dropdown-item">Signalez cette publication</div>
+              <div v-if="post.userId._id !== auth.user._id || auth.user.isAdmin" class="dropdown-item">Signalez la publication</div>
             </li>
           </ul>
         </div>
@@ -97,6 +97,11 @@ export default {
       page: 1
     } 
   },
+  computed: {
+     isPostOwner() {
+
+     }
+  },
   setup() {
     const auth = useAuthStore();
     return { auth }
@@ -106,9 +111,12 @@ export default {
     formattedDate(date) {
       return this.$filters.formatDate(date);
     },
-    // isCurrentUserPost(id) {
-    //   id == this.auth.user._id ? true : false
-    // }
+
+    // defnies if the  authenticated user is the creator (owner) of the post 
+    // (and subsequently can modify or delete it)
+    isOwner(post) {
+       post.UserId !== this.auth.user._id ? true : false
+    },
     
     //handles scroll to bottom;
     //when visibility observer on the bottom of the page is visible, 

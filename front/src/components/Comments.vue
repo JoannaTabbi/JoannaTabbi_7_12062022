@@ -50,18 +50,18 @@
                   aria-labelledby="dropdownMenuLink"
                 >
                   <li>
-                    <div class="dropdown-item" href="#">
-                      Modifiez votre commentaire
+                    <div v-if="comment.userId._id === auth.user._id || auth.user.isAdmin" class="dropdown-item" href="#">
+                      Modifiez le commentaire
                     </div>
                   </li>
                   <li>
-                    <div class="dropdown-item" href="#">
-                      Supprimez votre commentaire
+                    <div v-if="comment.userId._id === auth.user._id || auth.user.isAdmin" class="dropdown-item" href="#">
+                      Supprimez le commentaire
                     </div>
                   </li>
                   <li>
-                    <div class="dropdown-item" href="#">
-                      Signalez ce commentaire
+                    <div v-if="comment.userId._id !== auth.user._id || auth.user.isAdmin" class="dropdown-item" href="#">
+                      Signalez le commentaire
                     </div>
                   </li>
                 </ul>
