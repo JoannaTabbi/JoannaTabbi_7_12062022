@@ -180,6 +180,11 @@ exports.updateComment = (req, res, next) => {
                     error: "No such comment !"
                 });
             };
+            if ((comment.userId !== req.auth.userId) && req.auth.isAdmin === false) {
+                return res.status(403).json({
+                    error: "Unauthorized request!"
+                });
+            }
             Comment.findByIdAndUpdate(
                     req.params.id, {
                         message: req.body.message
@@ -226,7 +231,7 @@ exports.deleteComment = (req, res, next) => {
                                     error: "No such comment !"
                                 });
                             };
-                            if (comment.userId !== req.auth.userId) {
+                            if ((comment.userId !== req.auth.userId) && req.auth.isAdmin === false) {
                                 return res.status(403).json({
                                     error: "Unauthorized request!"
                                 });

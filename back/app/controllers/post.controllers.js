@@ -333,40 +333,45 @@ exports.likePost = (req, res, next) => {
 exports.updatePost = (req, res, next) => {
     Post.findById(req.params.id).then((post) => {
         if (!post) {
-            res.status(404).json({
+            return res.status(404).json({
                 error: "No such post !"
-            });
-        } else {
-            const postObject = req.file ? {
-                ...req.body,
-                imageUrl: `/images/${req.file.filename}`
-            } : {
-                ...req.body
-            };
-            const filename = post.imageUrl.split("/images/")[1];
-            try {
-                if (postObject.imageUrl) {
-                    fs.unlinkSync(`images/${filename}`);
-                }
-            } catch (error) {
-                console.log(error);
-            }
-            Post.findByIdAndUpdate(
-                    req.params.id,
-                    postObject, {
-                        new: true,
-                        upsert: true,
-                        setDefaultsOnInsert: true
-                    })
-                .then((postUpdated) =>
-                    res.status(200).json(postUpdated, hateoasLinks(req, postUpdated._id))
-                )
-                .catch((error) =>
-                    res.status(400).json({
-                        error
-                    })
-                );
+            })
         }
+        if ((post.userId !== req.auth.userId) && req.auth.isAdmin === false) {
+            return res.status(403).json({
+                error: "Unauthorized request!"
+            });
+        }
+        const postObject = req.file ? {
+            ...req.body,
+            imageUrl: `/images/${req.file.filename}`
+        } : {
+            ...req.body
+        };
+        const filename = post.imageUrl.split("/images/")[1];
+        try {
+            if (postObject.imageUrl) {
+                fs.unlinkSync(`images/${filename}`);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+        Post.findByIdAndUpdate(
+                req.params.id,
+                postObject, {
+                    new: true,
+                    upsert: true,
+                    setDefaultsOnInsert: true
+                })
+            .then((postUpdated) =>
+                res.status(200).json(postUpdated, hateoasLinks(req, postUpdated._id))
+            )
+            .catch((error) =>
+                res.status(400).json({
+                    error
+                })
+            );
+
     });
 };
 
@@ -380,17 +385,23 @@ exports.deletePost = (req, res, next) => {
                 return res.status(404).json({
                     error: "No such post !"
                 });
-            }
+            };
+            if (post.userId != req.auth.userId && req.auth.isAdmin == false) {
+                return res.status(403).json({
+                    error: "Unauthorized request"
+                });
+            };
             if (post.imageUrl) {
                 const filename = post.imageUrl.split("/images/")[1];
                 fs.unlinkSync(`images/${filename}`)
-            }
-            Comment.deleteMany({
+            };
+            /*Comment.deleteMany({
                     postId: req.params.id
-                })
+                }) 
                 .then(() => res.sendStatus(204))
-                .catch((error) => res.status(400).json(error))
+                .catch((error) => res.status(400).json(error)) */
 
+            res.sendStatus(204);
         })
         .catch((error) =>
             res.status(500).json({

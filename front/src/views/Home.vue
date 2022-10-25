@@ -148,7 +148,14 @@
           </section>
           <section id="feeds" class="shadow rounded-3 mb-3 p-3">
             <h2 class="text-start fs-4 fw-bolder">Fil d'actualité</h2>
+            <Suspense>
+            <template #default>
             <Post :posts="posts" @getPosts="getPosts" />
+            </template>
+            <template #fallback>
+              <div>Chargement...</div>
+            </template>
+            </Suspense>
           </section>
         </div>
 
@@ -210,6 +217,7 @@ export default {
         .getPosts(page)
         .then((res) => {
           this.posts.push(...res.data.posts);
+          console.log(this.posts);
           this.lastPage = res.data.totalPages;
         })
         .catch((err) => console.log(err));

@@ -39,7 +39,7 @@
             <li>
               <div
                 type="button"
-                v-if="post.userId._id === auth.user._id || auth.user.isAdmin"
+                v-if="post.userId._id == auth.user._id || auth.user.isAdmin === true"
                 class="dropdown-item"
               >
                 Modifiez la publication
@@ -48,9 +48,9 @@
             <li>
               <div
                 type="button"
-                v-if="post.userId._id === auth.user._id || auth.user.isAdmin"
+                v-if="post.userId._id == auth.user._id || auth.user.isAdmin === true"
                 class="dropdown-item"
-                @click="deletePost(post)"
+                @click="deletePost(post._id)"
               >
                 Supprimez la publication
               </div>
@@ -58,7 +58,7 @@
             <li>
               <div
                 type="button"
-                v-if="post.userId._id !== auth.user._id || auth.user.isAdmin"
+                v-if="post.userId._id != auth.user._id"
                 class="dropdown-item"
               >
                 Signalez la publication
@@ -195,12 +195,15 @@ export default {
     },
 
     //deletes one post
-    deletePost(post) {
-      console.log(this.posts);
-      console.log(post._id);
-        postServices.deletePost(post._id)
+    deletePost(postId) {
+      console.log(postId);
+        postServices.deletePost(postId)
           .then(() => {
-            this.posts = this.posts.filter(elt => elt._id !== post._id);
+            console.log(this.posts);
+            const postsArr = Object.values(this.posts);
+            this.posts = postsArr.filter(elt => elt._id !== postId);
+            this.posts = Object.fromEntries(this.posts);
+            
            // this.toggledModal;
           })
           .catch((error) => {

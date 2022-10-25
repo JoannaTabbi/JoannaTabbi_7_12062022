@@ -85,6 +85,21 @@
         <li class="nav-item" role="presentation">
           <button
             class="nav-link active"
+            id="posts-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#posts"
+            type="button"
+            role="tab"
+            aria-controls="posts"
+            aria-selected="false"
+            
+          >
+            Publications
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
             id="about-tab"
             data-bs-toggle="tab"
             data-bs-target="#about"
@@ -124,25 +139,18 @@
             Suivis
           </button>
         </li>
-        <li class="nav-item" role="presentation">
-          <button
-            class="nav-link"
-            id="posts-tab"
-            data-bs-toggle="tab"
-            data-bs-target="#posts"
-            type="button"
-            role="tab"
-            aria-controls="posts"
-            aria-selected="false"
-            
-          >
-            Publications
-          </button>
-        </li>
       </ul>
       <div class="tab-content m-4 text-start" id="myTabContent">
         <div
           class="tab-pane fade show active"
+          id="posts"
+          role="tabpanel"
+          aria-labelledby="posts-tab"
+        >
+          <Post :posts="posts" @getPosts="getUserPosts"/>
+        </div>
+        <div
+          class="tab-pane fade"
           id="about"
           role="tabpanel"
           aria-labelledby="about-tab"
@@ -172,14 +180,6 @@
               <MiniProfile :mpUsers="user.following" />
             </div>
           </div>
-        </div>
-        <div
-          class="tab-pane fade"
-          id="posts"
-          role="tabpanel"
-          aria-labelledby="posts-tab"
-        >
-          <Post :posts="posts" @getPosts="getUserPosts"/>
         </div>
       </div>
     </div>

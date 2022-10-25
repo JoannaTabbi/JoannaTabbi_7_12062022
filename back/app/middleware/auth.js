@@ -17,7 +17,7 @@ module.exports = (req, res, next) => {
       userId,
       isAdmin
     };
-    if ((req.body.userId && req.body.userId !== userId) || req.auth.isAdmin === false) {
+    if (req.body.userId && req.body.userId !== userId) {
       throw 'Invalid user ID';
     } else {
       next();
