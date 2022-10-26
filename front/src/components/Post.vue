@@ -164,8 +164,7 @@ export default {
 
     //adds like class to "j'aime"
     isLiked(usersLiked) {
-      const found = usersLiked.some(user => user._id == this.auth.user._id);
-      return found
+      return usersLiked.some(user => user._id == this.auth.user._id);
     },
 
     // toggle modal
@@ -188,11 +187,9 @@ export default {
     //the current user gives his like, if the payload = "like": false,
     //the user retrieves his like.
     likeToggle(post) {
-      const postArr = Object.values(post.usersLiked);
-      const found = postArr.some((elt) => elt._id == this.auth.user._id);
 
       postServices
-        .likePost(post._id, { like: !found })
+        .likePost(post._id, { like: !this.isLiked(post.usersLiked) })
         .then((res) => {
           post.usersLiked = res.data.usersLiked;
           post.likes = res.data.likes;
