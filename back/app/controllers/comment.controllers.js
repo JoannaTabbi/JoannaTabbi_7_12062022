@@ -96,18 +96,7 @@ exports.likeComment = (req, res, next) => {
                                 upsert: true,
                                 setDefaultsOnInsert: true
                             })
-                            .populate({
-                                path: "usersLiked",
-                                select: ["userName", "imageUrl"]
-                            })
                             .then((commentUpdated) => {
-                                commentUpdated.usersLiked.forEach((user) => {
-                                    if (user.imageUrl.startsWith(`${req.protocol}://${req.get("host")}`)) {
-                                    return user.imageUrl
-                                } else {
-                                    user.imageUrl = `${req.protocol}://${req.get("host")}${user.imageUrl}`;
-                                };
-                                });
                                 res.status(200).json(
                                 commentUpdated, hateoasLinks(req, commentUpdated._id)
                             )})
@@ -138,18 +127,7 @@ exports.likeComment = (req, res, next) => {
                                 upsert: true,
                                 setDefaultsOnInsert: true
                             })
-                            .populate({
-                                path: "usersLiked",
-                                select: ["userName", "imageUrl"]
-                            })
                             .then((commentUpdated) => { 
-                                commentUpdated.usersLiked.forEach((user) => {
-                                    if (user.imageUrl.startsWith(`${req.protocol}://${req.get("host")}`)) {
-                                    return user.imageUrl
-                                } else {
-                                    user.imageUrl = `${req.protocol}://${req.get("host")}${user.imageUrl}`;
-                                };
-                                });
                                 res.status(200).json(
                                 commentUpdated, hateoasLinks(req, commentUpdated._id)
                             )}) 

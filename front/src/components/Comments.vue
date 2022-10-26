@@ -79,6 +79,7 @@
               align-items-center
               px-2
             "
+            :class="{ like: isLiked(comment.usersLiked)}"
           >
             <li class="nav-item pointer" @click="likeToggle(comment)">
               <div>J'aime</div>
@@ -114,20 +115,23 @@ export default {
     return { auth };
   },
   methods: {
+    //adds "like" class to "j'aime" if current user liked the comment
+    isLiked(usersLiked) {
+      return usersLiked.some(user => user == this.auth.user._id);
+      },
+
     //likes or unlikes someone's post. Note that if the payload = "like": true,
     //the current user gives his like, if the payload = "like": false,
     //the user retrieves his like.
     likeToggle(comment) {
-      const commentArr = Object.values(comment.usersLiked);
-      const found = commentArr.some((elt) => elt._id == this.auth.user._id);
 
       commentServices
-        .likeComment(comment._id, { like: !found })
+        .likeComment(comment._id, { like: !this.isLiked(comment.usersLiked) })
         .then((res) => {
           comment.usersLiked = res.data.usersLiked;
           comment.likes = res.data.likes;
         })
-        .catch((error) => console.log(error));
+        .catch((error) => console.log(error)); 
     },
   },
 };

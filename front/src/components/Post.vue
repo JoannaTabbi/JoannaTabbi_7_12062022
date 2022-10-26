@@ -76,7 +76,7 @@
         </p>
       </div>
       <ul class="nav d-flex justify-content-start mb-4 small">
-        <li class="nav-item me-3 pointer">
+        <li class="nav-item me-3 pointer"  :class="{ like : isLiked(post.usersLiked) }">
           <div @click="likeToggle(post)">
             <i class="fa-solid fa-thumbs-up fa-lg"></i>
             J'aime
@@ -160,6 +160,12 @@ export default {
     // formates the the user account's creation date
     formattedDate(date) {
       return this.$filters.formatDate(date);
+    },
+
+    //adds like class to "j'aime"
+    isLiked(usersLiked) {
+      const found = usersLiked.some(user => user._id == this.auth.user._id);
+      return found
     },
 
     // toggle modal
