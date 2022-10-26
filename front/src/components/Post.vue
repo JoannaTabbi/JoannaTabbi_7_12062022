@@ -199,10 +199,11 @@ export default {
       console.log(postId);
         postServices.deletePost(postId)
           .then(() => {
+            const postsFiltered = JSON.parse(JSON.stringify(this.posts)).filter(elt => elt._id !== postId);
+            console.log(postsFiltered);
+            console.log(typeof postsFiltered);
             console.log(this.posts);
-            const postsArr = Object.values(this.posts);
-            this.posts = postsArr.filter(elt => elt._id !== postId);
-            this.posts = Object.fromEntries(this.posts);
+            console.log(typeof this.posts);
             
            // this.toggledModal;
           })

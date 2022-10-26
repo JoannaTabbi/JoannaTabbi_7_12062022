@@ -148,14 +148,10 @@
           </section>
           <section id="feeds" class="shadow rounded-3 mb-3 p-3">
             <h2 class="text-start fs-4 fw-bolder">Fil d'actualité</h2>
-            <Suspense>
-            <template #default>
             <Post :posts="posts" @getPosts="getPosts" />
-            </template>
-            <template #fallback>
-              <div>Chargement...</div>
-            </template>
-            </Suspense>
+              <div v-if="isLoading === true">
+                <Loader />
+              </div>
           </section>
         </div>
 
@@ -175,13 +171,15 @@
 <script>
 import Post from "../components/Post.vue";
 import MostPopular from "../components/MostPopular.vue";
+import Loader from "@/components/Loader.vue";
 import { useAuthStore } from "../stores/authStore";
 import { postServices } from "../_services";
 export default {
   name: "Home",
   components: {
     Post,
-    MostPopular
+    MostPopular,
+    Loader
   },
   setup() {
     const auth = useAuthStore();
@@ -197,7 +195,8 @@ export default {
       },
       loadMessage: "",
       showModal: false,
-      modalTitle: "Publication"
+      modalTitle: "Publication",
+      isLoading: false
     };
   },
   computed: {
@@ -213,12 +212,13 @@ export default {
     //the scroll reaches the visibility observer at the bottom of the page
     getPosts(page) {
       if (page > this.lastPage) { return };
+      this.isLoading = true;
       postServices
         .getPosts(page)
         .then((res) => {
           this.posts.push(...res.data.posts);
-          console.log(this.posts);
           this.lastPage = res.data.totalPages;
+          this.isLoading = false;
         })
         .catch((err) => console.log(err));
     },
