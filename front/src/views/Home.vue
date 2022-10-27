@@ -266,6 +266,7 @@ export default {
 
     //deletes one post
     deletePost(postId) {
+      if (confirm("Cette publication sera supprimée définitivement. Etes-vous sûr(e) de vouloir continuer ?") == true) {
         postServices.deletePost(postId)
           .then(() => {
             this.posts = Object.values(this.posts).filter(elt => elt._id !== postId);
@@ -275,7 +276,7 @@ export default {
           .catch((error) => {
             console.log(error)
           })
-      
+      }
     },
   },
   mounted() {
