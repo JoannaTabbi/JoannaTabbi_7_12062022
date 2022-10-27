@@ -148,7 +148,7 @@
           </section>
           <section id="feeds" class="shadow rounded-3 mb-3 p-3">
             <h2 class="text-start fs-4 fw-bolder">Fil d'actualité</h2>
-            <Post :posts="posts" @getPosts="getPosts" />
+            <Post :posts="posts" @getPosts="getPosts" @deletePost="deletePost" />
               <div v-if="isLoading === true">
                 <Loader />
               </div>
@@ -217,6 +217,7 @@ export default {
         .getPosts(page)
         .then((res) => {
           this.posts.push(...res.data.posts);
+          console.log(this.posts);
           this.lastPage = res.data.totalPages;
           this.isLoading = false;
         })
@@ -261,6 +262,20 @@ export default {
             console.log(err);
           });
       }
+    },
+
+    //deletes one post
+    deletePost(postId) {
+        postServices.deletePost(postId)
+          .then(() => {
+            this.posts = Object.values(this.posts).filter(elt => elt._id !== postId);
+            (console.log(this.posts));
+           // this.toggledModal;
+          })
+          .catch((error) => {
+            console.log(error)
+          })
+      
     },
   },
   mounted() {
