@@ -85,6 +85,21 @@
         <li class="nav-item" role="presentation">
           <button
             class="nav-link active"
+            id="posts-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#posts"
+            type="button"
+            role="tab"
+            aria-controls="posts"
+            aria-selected="false"
+            
+          >
+            Publications
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
             id="about-tab"
             data-bs-toggle="tab"
             data-bs-target="#about"
@@ -124,25 +139,21 @@
             Suivis
           </button>
         </li>
-        <li class="nav-item" role="presentation">
-          <button
-            class="nav-link"
-            id="posts-tab"
-            data-bs-toggle="tab"
-            data-bs-target="#posts"
-            type="button"
-            role="tab"
-            aria-controls="posts"
-            aria-selected="false"
-            
-          >
-            Publications
-          </button>
-        </li>
       </ul>
       <div class="tab-content m-4 text-start" id="myTabContent">
         <div
           class="tab-pane fade show active"
+          id="posts"
+          role="tabpanel"
+          aria-labelledby="posts-tab"
+        >
+          <Post :posts="posts" @getPosts="getUserPosts"/>
+          <div v-if="isLoading === true">
+            <Loader />
+          </div>
+        </div>
+        <div
+          class="tab-pane fade"
           id="about"
           role="tabpanel"
           aria-labelledby="about-tab"
@@ -173,14 +184,6 @@
             </div>
           </div>
         </div>
-        <div
-          class="tab-pane fade"
-          id="posts"
-          role="tabpanel"
-          aria-labelledby="posts-tab"
-        >
-          <Post :posts="posts" @getPosts="getUserPosts"/>
-        </div>
       </div>
     </div>
   </section>
@@ -189,6 +192,7 @@
 <script>
 import Post from "@/components/Post.vue";
 import MiniProfile from "@/components/MiniProfileCard";
+import Loader from "@/components/Loader";
 import { useAuthStore } from "@/stores/authStore";
 import { postServices } from "@/_services";
 export default {
@@ -196,6 +200,7 @@ export default {
   components: {
     Post,
     MiniProfile,
+    Loader
   },
   props: {
     user: {
@@ -211,7 +216,8 @@ export default {
   data() {
      return {
         posts: [], 
-        lastPage: 1
+        lastPage: 1,
+        isLoading: false
      }
   },
   setup() {
@@ -235,11 +241,13 @@ export default {
     getUserPosts(page) {
         //stops fetching data when the last page is displayed
       if (page > this.lastPage) { return };
+      this.isLoading = true;
       postServices
         .getUserPosts(page, {postUser: this.user._id || this.$route.params.id})
         .then((res) => {
           this.posts.push(...res.data.userPosts);
           this.lastPage = res.data.totalPages;
+          this.isLoading = false;
         })
         .catch((err) => console.log(err));
     }

@@ -148,7 +148,10 @@
           </section>
           <section id="feeds" class="shadow rounded-3 mb-3 p-3">
             <h2 class="text-start fs-4 fw-bolder">Fil d'actualité</h2>
-            <Post :posts="posts" @getPosts="getPosts" />
+            <Post :posts="posts" @getPosts="getPosts" @deletePost="deletePost" />
+              <div v-if="isLoading === true">
+                <Loader />
+              </div>
           </section>
         </div>
 
@@ -168,13 +171,15 @@
 <script>
 import Post from "../components/Post.vue";
 import MostPopular from "../components/MostPopular.vue";
+import Loader from "@/components/Loader.vue";
 import { useAuthStore } from "../stores/authStore";
 import { postServices } from "../_services";
 export default {
   name: "Home",
   components: {
     Post,
-    MostPopular
+    MostPopular,
+    Loader
   },
   setup() {
     const auth = useAuthStore();
@@ -190,7 +195,8 @@ export default {
       },
       loadMessage: "",
       showModal: false,
-      modalTitle: "Publication"
+      modalTitle: "Publication",
+      isLoading: false
     };
   },
   computed: {
@@ -206,11 +212,14 @@ export default {
     //the scroll reaches the visibility observer at the bottom of the page
     getPosts(page) {
       if (page > this.lastPage) { return };
+      this.isLoading = true;
       postServices
         .getPosts(page)
         .then((res) => {
           this.posts.push(...res.data.posts);
+          console.log(this.posts);
           this.lastPage = res.data.totalPages;
+          this.isLoading = false;
         })
         .catch((err) => console.log(err));
     },
@@ -252,6 +261,21 @@ export default {
           .catch((err) => {
             console.log(err);
           });
+      }
+    },
+
+    //deletes one post
+    deletePost(postId) {
+      if (confirm("Cette publication sera supprimée définitivement. Etes-vous sûr(e) de vouloir continuer ?") == true) {
+        postServices.deletePost(postId)
+          .then(() => {
+            this.posts = Object.values(this.posts).filter(elt => elt._id !== postId);
+            (console.log(this.posts));
+           // this.toggledModal;
+          })
+          .catch((error) => {
+            console.log(error)
+          })
       }
     },
   },

@@ -68,4 +68,9 @@ input:focus, textarea:focus {
 .pointer:hover {
   color: #FD2D01;
 }
+.like {
+  color: #FD2D01;
+  font-weight: bold; 
+}
+
 </style>

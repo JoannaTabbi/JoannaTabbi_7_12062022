@@ -43,8 +43,14 @@ exports.createComment = (req, res, next) => {
     });
     comment
         .save()
-        .then((newComment) => {
-            Post.findByIdAndUpdate(newComment.postId, {
+        .then(() => {
+            Comment.populate(comment, {
+                path: "userId",
+                select: ["userName", "imageUrl"]
+            })
+            .then((newComment) => {
+                newComment.userId.imageUrl = `${req.protocol}://${req.get("host")}${newComment.userId.imageUrl}`
+                Post.findByIdAndUpdate(newComment.postId, {
                     $push: {
                         comments: newComment._id
                     }
@@ -55,6 +61,8 @@ exports.createComment = (req, res, next) => {
                 })
                 .then(() => res.status(201).json(newComment, hateoasLinks(req, newComment._id)))
                 .catch((error) => res.status(400).json(error));
+            })
+            .catch((error) => res.status(400).json(error));
         })
         .catch((error) => res.status(400).json(error));
 };
@@ -88,18 +96,7 @@ exports.likeComment = (req, res, next) => {
                                 upsert: true,
                                 setDefaultsOnInsert: true
                             })
-                            .populate({
-                                path: "usersLiked",
-                                select: ["userName", "imageUrl"]
-                            })
                             .then((commentUpdated) => {
-                                commentUpdated.usersLiked.forEach((user) => {
-                                    if (user.imageUrl.startsWith(`${req.protocol}://${req.get("host")}`)) {
-                                    return user.imageUrl
-                                } else {
-                                    user.imageUrl = `${req.protocol}://${req.get("host")}${user.imageUrl}`;
-                                };
-                                });
                                 res.status(200).json(
                                 commentUpdated, hateoasLinks(req, commentUpdated._id)
                             )})
@@ -130,18 +127,7 @@ exports.likeComment = (req, res, next) => {
                                 upsert: true,
                                 setDefaultsOnInsert: true
                             })
-                            .populate({
-                                path: "usersLiked",
-                                select: ["userName", "imageUrl"]
-                            })
                             .then((commentUpdated) => { 
-                                commentUpdated.usersLiked.forEach((user) => {
-                                    if (user.imageUrl.startsWith(`${req.protocol}://${req.get("host")}`)) {
-                                    return user.imageUrl
-                                } else {
-                                    user.imageUrl = `${req.protocol}://${req.get("host")}${user.imageUrl}`;
-                                };
-                                });
                                 res.status(200).json(
                                 commentUpdated, hateoasLinks(req, commentUpdated._id)
                             )}) 
@@ -172,6 +158,11 @@ exports.updateComment = (req, res, next) => {
                     error: "No such comment !"
                 });
             };
+            if ((comment.userId !== req.auth.userId) && req.auth.isAdmin === false) {
+                return res.status(403).json({
+                    error: "Unauthorized request!"
+                });
+            }
             Comment.findByIdAndUpdate(
                     req.params.id, {
                         message: req.body.message
@@ -218,7 +209,7 @@ exports.deleteComment = (req, res, next) => {
                                     error: "No such comment !"
                                 });
                             };
-                            if (comment.userId !== req.auth.userId) {
+                            if ((comment.userId !== req.auth.userId) && req.auth.isAdmin === false) {
                                 return res.status(403).json({
                                     error: "Unauthorized request!"
                                 });

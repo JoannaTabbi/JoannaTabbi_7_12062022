@@ -119,9 +119,8 @@ exports.login = (req, res, next) => {
           // creating a refresh token stored in cookie, that will allow us to regenerate the token once expired;
           const newRefreshToken = jwt.sign({
              userId: user._id, isAdmin: user.isAdmin // the method takes two arguments :
-            }, // a response object and
+            }, // a response object and a secret key + options
             process.env.REFRESH_TOKEN_SECRET, {
-              // a secret key
               expiresIn: process.env.REFRESH_TOKEN_EXPIRATION,
             }
           );
@@ -418,7 +417,6 @@ exports.deleteUser = (req, res, next) => {
           error: new Error("User not found!"),
         });
       } else {
-        console.log(user.imageUrl);
         if (user.imageUrl !== "/images/avatar-200.png") {
           const filename = user.imageUrl.split("/images/")[1];
           fs.unlinkSync(`images/${filename}`);
