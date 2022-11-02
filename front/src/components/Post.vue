@@ -45,7 +45,7 @@
                     auth.user.isAdmin === true
                   "
                   class="dropdown-item"
-                  @click="updateToggle"
+                  @click="updateToggle(post)"
                 >
                   Modifiez la publication
                 </div>
@@ -78,7 +78,7 @@
 
         <!-- UPDATE POST SECTION -->
 
-          <section id="update_post" v-if="isUpdating" class="shadow rounded-3 mb-3 p-3">
+          <section v-if="post.isUpdating" class="shadow rounded-3 mb-3 p-3">
             <form
               class="card card-body border-0"
               @submit.prevent="updatePost(post)"
@@ -133,7 +133,7 @@
           </section>
 
         <!-- DISPLAY POST SECTION -->
-        <section id="display_post" v-else>
+        <section v-else>
           <div>
             <p class="text-start">
               {{ post.message }}
@@ -219,12 +219,12 @@ export default {
   data() {
     return {
       page: 1,
-      isUpdating: false,
       updatedPost: {
         imageUrl: "",
         message: ""
       },
-      loadUpdateMessage: ""
+      loadUpdateMessage: "",
+      //isUpdating: false
 
       /* modal data : deletePost
       modalTitle: "ATTENTION",
@@ -281,8 +281,8 @@ export default {
     },
 
     // for one post, toggles between updatePost section and display post section
-    updateToggle() {
-      this.isUpdating = !this.isUpdating;
+    updateToggle(post) {
+      post.isUpdating = !post.isUpdating;
     },
     
     // selects image for new post
@@ -315,7 +315,7 @@ export default {
             console.log(res.data);
             post.message = res.data.message;
             post.imageUrl = res.data.imageUrl;
-            this.updateToggle();
+            this.updateToggle(post);
           })
           .catch((error) => console.log(error))
     },
