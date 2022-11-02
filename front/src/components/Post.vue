@@ -45,7 +45,7 @@
                     auth.user.isAdmin === true
                   "
                   class="dropdown-item"
-                  @click="updateToggle(post._id)"
+                  @click="updateToggle"
                 >
                   Modifiez la publication
                 </div>
@@ -81,7 +81,7 @@
           <section id="update_post" v-if="isUpdating" class="shadow rounded-3 mb-3 p-3">
             <form
               class="card card-body border-0"
-              @submit.prevent="updatePost(post._id)"
+              @submit.prevent="updatePost(post)"
             >
               <div class="d-flex mb-3 border-bottom pb-2">
                 <div class="w-100 form-group">
@@ -104,14 +104,14 @@
               </div>
               <ul class="nav d-flex justify-content-around">
                 <li class="nav-item">
-                  <label type="button" for="formFile">
+                  <label type="button" for="formFile2">
                     <i class="fa-regular fa-image fa-2x"></i>
                     <input
                       @change="selectUpdateImage"
                       type="file"
                       class="form-control"
                       name="image"
-                      id="formFile"
+                      id="formFile2"
                       accept="image/*"
                       hidden
                     />
@@ -121,6 +121,12 @@
                   <button type="submit" class="btn">
                     <i class="fa-regular fa-paper-plane fa-2x"></i>
                   </button>
+                </li>
+                <li class="nav-item" @click.prevent="updateToggle">
+                  <button type="reset" class="btn">
+                    <i class="fa-regular fa-trash-can fa-2x"></i>
+                  </button>
+
                 </li>
               </ul>
             </form>
@@ -275,8 +281,8 @@ export default {
     },
 
     // for one post, toggles between updatePost section and display post section
-    updateToggle(post) {
-      return this.isUpdating = true;
+    updateToggle() {
+      this.isUpdating = !this.isUpdating;
     },
     
     // selects image for new post
@@ -286,7 +292,7 @@ export default {
     },
 
     //updates one post
-    updatePost(postId) {
+    updatePost(post) {
        let formData = new FormData();
        if(this.updatedPost.message != "") {
          if (this.updatedPost.message.length > 1500) {
@@ -297,17 +303,19 @@ export default {
        }
         if (this.updatedPost.imageUrl) {
           //throw an error if the image size is too important (over 500ko)
-          if (this.nupdated.imageUrl.size > 500000) {
+          if (this.updatedPost.imageUrl.size > 500000) {
             this.loadUpdateMessage =
               "Attention, la taille de l'image ne doit pas dépasser 500ko";
           } else {
             formData.append("image", this.updatedPost.imageUrl);
           }
         }
-        postServices.updatePost(postId, formData)
+        postServices.updatePost(post._id, formData)
           .then((res) => {
             console.log(res.data);
-            this.isUpdating = false;
+            post.message = res.data.message;
+            post.imageUrl = res.data.imageUrl;
+            this.updateToggle();
           })
           .catch((error) => console.log(error))
     },

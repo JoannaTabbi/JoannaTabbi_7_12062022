@@ -65,7 +65,7 @@ exports.readAllPosts = async (req, res, next) => {
                 }
             ])
             .sort({
-                createdAt: -1
+                updatedAt: -1
             })
             .limit(limit * 1)
             .skip((page - 1) * limit)
@@ -138,7 +138,7 @@ exports.readUserPosts = async (req, res, next) => {
                 }
             ])
             .sort({
-                createdAt: -1
+                updatedAt: -1
             })
             .limit(limit * 1)
             .skip((page - 1) * limit)
@@ -363,9 +363,10 @@ exports.updatePost = (req, res, next) => {
                     upsert: true,
                     setDefaultsOnInsert: true
                 })
-            .then((postUpdated) =>
+            .then((postUpdated) => {
+                postUpdated.imageUrl = `${req.protocol}://${req.get("host")}${postUpdated.imageUrl}`;
                 res.status(200).json(postUpdated, hateoasLinks(req, postUpdated._id))
-            )
+            })
             .catch((error) =>
                 res.status(400).json({
                     error
