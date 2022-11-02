@@ -139,7 +139,7 @@
                   </label>
                 </li>
                 <li class="nav-item">
-                  <button type="submit">
+                  <button type="submit" class="btn">
                     <i class="fa-regular fa-paper-plane fa-2x"></i>
                   </button>
                 </li>
@@ -270,8 +270,6 @@ export default {
         postServices.deletePost(postId)
           .then(() => {
             this.posts = Object.values(this.posts).filter(elt => elt._id !== postId);
-            (console.log(this.posts));
-           // this.toggledModal;
           })
           .catch((error) => {
             console.log(error)
