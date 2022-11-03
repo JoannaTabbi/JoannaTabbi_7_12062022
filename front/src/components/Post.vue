@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-for="post in posts" :key="post._id" :data-id="post._id">
+    <div v-for="post in posts" :key="post._id">
       <div class="card card-body border-0 m-0 p-3">
         <span class="mx-5 border-top border-primary border-3"></span>
         <div
@@ -167,7 +167,7 @@
         </section>
 
         <!--  COMMENTS  -->
-        <Comments :comments="post.comments" />
+        <Comments :comments="post.comments" v-model="newComment" @create-comment="createComment(post)"/>
 
         <!-- MODAL FOR UPDATE POST-->
 
@@ -205,6 +205,7 @@ import Comments from "./Comments.vue";
 import DynamicModal from "./DynamicModal.vue";
 import { useAuthStore } from "@/stores/authStore";
 import { postServices } from "../_services";
+import { commentServices } from "../_services";
 export default {
   name: "Post",
   components: {
@@ -224,7 +225,7 @@ export default {
         message: ""
       },
       loadUpdateMessage: "",
-      //isUpdating: false
+      newComment: ""
 
       /* modal data : deletePost
       modalTitle: "ATTENTION",
@@ -325,7 +326,19 @@ export default {
       this.$emit("delete-post", postId);
     },
 
-    
+    // create new comment to one post
+    createComment(post) {
+      
+      commentServices.createComment({message: this.newComment, postId: post._id})
+        .then((res) => {
+          post.comments.unshift(res.data);
+          this.newComment= "";
+        })
+        .catch((error) => {
+          console.log(error)
+        }) 
+      
+    }
   },
 };
 </script>

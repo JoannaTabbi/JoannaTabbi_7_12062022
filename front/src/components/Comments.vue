@@ -8,12 +8,17 @@
           :alt="`avatar de ${auth.user.userName}`"
         />
       </div>
-      <form class="w-100">
+      <form class="w-100 d-flex" @submit.prevent="submitNewComment">
         <textarea
+          :value="modelValue"
+          @input="$emit('update:modelValue', $event.target.value)"
           class="form-control border-0 p-2"
           placeholder="Qu'en dites-vous?"
           rows="1"
         ></textarea>
+        <button type="submit" class="btn">
+           <i class="fa-regular fa-paper-plane fa-lg"></i>
+        </button>
       </form>
     </div>
 
@@ -105,16 +110,19 @@ import { useAuthStore } from "@/stores/authStore";
 import { commentServices } from "@/_services";
 export default {
   name: "Comments",
-  props: {
-    comments: {
-      type: Array,
-    },
-  },
+  props: ['comments', 'modelValue'],
+  emits: ['update:modelValue', 'createComment'],
   setup() {
     const auth = useAuthStore();
     return { auth };
   },
   methods: {
+
+    // emits create comment
+    submitNewComment() {
+      this.$emit('createComment');
+    },
+
     //adds "like" class to "j'aime" if current user liked the comment
     isLiked(usersLiked) {
       return usersLiked.some(user => user == this.auth.user._id);
