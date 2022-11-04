@@ -63,6 +63,7 @@
                       "
                       class="dropdown-item"
                       href="#"
+                      @click="updateCommentToggle(comment)"
                     >
                       Modifiez le commentaire
                     </div>
@@ -76,7 +77,9 @@
                       "
                       class="dropdown-item"
                       href="#"
-                      @click="$emit('delete-comment', comment._id, comment.postId)"
+                      @click="
+                        $emit('delete-comment', comment._id, comment.postId)
+                      "
                     >
                       Supprimez le commentaire
                     </div>
@@ -97,7 +100,24 @@
                 </ul>
               </div>
             </div>
-            <p class="fs-6 mb-0">
+            <form v-if="comment.isUpdating" class="d-flex" @submit.prevent="updateComment(comment)">
+              <textarea
+                class="form-control border-0"
+                name="updateComment"
+                id="updateComment"
+                rows="2"
+                v-model="updatedComment"
+                :placeholder="comment.message"
+              >
+              </textarea>
+              <button type="reset" class="btn text-danger" @click="updateCommentToggle(comment)">
+                <i class="fa-solid fa-xmark fa-lg"></i>
+              </button>
+              <button type="submit" class="btn">
+                <i class="fa-solid fa-check fa-lg text-success"></i>
+              </button>
+            </form>
+            <p v-else class="fs-6 mb-0">
               {{ comment.message }}
             </p>
           </div>
@@ -136,6 +156,11 @@ import { useAuthStore } from "@/stores/authStore";
 import { commentServices } from "@/_services";
 export default {
   name: "Comments",
+  data() {
+    return {
+      updatedComment: ""
+    }
+  },
   props: ["comments", "modelValue"],
   emits: ["update:modelValue", "createComment", "deleteComment"],
   setup() {
@@ -165,6 +190,21 @@ export default {
         })
         .catch((error) => console.log(error));
     },
+
+    // for one commment, toggles between display element and form
+    updateCommentToggle(comment) {
+      comment.isUpdating = !comment.isUpdating;
+    },
+
+    //updates one comment
+    updateComment(comment) {
+      commentServices.updateComment(comment._id, {"message": this.updatedComment})
+        .then((res) => {
+          comment.message = res.data.message;
+          this.updateCommentToggle(comment);
+        })
+        .catch((error) => console.log(error))
+    }
   },
 };
 </script>
