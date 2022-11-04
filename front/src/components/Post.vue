@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-for="post in posts" :key="post._id" :data-id="post._id">
+    <div v-for="post in posts" :key="post._id">
       <div class="card card-body border-0 m-0 p-3">
         <span class="mx-5 border-top border-primary border-3"></span>
         <div
@@ -78,59 +78,58 @@
 
         <!-- UPDATE POST SECTION -->
 
-          <section v-if="post.isUpdating" class="shadow rounded-3 mb-3 p-3">
-            <form
-              class="card card-body border-0"
-              @submit.prevent="updatePost(post)"
-            >
-              <div class="d-flex mb-3 border-bottom pb-2">
-                <div class="w-100 form-group">
-                  <textarea
-                    v-model="updatedPost.message"
-                    id="updatePost"
-                    name="updatePost"
-                    class="form-control border-0 p-2"
-                    :placeholder="post.message"
-                    rows="2"
-                  ></textarea>
-                  <div
-                    v-if="loadUpdateMessage"
-                    class="alert alert-secondary"
-                    role="alert"
-                  >
-                    {{ loadUpdateMessage }}
-                  </div>
+        <section v-if="post.isUpdating" class="shadow rounded-3 mb-3 p-3">
+          <form
+            class="card card-body border-0"
+            @submit.prevent="updatePost(post)"
+          >
+            <div class="d-flex mb-3 border-bottom pb-2">
+              <div class="w-100 form-group">
+                <textarea
+                  v-model="updatedPost.message"
+                  id="updatePost"
+                  name="updatePost"
+                  class="form-control border-0 p-2"
+                  :placeholder="post.message"
+                  rows="2"
+                ></textarea>
+                <div
+                  v-if="loadUpdateMessage"
+                  class="alert alert-secondary"
+                  role="alert"
+                >
+                  {{ loadUpdateMessage }}
                 </div>
               </div>
-              <ul class="nav d-flex justify-content-around">
-                <li class="nav-item">
-                  <label type="button" for="formFile2">
-                    <i class="fa-regular fa-image fa-2x"></i>
-                    <input
-                      @change="selectUpdateImage"
-                      type="file"
-                      class="form-control"
-                      name="image"
-                      id="formFile2"
-                      accept="image/*"
-                      hidden
-                    />
-                  </label>
-                </li>
-                <li class="nav-item">
-                  <button type="submit" class="btn">
-                    <i class="fa-regular fa-paper-plane fa-2x"></i>
-                  </button>
-                </li>
-                <li class="nav-item" @click.prevent="updateToggle">
-                  <button type="reset" class="btn">
-                    <i class="fa-regular fa-trash-can fa-2x"></i>
-                  </button>
-
-                </li>
-              </ul>
-            </form>
-          </section>
+            </div>
+            <ul class="nav d-flex justify-content-around">
+              <li class="nav-item">
+                <label type="button" for="formFile2">
+                  <i class="fa-regular fa-image fa-2x"></i>
+                  <input
+                    @change="selectUpdateImage"
+                    type="file"
+                    class="form-control"
+                    name="image"
+                    id="formFile2"
+                    accept="image/*"
+                    hidden
+                  />
+                </label>
+              </li>
+              <li class="nav-item">
+                <button type="submit" class="btn">
+                  <i class="fa-regular fa-paper-plane fa-2x"></i>
+                </button>
+              </li>
+              <li class="nav-item" @click.prevent="updateToggle">
+                <button type="reset" class="btn">
+                  <i class="fa-regular fa-trash-can fa-2x"></i>
+                </button>
+              </li>
+            </ul>
+          </form>
+        </section>
 
         <!-- DISPLAY POST SECTION -->
         <section v-else>
@@ -167,7 +166,12 @@
         </section>
 
         <!--  COMMENTS  -->
-        <Comments :comments="post.comments" />
+        <Comments
+          :comments="post.comments"
+          v-model="newComment"
+          @create-comment="createComment(post)"
+          @delete-comment="deleteComment"
+        />
 
         <!-- MODAL FOR UPDATE POST-->
 
@@ -205,6 +209,7 @@ import Comments from "./Comments.vue";
 import DynamicModal from "./DynamicModal.vue";
 import { useAuthStore } from "@/stores/authStore";
 import { postServices } from "../_services";
+import { commentServices } from "../_services";
 export default {
   name: "Post",
   components: {
@@ -221,10 +226,10 @@ export default {
       page: 1,
       updatedPost: {
         imageUrl: "",
-        message: ""
+        message: "",
       },
       loadUpdateMessage: "",
-      //isUpdating: false
+      newComment: "",
 
       /* modal data : deletePost
       modalTitle: "ATTENTION",
@@ -240,7 +245,6 @@ export default {
     return { auth };
   },
   methods: {
-
     // formates the the user account's creation date
     formattedDate(date) {
       return this.$filters.formatDate(date);
@@ -284,7 +288,7 @@ export default {
     updateToggle(post) {
       post.isUpdating = !post.isUpdating;
     },
-    
+
     // selects image for new post
     selectUpdateImage(event) {
       this.updatedPost.imageUrl = event.target.files[0];
@@ -293,31 +297,31 @@ export default {
 
     //updates one post
     updatePost(post) {
-       let formData = new FormData();
-       if(this.updatedPost.message != "") {
-         if (this.updatedPost.message.length > 1500) {
+      let formData = new FormData();
+      if (this.updatedPost.message != "") {
+        if (this.updatedPost.message.length > 1500) {
           this.loadUpdateMessage = "Le message ne doit pas dépasser 1500 mots";
         } else {
           formData.append("message", this.updatedPost.message);
-        };
-       }
-        if (this.updatedPost.imageUrl) {
-          //throw an error if the image size is too important (over 500ko)
-          if (this.updatedPost.imageUrl.size > 500000) {
-            this.loadUpdateMessage =
-              "Attention, la taille de l'image ne doit pas dépasser 500ko";
-          } else {
-            formData.append("image", this.updatedPost.imageUrl);
-          }
         }
-        postServices.updatePost(post._id, formData)
-          .then((res) => {
-            console.log(res.data);
-            post.message = res.data.message;
-            post.imageUrl = res.data.imageUrl;
-            this.updateToggle(post);
-          })
-          .catch((error) => console.log(error))
+      }
+      if (this.updatedPost.imageUrl) {
+        //throw an error if the image size is too important (over 500ko)
+        if (this.updatedPost.imageUrl.size > 500000) {
+          this.loadUpdateMessage =
+            "Attention, la taille de l'image ne doit pas dépasser 500ko";
+        } else {
+          formData.append("image", this.updatedPost.imageUrl);
+        }
+      }
+      postServices
+        .updatePost(post._id, formData)
+        .then((res) => {
+          post.message = res.data.message;
+          post.imageUrl = res.data.imageUrl;
+          this.updateToggle(post);
+        })
+        .catch((error) => console.log(error));
     },
 
     // emits delete post function for a postId given
@@ -325,7 +329,28 @@ export default {
       this.$emit("delete-post", postId);
     },
 
-    
+    // create new comment to one post
+    createComment(post) {
+      commentServices
+        .createComment({ message: this.newComment, postId: post._id })
+        .then((res) => {
+          post.comments.unshift(res.data);
+          this.newComment = "";
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+
+    // deletes one comment 
+    deleteComment(commentId, postId) {
+      commentServices.deleteComment(commentId)
+      .then(() => {
+         const postFound = this.posts.find(post => post._id == postId);
+         postFound.comments = postFound.comments.filter(comment => comment._id != commentId);
+      })
+      .catch((error) => console.log(error))
+    } 
   },
 };
 </script>

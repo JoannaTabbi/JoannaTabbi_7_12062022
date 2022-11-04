@@ -8,12 +8,17 @@
           :alt="`avatar de ${auth.user.userName}`"
         />
       </div>
-      <form class="w-100">
+      <form class="w-100 d-flex" @submit.prevent="submitNewComment">
         <textarea
+          :value="modelValue"
+          @input="$emit('update:modelValue', $event.target.value)"
           class="form-control border-0 p-2"
           placeholder="Qu'en dites-vous?"
           rows="1"
         ></textarea>
+        <button type="submit" class="btn">
+          <i class="fa-regular fa-paper-plane fa-lg"></i>
+        </button>
       </form>
     </div>
 
@@ -28,7 +33,7 @@
             alt="avatar"
           />
         </div>
-        <div>
+        <div class="w-100">
           <div class="w-100 text-start bg-light rounded-3 p-2">
             <div class="d-flex align-items-baseline justify-content-between">
               <div>
@@ -50,24 +55,69 @@
                   aria-labelledby="dropdownMenuLink"
                 >
                   <li>
-                    <div type="button" v-if="comment.userId._id === auth.user._id || auth.user.isAdmin" class="dropdown-item" href="#">
+                    <div
+                      type="button"
+                      v-if="
+                        comment.userId._id === auth.user._id ||
+                        auth.user.isAdmin
+                      "
+                      class="dropdown-item"
+                      href="#"
+                      @click="updateCommentToggle(comment)"
+                    >
                       Modifiez le commentaire
                     </div>
                   </li>
                   <li>
-                    <div type="button" v-if="comment.userId._id === auth.user._id || auth.user.isAdmin" class="dropdown-item" href="#">
+                    <div
+                      type="button"
+                      v-if="
+                        comment.userId._id === auth.user._id ||
+                        auth.user.isAdmin
+                      "
+                      class="dropdown-item"
+                      href="#"
+                      @click="
+                        $emit('delete-comment', comment._id, comment.postId)
+                      "
+                    >
                       Supprimez le commentaire
                     </div>
                   </li>
                   <li>
-                    <div type="button" v-if="comment.userId._id !== auth.user._id || auth.user.isAdmin" class="dropdown-item" href="#">
+                    <div
+                      type="button"
+                      v-if="
+                        comment.userId._id !== auth.user._id ||
+                        auth.user.isAdmin
+                      "
+                      class="dropdown-item"
+                      href="#"
+                    >
                       Signalez le commentaire
                     </div>
                   </li>
                 </ul>
               </div>
             </div>
-            <p class="fs-6 mb-0">
+            <form v-if="comment.isUpdating" class="d-flex" @submit.prevent="updateComment(comment)">
+              <textarea
+                class="form-control border-0"
+                name="updateComment"
+                id="updateComment"
+                rows="2"
+                v-model="updatedComment"
+                :placeholder="comment.message"
+              >
+              </textarea>
+              <button type="reset" class="btn text-danger" @click="updateCommentToggle(comment)">
+                <i class="fa-solid fa-xmark fa-lg"></i>
+              </button>
+              <button type="submit" class="btn">
+                <i class="fa-solid fa-check fa-lg text-success"></i>
+              </button>
+            </form>
+            <p v-else class="fs-6 mb-0">
               {{ comment.message }}
             </p>
           </div>
@@ -78,8 +128,9 @@
               justify-content-between
               align-items-center
               px-2
+              mt-1
             "
-            :class="{ like: isLiked(comment.usersLiked)}"
+            :class="{ like: isLiked(comment.usersLiked) }"
           >
             <li class="nav-item pointer" @click="likeToggle(comment)">
               <div>J'aime</div>
@@ -105,34 +156,55 @@ import { useAuthStore } from "@/stores/authStore";
 import { commentServices } from "@/_services";
 export default {
   name: "Comments",
-  props: {
-    comments: {
-      type: Array,
-    },
+  data() {
+    return {
+      updatedComment: ""
+    }
   },
+  props: ["comments", "modelValue"],
+  emits: ["update:modelValue", "createComment", "deleteComment"],
   setup() {
     const auth = useAuthStore();
     return { auth };
   },
   methods: {
+    // emits create comment
+    submitNewComment() {
+      this.$emit("createComment");
+    },
+
     //adds "like" class to "j'aime" if current user liked the comment
     isLiked(usersLiked) {
-      return usersLiked.some(user => user == this.auth.user._id);
-      },
+      return usersLiked.some((user) => user == this.auth.user._id);
+    },
 
     //likes or unlikes someone's post. Note that if the payload = "like": true,
     //the current user gives his like, if the payload = "like": false,
     //the user retrieves his like.
     likeToggle(comment) {
-
       commentServices
         .likeComment(comment._id, { like: !this.isLiked(comment.usersLiked) })
         .then((res) => {
           comment.usersLiked = res.data.usersLiked;
           comment.likes = res.data.likes;
         })
-        .catch((error) => console.log(error)); 
+        .catch((error) => console.log(error));
     },
+
+    // for one commment, toggles between display element and form
+    updateCommentToggle(comment) {
+      comment.isUpdating = !comment.isUpdating;
+    },
+
+    //updates one comment
+    updateComment(comment) {
+      commentServices.updateComment(comment._id, {"message": this.updatedComment})
+        .then((res) => {
+          comment.message = res.data.message;
+          this.updateCommentToggle(comment);
+        })
+        .catch((error) => console.log(error))
+    }
   },
 };
 </script>
