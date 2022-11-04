@@ -88,8 +88,7 @@
                     <div
                       type="button"
                       v-if="
-                        comment.userId._id !== auth.user._id ||
-                        auth.user.isAdmin
+                        comment.userId._id !== auth.user._id
                       "
                       class="dropdown-item"
                       @click="reportComment(comment)"

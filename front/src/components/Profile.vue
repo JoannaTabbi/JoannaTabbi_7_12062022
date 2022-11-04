@@ -195,6 +195,7 @@ import MiniProfile from "@/components/MiniProfileCard";
 import Loader from "@/components/Loader";
 import { useAuthStore } from "@/stores/authStore";
 import { postServices } from "@/_services";
+import { userServices } from "@/_services";
 export default {
   name: "Profile",
   components: {
