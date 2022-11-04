@@ -46,6 +46,11 @@ let deletePost = (id) => {
     return Axios.delete("/posts/" + id)
 }
 
+//reports one post
+let reportPost = (id) => {
+    return Axios.post("/posts/" + id + "/report")
+}
+
 export const postServices = {
     createPost,
     getPosts,
@@ -53,5 +58,6 @@ export const postServices = {
     updatePost,
     likePost,
     deletePost,
-    getUserPosts
+    getUserPosts,
+    reportPost
 }

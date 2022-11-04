@@ -21,9 +21,15 @@ let deleteComment = (id) => {
     return Axios.delete("/comments/" + id)
 }
 
+//reports one comment
+let reportComment = (id) => {
+    return Axios.post("/comments/" + id + "/report")
+}
+
 export const commentServices = {
     createComment,
     updateComment,
     likeComment,
-    deleteComment
+    deleteComment,
+    reportComment
 }

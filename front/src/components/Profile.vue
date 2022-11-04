@@ -64,7 +64,7 @@
             aria-labelledby="dropdownMenuLink"
           >
             <li>
-              <a class="dropdown-item" href="#">Signaler cet utilisateur</a>
+              <div class="dropdown-item" @click="reportUser">Signaler cet utilisateur</div>
             </li>
           </ul>
         </div>
@@ -195,6 +195,7 @@ import MiniProfile from "@/components/MiniProfileCard";
 import Loader from "@/components/Loader";
 import { useAuthStore } from "@/stores/authStore";
 import { postServices } from "@/_services";
+import { userServices } from "@/_services";
 export default {
   name: "Profile",
   components: {
@@ -250,6 +251,13 @@ export default {
           this.isLoading = false;
         })
         .catch((err) => console.log(err));
+    },
+
+    //reports user
+    reportUser() {
+        userServices.reportUser(this.user._id)
+           .then(res => console.log(res))
+           .catch(error => console.log(error))
     }
   },
   mounted() {
