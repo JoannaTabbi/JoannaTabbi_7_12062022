@@ -92,7 +92,7 @@
                         auth.user.isAdmin
                       "
                       class="dropdown-item"
-                      href="#"
+                      @click="reportComment(comment)"
                     >
                       Signalez le commentaire
                     </div>
@@ -204,6 +204,13 @@ export default {
           this.updateCommentToggle(comment);
         })
         .catch((error) => console.log(error))
+    },
+
+    //reports comment
+    reportComment(comment) {
+        commentServices.reportComment(comment._id)
+           .then(res => console.log(res))
+           .catch(error => console.log(error))
     }
   },
 };

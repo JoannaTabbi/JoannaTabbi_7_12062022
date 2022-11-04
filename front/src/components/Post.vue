@@ -68,6 +68,7 @@
                   type="button"
                   v-if="post.userId._id != auth.user._id"
                   class="dropdown-item"
+                  @click="reportPost(post)"
                 >
                   Signalez la publication
                 </div>
@@ -327,6 +328,13 @@ export default {
     // emits delete post function for a postId given
     deletePost(postId) {
       this.$emit("delete-post", postId);
+    },
+
+    //reports post
+    reportPost(post) {
+        postServices.reportPost(post._id)
+           .then(res => console.log(res))
+           .catch(error => console.log(error))
     },
 
     // create new comment to one post
