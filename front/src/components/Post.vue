@@ -344,7 +344,6 @@ export default {
 
     // deletes one comment 
     deleteComment(commentId, postId) {
-
       commentServices.deleteComment(commentId)
       .then(() => {
          const postFound = this.posts.find(post => post._id == postId);

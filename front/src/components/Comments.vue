@@ -33,7 +33,7 @@
             alt="avatar"
           />
         </div>
-        <div>
+        <div class="w-100">
           <div class="w-100 text-start bg-light rounded-3 p-2">
             <div class="d-flex align-items-baseline justify-content-between">
               <div>
@@ -108,6 +108,7 @@
               justify-content-between
               align-items-center
               px-2
+              mt-1
             "
             :class="{ like: isLiked(comment.usersLiked) }"
           >
