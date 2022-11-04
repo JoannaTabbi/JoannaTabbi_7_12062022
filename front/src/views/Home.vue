@@ -217,7 +217,6 @@ export default {
         .getPosts(page)
         .then((res) => {
           this.posts.push(...res.data.posts);
-          console.log(this.posts);
           this.lastPage = res.data.totalPages;
           this.isLoading = false;
         })

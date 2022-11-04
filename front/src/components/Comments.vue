@@ -17,7 +17,7 @@
           rows="1"
         ></textarea>
         <button type="submit" class="btn">
-           <i class="fa-regular fa-paper-plane fa-lg"></i>
+          <i class="fa-regular fa-paper-plane fa-lg"></i>
         </button>
       </form>
     </div>
@@ -55,17 +55,42 @@
                   aria-labelledby="dropdownMenuLink"
                 >
                   <li>
-                    <div type="button" v-if="comment.userId._id === auth.user._id || auth.user.isAdmin" class="dropdown-item" href="#">
+                    <div
+                      type="button"
+                      v-if="
+                        comment.userId._id === auth.user._id ||
+                        auth.user.isAdmin
+                      "
+                      class="dropdown-item"
+                      href="#"
+                    >
                       Modifiez le commentaire
                     </div>
                   </li>
                   <li>
-                    <div type="button" v-if="comment.userId._id === auth.user._id || auth.user.isAdmin" class="dropdown-item" href="#">
+                    <div
+                      type="button"
+                      v-if="
+                        comment.userId._id === auth.user._id ||
+                        auth.user.isAdmin
+                      "
+                      class="dropdown-item"
+                      href="#"
+                      @click="$emit('delete-comment', comment._id, comment.postId)"
+                    >
                       Supprimez le commentaire
                     </div>
                   </li>
                   <li>
-                    <div type="button" v-if="comment.userId._id !== auth.user._id || auth.user.isAdmin" class="dropdown-item" href="#">
+                    <div
+                      type="button"
+                      v-if="
+                        comment.userId._id !== auth.user._id ||
+                        auth.user.isAdmin
+                      "
+                      class="dropdown-item"
+                      href="#"
+                    >
                       Signalez le commentaire
                     </div>
                   </li>
@@ -84,7 +109,7 @@
               align-items-center
               px-2
             "
-            :class="{ like: isLiked(comment.usersLiked)}"
+            :class="{ like: isLiked(comment.usersLiked) }"
           >
             <li class="nav-item pointer" @click="likeToggle(comment)">
               <div>J'aime</div>
@@ -110,36 +135,34 @@ import { useAuthStore } from "@/stores/authStore";
 import { commentServices } from "@/_services";
 export default {
   name: "Comments",
-  props: ['comments', 'modelValue'],
-  emits: ['update:modelValue', 'createComment'],
+  props: ["comments", "modelValue"],
+  emits: ["update:modelValue", "createComment", "deleteComment"],
   setup() {
     const auth = useAuthStore();
     return { auth };
   },
   methods: {
-
     // emits create comment
     submitNewComment() {
-      this.$emit('createComment');
+      this.$emit("createComment");
     },
 
     //adds "like" class to "j'aime" if current user liked the comment
     isLiked(usersLiked) {
-      return usersLiked.some(user => user == this.auth.user._id);
-      },
+      return usersLiked.some((user) => user == this.auth.user._id);
+    },
 
     //likes or unlikes someone's post. Note that if the payload = "like": true,
     //the current user gives his like, if the payload = "like": false,
     //the user retrieves his like.
     likeToggle(comment) {
-
       commentServices
         .likeComment(comment._id, { like: !this.isLiked(comment.usersLiked) })
         .then((res) => {
           comment.usersLiked = res.data.usersLiked;
           comment.likes = res.data.likes;
         })
-        .catch((error) => console.log(error)); 
+        .catch((error) => console.log(error));
     },
   },
 };
