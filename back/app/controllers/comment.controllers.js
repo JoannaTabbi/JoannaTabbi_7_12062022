@@ -10,9 +10,6 @@ exports.readOneComment = (req, res, next) => {
 
     Comment.findById(req.params.id)
         .then((comment) => {
-            if (req.body.imageUrl) {
-                comment.imageUrl = `${req.protocol}://${req.get("host")}${comment.imageUrl}`
-            };
             res.status(200).json(
                 comment, hateoasLinks(req, comment._id)
             );
@@ -49,7 +46,6 @@ exports.createComment = (req, res, next) => {
                 select: ["userName", "imageUrl"]
             })
             .then((newComment) => {
-                newComment.userId.imageUrl = `${req.protocol}://${req.get("host")}${newComment.userId.imageUrl}`
                 Post.findByIdAndUpdate(newComment.postId, {
                     $push: {
                         comments: newComment._id

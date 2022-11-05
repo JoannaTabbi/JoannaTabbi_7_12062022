@@ -94,18 +94,7 @@ exports.login = (req, res, next) => {
           error: "User not found"
         });
       }
-      user.imageUrl = `${req.protocol}://${req.get("host")}${user.imageUrl}`;
       user.email = decryptMail(user.email);
-      user.followers.forEach((follower) => {
-        follower.imageUrl = `${req.protocol}://${req.get("host")}${
-          follower.imageUrl
-        }`;
-      });
-      user.following.forEach((following) => {
-        following.imageUrl = `${req.protocol}://${req.get("host")}${
-          following.imageUrl
-        }`;
-      });
       //checks if the password given matches the one assigned
       //to the user in database. If correct, returns userId and a token.
       bcrypt
@@ -244,17 +233,6 @@ exports.readUser = (req, res, next) => {
           error: "User not found!",
         });
       } else {
-        user.followers.forEach((follower) => {
-          follower.imageUrl = `${req.protocol}://${req.get("host")}${
-            follower.imageUrl
-          }`;
-        });
-        user.following.forEach((following) => {
-          following.imageUrl = `${req.protocol}://${req.get("host")}${
-            following.imageUrl
-          }`;
-        });
-        user.imageUrl = `${req.protocol}://${req.get("host")}${user.imageUrl}`;
         res.status(200).json(user, hateoasLinks(req, user._id));
       }
     })
@@ -284,17 +262,6 @@ exports.readOneself = (req, res, next) => {
         });
       } else {
         user.email = decryptMail(user.email); // decrypts user's email
-        user.imageUrl = `${req.protocol}://${req.get("host")}${user.imageUrl}`;
-        user.followers.forEach((follower) => {
-          follower.imageUrl = `${req.protocol}://${req.get("host")}${
-            follower.imageUrl
-          }`;
-        });
-        user.following.forEach((following) => {
-          following.imageUrl = `${req.protocol}://${req.get("host")}${
-            following.imageUrl
-          }`;
-        });
         res.status(200).json(user, hateoasLinks(req, user._id));
       }
     })
@@ -362,7 +329,7 @@ exports.updateUser = (req, res, next) => {
         const userObject = req.file ?
           {
             ...update,
-            imageUrl: `/images/${req.file.filename}`,
+            imageUrl: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`,
           } :
           {
             ...update,
@@ -371,7 +338,7 @@ exports.updateUser = (req, res, next) => {
         try {
           if (
             userObject.imageUrl &&
-            userObject.imageUrl !== "/images/avatar-200.png"
+            userObject.imageUrl !== `${req.protocol}://${req.get("host")}/images/avatar-200.png`
           ) {
             fs.unlinkSync(`images/${filename}`);
           }
@@ -388,9 +355,6 @@ exports.updateUser = (req, res, next) => {
             }
           )
           .then((userUpdated) => {
-            userUpdated.imageUrl = `${req.protocol}://${req.get("host")}${
-              userUpdated.imageUrl
-            }`;
             userUpdated.email = decryptMail(userUpdated.email); // decrypts user's email
             res
               .status(200)
@@ -417,7 +381,7 @@ exports.deleteUser = (req, res, next) => {
           error: new Error("User not found!"),
         });
       } else {
-        if (user.imageUrl !== "/images/avatar-200.png") {
+        if (user.imageUrl !== `${req.protocol}://${req.get("host")}/images/avatar-200.png`) {
           const filename = user.imageUrl.split("/images/")[1];
           fs.unlinkSync(`images/${filename}`);
         }
@@ -482,26 +446,6 @@ exports.follow = (req, res, next) => {
                 },
               ])
               .then((userFollowing) => {
-                userFollowing.imageUrl = `${req.protocol}://${req.get("host")}${
-                  userFollowing.imageUrl}`;
-                userFollowed.imageUrl = `${req.protocol}://${req.get("host")}${
-                  userFollowed.imageUrl}`;
-                userFollowing.following.forEach((user) => {
-                  user.imageUrl = `${req.protocol}://${req.get("host")}${
-                    user.imageUrl}`
-                });
-                userFollowing.followers.forEach((user) => {
-                  user.imageUrl = `${req.protocol}://${req.get("host")}${
-                    user.imageUrl}`
-                });
-                userFollowed.following.forEach((user) => {
-                  user.imageUrl = `${req.protocol}://${req.get("host")}${
-                    user.imageUrl}`
-                });
-                userFollowed.followers.forEach((user) => {
-                  user.imageUrl = `${req.protocol}://${req.get("host")}${
-                    user.imageUrl}`
-                });
                 res.status(200).json({
                     userFollowing,
                     userFollowed
@@ -579,26 +523,6 @@ exports.unfollow = (req, res, next) => {
                 }
               ])
               .then((userUnfollowing) => {
-                userUnfollowing.imageUrl = `${req.protocol}://${req.get("host")}${
-                  userUnfollowing.imageUrl}`;
-                userUnfollowed.imageUrl = `${req.protocol}://${req.get("host")}${
-                  userUnfollowed.imageUrl}`;
-                userUnfollowing.following.forEach((user) => {
-                  user.imageUrl = `${req.protocol}://${req.get("host")}${
-                    user.imageUrl}`
-                });
-                userUnfollowing.followers.forEach((user) => {
-                  user.imageUrl = `${req.protocol}://${req.get("host")}${
-                    user.imageUrl}`
-                });
-                userUnfollowed.following.forEach((user) => {
-                  user.imageUrl = `${req.protocol}://${req.get("host")}${
-                    user.imageUrl}`
-                });
-                userUnfollowed.followers.forEach((user) => {
-                  user.imageUrl = `${req.protocol}://${req.get("host")}${
-                    user.imageUrl}`
-                });
                 res.status(200).json({
                   userUnfollowing,
                   userUnfollowed

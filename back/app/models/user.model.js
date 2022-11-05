@@ -34,7 +34,7 @@ const userSchema = new mongoose.Schema({
     },
     imageUrl: {
         type: String,
-        default: "/images/avatar-200.png"
+        default: `http://localhost:3000/images/avatar-200.png`
     },
     followers: [{
         type: mongoose.Schema.Types.ObjectId,
