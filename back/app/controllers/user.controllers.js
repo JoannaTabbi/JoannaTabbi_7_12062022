@@ -57,6 +57,7 @@ exports.signup = (req, res, next) => {
         userName: req.body.userName,
         email: encryptMail(req.body.email),
         password: hash,
+        imageUrl: `${req.protocol}://${req.get("host")}/images/avatar-200.png`,
         isAdmin: req.body.isAdmin // see front
       });
       user
