@@ -66,7 +66,7 @@
               <li>
                 <div
                   type="button"
-                  v-if="post.userId._id != auth.user._id"
+                  v-if="post.userId._id != auth.user._id && auth.user.isAdmin === false"
                   class="dropdown-item"
                   @click="reportPost(post)"
                 >
