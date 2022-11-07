@@ -29,8 +29,9 @@
         </div>
       </div>
     </div>
-    <div v-if="showModal">
+    <Teleport to="#modals">
       <DynamicModal
+        :show="showModal"
         :modal-title="modalTitle"
         submit-modal-text="Fermer"
         @submitted="toggledModal"
@@ -44,7 +45,7 @@
           </p>
         </template>
       </DynamicModal>
-    </div>
+    </Teleport>
   </div>
 </template>
 

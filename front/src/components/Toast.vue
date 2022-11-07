@@ -1,0 +1,49 @@
+<template>
+    <div class="toast-wrapper">
+      <div class="toast-content">
+        {{ toastMessage }}
+      </div>
+    </div>
+</template>
+
+<script>
+export default {
+  name: "Toast",
+  props: ["toastMessage"],
+};
+</script>
+
+<style>
+.toast-wrapper {
+  position: fixed;
+  width: 100%;
+  top: 30px;
+}
+.toast-content {
+  padding: 20px;
+  color: white;
+  background: linear-gradient(#ffd7d7, #fd2d01);
+  border-radius: 10px;
+  box-shadow: 1px 3px 5px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  margin: 0 auto;
+}
+/* enter transitions */
+.toast-enter-from {
+  opacity: 0;
+  transform: translateY(-60px);
+}
+
+.toast-enter-active {
+  transition: all 0.3s ease;
+}
+/* leave transitions */
+
+.toast-leave-to {
+  opacity: 0;
+  transform: translateY(-60px);
+}
+.toast-leave-active {
+  transition: all 0.3s ease;
+}
+</style>

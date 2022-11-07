@@ -148,10 +148,14 @@
           </section>
           <section id="feeds" class="shadow rounded-3 mb-3 p-3">
             <h2 class="text-start fs-4 fw-bolder">Fil d'actualité</h2>
-            <Post :posts="posts" @getPosts="getPosts" @deletePost="deletePost" />
-              <div v-if="isLoading === true">
-                <Loader />
-              </div>
+            <Post
+              :posts="posts"
+              @getPosts="getPosts"
+              @deletePost="deletePost"
+            />
+            <div v-if="isLoading === true">
+              <Loader />
+            </div>
           </section>
         </div>
 
@@ -165,6 +169,11 @@
         <!-- MOST POPULAR SECTION END -->
       </div>
     </div>
+    <Teleport to="#modals">
+      <Transition name="toast">
+        <Toast v-if="showToast" :toast-message="toastMessage" />
+      </Transition>
+    </Teleport>
   </main>
 </template>
 
@@ -172,6 +181,7 @@
 import Post from "../components/Post.vue";
 import MostPopular from "../components/MostPopular.vue";
 import Loader from "@/components/Loader.vue";
+import Toast from "@/components/Toast.vue";
 import { useAuthStore } from "../stores/authStore";
 import { postServices } from "../_services";
 export default {
@@ -179,11 +189,14 @@ export default {
   components: {
     Post,
     MostPopular,
-    Loader
+    Loader,
+    Toast,
   },
   setup() {
     const auth = useAuthStore();
-    return { auth };
+    return {
+      auth,
+    };
   },
   data() {
     return {
@@ -196,7 +209,9 @@ export default {
       loadMessage: "",
       showModal: false,
       modalTitle: "Publication",
-      isLoading: false
+      isLoading: false,
+      showToast: false,
+      toastMessage: "",
     };
   },
   computed: {
@@ -206,12 +221,23 @@ export default {
     },
   },
   methods: {
-  
+    //shows the toast notification for a period of time
+    triggerToast(message) {
+      this.showToast = true;
+      this.toastMessage = message;
+      setTimeout(
+        () => ((this.showToast = false), (this.toastMessage = "")),
+        5000
+      );
+    },
+
     //display the posts from one page;
-    // called once for the page 1 at mounted lifecycle hook, then the next page every time 
+    // called once for the page 1 at mounted lifecycle hook, then the next page every time
     //the scroll reaches the visibility observer at the bottom of the page
     getPosts(page) {
-      if (page > this.lastPage) { return };
+      if (page > this.lastPage) {
+        return;
+      }
       this.isLoading = true;
       postServices
         .getPosts(page)
@@ -265,19 +291,27 @@ export default {
 
     //deletes one post
     deletePost(postId) {
-      if (confirm("Cette publication sera supprimée définitivement. Etes-vous sûr(e) de vouloir continuer ?") == true) {
-        postServices.deletePost(postId)
+      if (
+        confirm(
+          "Cette publication sera supprimée définitivement. Etes-vous sûr(e) de vouloir continuer ?"
+        ) == true
+      ) {
+        postServices
+          .deletePost(postId)
           .then(() => {
-            this.posts = Object.values(this.posts).filter(elt => elt._id !== postId);
+            this.posts = Object.values(this.posts).filter(
+              (elt) => elt._id !== postId
+            );
           })
           .catch((error) => {
-            console.log(error)
-          })
+            console.log(error);
+          });
       }
     },
   },
   mounted() {
     this.getPosts(1);
+    this.triggerToast("hello");
   },
 };
 </script>

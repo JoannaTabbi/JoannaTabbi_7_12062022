@@ -1,49 +1,49 @@
 <template>
-<div>
-  <div class="vh-100 bg-image">
-    <div class="connexion container py-4 bg-secondary h-100">
-      <div class="row px-2 px-sm-5 h-100">
-        <div class="col-12 border-bottom border-dark">
-          <img
-            class="d-flex mb-2"
-            src="../assets/logos/icon-left-font-monochrome-black-rect.png"
-            alt="logo Groupomania"
-          />
-          <h1 class="fs-4 text-center">Page d'inscription</h1>
-        </div>
-        <div class="col-12 mt-2 mb-2">
-          <DynamicForm
-            :schema="formSchema"
-            submit-message="Je m'inscris"
-            :submit-function="register"
-          />
-        </div>
-        <div class="col-12 mb-3">
-          <p class="mb-0">J'ai déjà un compte</p>
-          <router-link to="/login" class="text-dark fs-5 fw-bold"
-            >Identifiez-vous</router-link
-          >
+  <div>
+    <div class="vh-100 bg-image">
+      <div class="connexion container py-4 bg-secondary h-100">
+        <div class="row px-2 px-sm-5 h-100">
+          <div class="col-12 border-bottom border-dark">
+            <img
+              class="d-flex mb-2"
+              src="../assets/logos/icon-left-font-monochrome-black-rect.png"
+              alt="logo Groupomania"
+            />
+            <h1 class="fs-4 text-center">Page d'inscription</h1>
+          </div>
+          <div class="col-12 mt-2 mb-2">
+            <DynamicForm
+              :schema="formSchema"
+              submit-message="Je m'inscris"
+              :submit-function="register"
+            />
+          </div>
+          <div class="col-12 mb-3">
+            <p class="mb-0">J'ai déjà un compte</p>
+            <router-link to="/login" class="text-dark fs-5 fw-bold"
+              >Identifiez-vous</router-link
+            >
+          </div>
         </div>
       </div>
     </div>
+
+    <DynamicModal
+      :show="showModal"
+      :modal-title="modalTitle"
+      submit-modal-text="Fermer"
+      @submitted="redirectToLogin"
+      @closed="redirectToLogin"
+      :submit="true"
+      :theme="theme"
+    >
+      <template v-slot:modalBody>
+        <p>
+          {{ modalMessage }}
+        </p>
+      </template>
+    </DynamicModal>
   </div>
- <div v-if="showModal">
-      <DynamicModal
-        :modal-title="modalTitle"
-        submit-modal-text="Fermer"
-        @submitted="redirectToLogin"
-        @closed="redirectToLogin"
-        :submit="true"
-        :theme="theme"
-      >
-        <template v-slot:modalBody>
-          <p>
-            {{ modalMessage }}
-          </p>
-        </template>
-      </DynamicModal>
-    </div>
-</div>
 </template>
 
 <script>
@@ -126,15 +126,14 @@ export default {
       formSchema,
       theme: "",
       modalTitle: "",
-      modalMessage: ""
+      modalMessage: "",
     };
   },
   components: {
     DynamicForm,
-    DynamicModal
+    DynamicModal,
   },
   methods: {
-
     // toggle modal
     toggledModal() {
       this.showModal = !this.showModal;
@@ -145,7 +144,7 @@ export default {
       if (this.theme === "success") {
         router.push("/login");
       } else {
-        this.toggledModal()
+        this.toggledModal();
       }
     },
 
@@ -155,15 +154,18 @@ export default {
       authServices
         .signupUser(value)
         .then(() => {
-          this.theme = "success",
-          this.modalTitle = "FELICITATIONS !",
-          this.modalMessage = "Votre enregistrement a réussi, fermez cette fenêtre pour être rédirigé(e) vers la page de connexion"
+          (this.theme = "success"),
+            (this.modalTitle = "FELICITATIONS !"),
+            (this.modalMessage =
+              "Votre enregistrement a réussi, fermez cette fenêtre pour être rédirigé(e) vers la page de connexion");
           this.toggledModal();
         })
-        .catch(() => {  // alerts the user if the email or userName exist in database
-          this.theme = 'warning';
+        .catch(() => {
+          // alerts the user if the email or userName exist in database
+          this.theme = "warning";
           this.modalTitle = "ATTENTION!";
-          this.modalMessage = "L'email ou le nom d'utilisateur existe  déjà. Veuillez en saisir un autre ou connectez-vous";
+          this.modalMessage =
+            "L'email ou le nom d'utilisateur existe  déjà. Veuillez en saisir un autre ou connectez-vous";
           this.toggledModal();
         });
     },
