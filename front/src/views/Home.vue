@@ -114,25 +114,18 @@
                     placeholder="When I woke up this morning..."
                     rows="2"
                   ></textarea>
-                  <div
-                    v-if="loadMessage"
-                    class="alert alert-secondary"
-                    role="alert"
-                  >
-                    {{ loadMessage }}
-                  </div>
                 </div>
               </div>
               <ul class="nav d-flex justify-content-around">
                 <li class="nav-item">
-                  <label type="button" for="formFile">
+                  <label type="button" for="formFile3">
                     <i class="fa-regular fa-image fa-2x"></i>
                     <input
                       @change="selectImage"
                       type="file"
                       class="form-control"
                       name="image"
-                      id="formFile"
+                      id="formFile3"
                       accept="image/*"
                       hidden
                     />
@@ -206,7 +199,6 @@ export default {
         imageUrl: "",
         message: "",
       },
-      loadMessage: "",
       showModal: false,
       modalTitle: "Publication",
       isLoading: false,
@@ -246,32 +238,32 @@ export default {
           this.lastPage = res.data.totalPages;
           this.isLoading = false;
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          this.triggerToast(`Une erreur est survenue : ${err}`)
+        });
     },
 
     // selects image for new post
     selectImage(event) {
       this.newPost.imageUrl = event.target.files[0];
-      this.loadMessage = "";
     },
     // creates a new post
     createPost() {
       let formData = new FormData();
       //throw an error if neither message nor image posted
       if (this.newPost.message == "" && this.newPost.imageUrl == "") {
-        this.loadMessage = "Veuillez saisir un message ou choisir une photo";
+        this.triggerToast("Veuillez saisir un message ou choisir une photo");
       } else {
         //throw an error if the message is too long (over 1500 letters)
         if (this.newPost.message.length > 1500) {
-          this.loadMessage = "Le message ne doit pas dépasser 1500 mots";
+          this.triggerToast("Le message ne doit pas dépasser 1500 mots");
         } else {
           formData.append("message", this.newPost.message);
         }
         if (this.newPost.imageUrl) {
           //throw an error if the image size is too important (over 500ko)
           if (this.newPost.imageUrl.size > 500000) {
-            this.loadMessage =
-              "Attention, la taille de l'image ne doit pas dépasser 500ko";
+            this.triggerToast("Attention, la taille de l'image ne doit pas dépasser 500ko");
           } else {
             formData.append("image", this.newPost.imageUrl);
           }
@@ -284,7 +276,7 @@ export default {
             this.newPost = "";
           })
           .catch((err) => {
-            console.log(err);
+            this.triggerToast(err);
           });
       }
     },
@@ -303,15 +295,14 @@ export default {
               (elt) => elt._id !== postId
             );
           })
-          .catch((error) => {
-            console.log(error);
+          .catch((err) => {
+            this.triggerToast(err);
           });
       }
     },
   },
   mounted() {
     this.getPosts(1);
-    this.triggerToast("hello");
   },
 };
 </script>

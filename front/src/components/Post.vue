@@ -173,29 +173,6 @@
           @create-comment="createComment(post)"
           @delete-comment="deleteComment"
         />
-
-        <!-- MODAL FOR UPDATE POST-->
-
-        <!-- MODAL 
-      <div v-if="showModal">
-        <DynamicModal
-          :modal-title="modalTitle"
-          :modal-message="modalMessage"
-          :dismiss-modal-text="dismissModalText"
-          :submitModalText="submitModalText"
-          @closed="toggledModal"
-          @submitted="deletePost(post)"
-          :reset="true"
-          :submit="true"
-          theme="warning"
-        >
-          <template v-slot:modalBody>
-            <p>
-              {{ modalMessage }}
-            </p>
-          </template>
-        </DynamicModal>
-      </div>   -->
       </div>
     </div>
     <div
@@ -230,15 +207,7 @@ export default {
         message: "",
       },
       loadUpdateMessage: "",
-      newComment: "",
-
-      /* modal data : deletePost
-      modalTitle: "ATTENTION",
-      modalMessage:
-        "Cette publication sera supprimée définitivement. Etes-vous sûr(e) de vouloir continuer ?",
-      dismissModalText: "Abandonner",
-      submitModalText: "Supprimer",
-      showModal: false, */
+      newComment: ""
     };
   },
   setup() {
@@ -255,11 +224,6 @@ export default {
     isLiked(usersLiked) {
       return usersLiked.some((user) => user._id == this.auth.user._id);
     },
-
-    /* toggle modal
-    toggledModal() {
-      this.showModal = !this.showModal;
-    }, */
 
     //handles scroll to bottom;
     //when visibility observer on the bottom of the page is visible,
