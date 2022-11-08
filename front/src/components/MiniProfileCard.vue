@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="row">
   <div v-for="mpUser in mpUsers" :key="mpUser._id" class="col-12 col-sm-6 col-md-4 col-lg-3">
     <router-link :to="auth.profilePage(mpUser._id)">
       <div class="card border-0 align-items-center p-2">
