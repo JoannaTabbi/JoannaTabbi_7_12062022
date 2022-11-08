@@ -88,7 +88,7 @@
                     <div
                       type="button"
                       v-if="
-                        comment.userId._id !== auth.user._id
+                        comment.userId._id !== auth.user._id && auth.user.isAdmin === false
                       "
                       class="dropdown-item"
                       @click="reportComment(comment)"
@@ -152,6 +152,7 @@
 
 <script>
 import { useAuthStore } from "@/stores/authStore";
+import { useHandleErrorStore } from "@/stores/handleErrorStore";
 import { commentServices } from "@/_services";
 export default {
   name: "Comments",
@@ -164,7 +165,8 @@ export default {
   emits: ["update:modelValue", "createComment", "deleteComment"],
   setup() {
     const auth = useAuthStore();
-    return { auth };
+    const handleError = useHandleErrorStore();
+    return { auth, handleError };
   },
   methods: {
     // emits create comment
@@ -187,7 +189,7 @@ export default {
           comment.usersLiked = res.data.usersLiked;
           comment.likes = res.data.likes;
         })
-        .catch((error) => console.log(error));
+        .catch((error) => this.handleError.triggerToast(error));
     },
 
     // for one commment, toggles between display element and form
@@ -202,14 +204,14 @@ export default {
           comment.message = res.data.message;
           this.updateCommentToggle(comment);
         })
-        .catch((error) => console.log(error))
+        .catch((error) => this.handleError.triggerToast(error))
     },
 
     //reports comment
     reportComment(comment) {
         commentServices.reportComment(comment._id)
-           .then(res => console.log(res))
-           .catch(error => console.log(error))
+           .then(() => this.handleError.triggerToast("Votre signalement a bien été pris en compte"))
+           .catch(error => this.handleError.triggerToast(error))
     }
   },
 };

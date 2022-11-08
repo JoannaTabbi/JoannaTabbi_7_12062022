@@ -66,7 +66,7 @@
               <li>
                 <div
                   type="button"
-                  v-if="post.userId._id != auth.user._id"
+                  v-if="post.userId._id != auth.user._id && auth.user.isAdmin === false"
                   class="dropdown-item"
                   @click="reportPost(post)"
                 >
@@ -94,13 +94,6 @@
                   :placeholder="post.message"
                   rows="2"
                 ></textarea>
-                <div
-                  v-if="loadUpdateMessage"
-                  class="alert alert-secondary"
-                  role="alert"
-                >
-                  {{ loadUpdateMessage }}
-                </div>
               </div>
             </div>
             <ul class="nav d-flex justify-content-around">
@@ -173,29 +166,6 @@
           @create-comment="createComment(post)"
           @delete-comment="deleteComment"
         />
-
-        <!-- MODAL FOR UPDATE POST-->
-
-        <!-- MODAL 
-      <div v-if="showModal">
-        <DynamicModal
-          :modal-title="modalTitle"
-          :modal-message="modalMessage"
-          :dismiss-modal-text="dismissModalText"
-          :submitModalText="submitModalText"
-          @closed="toggledModal"
-          @submitted="deletePost(post)"
-          :reset="true"
-          :submit="true"
-          theme="warning"
-        >
-          <template v-slot:modalBody>
-            <p>
-              {{ modalMessage }}
-            </p>
-          </template>
-        </DynamicModal>
-      </div>   -->
       </div>
     </div>
     <div
@@ -209,6 +179,7 @@
 import Comments from "./Comments.vue";
 import DynamicModal from "./DynamicModal.vue";
 import { useAuthStore } from "@/stores/authStore";
+import { useHandleErrorStore } from "@/stores/handleErrorStore";
 import { postServices } from "../_services";
 import { commentServices } from "../_services";
 export default {
@@ -229,21 +200,13 @@ export default {
         imageUrl: "",
         message: "",
       },
-      loadUpdateMessage: "",
-      newComment: "",
-
-      /* modal data : deletePost
-      modalTitle: "ATTENTION",
-      modalMessage:
-        "Cette publication sera supprimée définitivement. Etes-vous sûr(e) de vouloir continuer ?",
-      dismissModalText: "Abandonner",
-      submitModalText: "Supprimer",
-      showModal: false, */
+      newComment: ""
     };
   },
   setup() {
     const auth = useAuthStore();
-    return { auth };
+    const handleError = useHandleErrorStore();
+    return { auth, handleError };
   },
   methods: {
     // formates the the user account's creation date
@@ -255,11 +218,6 @@ export default {
     isLiked(usersLiked) {
       return usersLiked.some((user) => user._id == this.auth.user._id);
     },
-
-    /* toggle modal
-    toggledModal() {
-      this.showModal = !this.showModal;
-    }, */
 
     //handles scroll to bottom;
     //when visibility observer on the bottom of the page is visible,
@@ -282,7 +240,7 @@ export default {
           post.usersLiked = res.data.usersLiked;
           post.likes = res.data.likes;
         })
-        .catch((error) => console.log(error));
+        .catch((error) => this.handleError.triggerToast(error));
     },
 
     // for one post, toggles between updatePost section and display post section
@@ -293,7 +251,6 @@ export default {
     // selects image for new post
     selectUpdateImage(event) {
       this.updatedPost.imageUrl = event.target.files[0];
-      this.loadUpdateMessage = "";
     },
 
     //updates one post
@@ -301,7 +258,7 @@ export default {
       let formData = new FormData();
       if (this.updatedPost.message != "") {
         if (this.updatedPost.message.length > 1500) {
-          this.loadUpdateMessage = "Le message ne doit pas dépasser 1500 mots";
+          this.handleError.triggerToast("Le message ne doit pas dépasser 1500 mots");
         } else {
           formData.append("message", this.updatedPost.message);
         }
@@ -309,8 +266,7 @@ export default {
       if (this.updatedPost.imageUrl) {
         //throw an error if the image size is too important (over 500ko)
         if (this.updatedPost.imageUrl.size > 500000) {
-          this.loadUpdateMessage =
-            "Attention, la taille de l'image ne doit pas dépasser 500ko";
+          this.handleError.triggerToast("Attention, la taille de l'image ne doit pas dépasser 500ko");
         } else {
           formData.append("image", this.updatedPost.imageUrl);
         }
@@ -322,7 +278,7 @@ export default {
           post.imageUrl = res.data.imageUrl;
           this.updateToggle(post);
         })
-        .catch((error) => console.log(error));
+        .catch((error) => this.handleError.triggerToast(error));
     },
 
     // emits delete post function for a postId given
@@ -333,8 +289,8 @@ export default {
     //reports post
     reportPost(post) {
         postServices.reportPost(post._id)
-           .then(res => console.log(res))
-           .catch(error => console.log(error))
+           .then(res => this.handleError.triggerToast("Votre signalement a bien été pris en compte"))
+           .catch(error => this.handleError.triggerToast(error))
     },
 
     // create new comment to one post
@@ -345,9 +301,7 @@ export default {
           post.comments.unshift(res.data);
           this.newComment = "";
         })
-        .catch((error) => {
-          console.log(error);
-        });
+        .catch((error) => this.handleError.triggerToast(error));
     },
 
     // deletes one comment 
@@ -357,7 +311,7 @@ export default {
          const postFound = this.posts.find(post => post._id == postId);
          postFound.comments = postFound.comments.filter(comment => comment._id != commentId);
       })
-      .catch((error) => console.log(error))
+      .catch((error) => this.handleError.triggerToast(error))
     } 
   },
 };

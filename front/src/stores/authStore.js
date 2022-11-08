@@ -25,12 +25,6 @@ actions: {
     this.token = null;
     this.refreshToken = null;
     this.user = null;
-  },
-  editMyProfile() {
-    userServices.getOneself()
-      .then((res) => {
-          this.user = res.data})
-      .catch(err => console.log(err))
   }
 }
 

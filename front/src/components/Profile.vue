@@ -194,6 +194,7 @@ import Post from "@/components/Post.vue";
 import MiniProfile from "@/components/MiniProfileCard";
 import Loader from "@/components/Loader";
 import { useAuthStore } from "@/stores/authStore";
+import { useHandleErrorStore } from "@/stores/handleErrorStore";
 import { postServices } from "@/_services";
 import { userServices } from "@/_services";
 export default {
@@ -223,7 +224,8 @@ export default {
   },
   setup() {
     const auth = useAuthStore();
-    return { auth }
+    const handleError = useHandleErrorStore();
+    return { auth, handleError }
   },
   computed: {
     // formates the the user account's creation date
@@ -250,14 +252,14 @@ export default {
           this.lastPage = res.data.totalPages;
           this.isLoading = false;
         })
-        .catch((err) => console.log(err));
+        .catch((error) => this.handleError.triggerToast(error));
     },
 
     //reports user
     reportUser() {
         userServices.reportUser(this.user._id)
-           .then(res => console.log(res))
-           .catch(error => console.log(error))
+           .then(() => this.handleError.triggerToast("Votre signalement a bien été pris en compte"))
+           .catch(error => this.handleError.triggerToast(error))
     }
   },
   mounted() {

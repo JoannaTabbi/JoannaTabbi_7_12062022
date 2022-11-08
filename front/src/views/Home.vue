@@ -114,25 +114,18 @@
                     placeholder="When I woke up this morning..."
                     rows="2"
                   ></textarea>
-                  <div
-                    v-if="loadMessage"
-                    class="alert alert-secondary"
-                    role="alert"
-                  >
-                    {{ loadMessage }}
-                  </div>
                 </div>
               </div>
               <ul class="nav d-flex justify-content-around">
                 <li class="nav-item">
-                  <label type="button" for="formFile">
+                  <label type="button" for="formFile3">
                     <i class="fa-regular fa-image fa-2x"></i>
                     <input
                       @change="selectImage"
                       type="file"
                       class="form-control"
                       name="image"
-                      id="formFile"
+                      id="formFile3"
                       accept="image/*"
                       hidden
                     />
@@ -148,10 +141,14 @@
           </section>
           <section id="feeds" class="shadow rounded-3 mb-3 p-3">
             <h2 class="text-start fs-4 fw-bolder">Fil d'actualité</h2>
-            <Post :posts="posts" @getPosts="getPosts" @deletePost="deletePost" />
-              <div v-if="isLoading === true">
-                <Loader />
-              </div>
+            <Post
+              :posts="posts"
+              @getPosts="getPosts"
+              @deletePost="deletePost"
+            />
+            <div v-if="isLoading === true">
+              <Loader />
+            </div>
           </section>
         </div>
 
@@ -173,6 +170,7 @@ import Post from "../components/Post.vue";
 import MostPopular from "../components/MostPopular.vue";
 import Loader from "@/components/Loader.vue";
 import { useAuthStore } from "../stores/authStore";
+import { useHandleErrorStore } from "../stores/handleErrorStore";
 import { postServices } from "../_services";
 export default {
   name: "Home",
@@ -183,7 +181,10 @@ export default {
   },
   setup() {
     const auth = useAuthStore();
-    return { auth };
+    const handleError = useHandleErrorStore();
+    return {
+      auth, handleError
+    };
   },
   data() {
     return {
@@ -193,7 +194,6 @@ export default {
         imageUrl: "",
         message: "",
       },
-      loadMessage: "",
       showModal: false,
       modalTitle: "Publication",
       isLoading: false
@@ -206,12 +206,13 @@ export default {
     },
   },
   methods: {
-  
     //display the posts from one page;
-    // called once for the page 1 at mounted lifecycle hook, then the next page every time 
+    // called once for the page 1 at mounted lifecycle hook, then the next page every time
     //the scroll reaches the visibility observer at the bottom of the page
     getPosts(page) {
-      if (page > this.lastPage) { return };
+      if (page > this.lastPage) {
+        return;
+      }
       this.isLoading = true;
       postServices
         .getPosts(page)
@@ -220,32 +221,32 @@ export default {
           this.lastPage = res.data.totalPages;
           this.isLoading = false;
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          this.handleError.triggerToast(`Une erreur est survenue : ${err}`)
+        });
     },
 
     // selects image for new post
     selectImage(event) {
       this.newPost.imageUrl = event.target.files[0];
-      this.loadMessage = "";
     },
     // creates a new post
     createPost() {
       let formData = new FormData();
       //throw an error if neither message nor image posted
       if (this.newPost.message == "" && this.newPost.imageUrl == "") {
-        this.loadMessage = "Veuillez saisir un message ou choisir une photo";
+        this.handleError.triggerToast("Veuillez saisir un message ou choisir une photo");
       } else {
         //throw an error if the message is too long (over 1500 letters)
         if (this.newPost.message.length > 1500) {
-          this.loadMessage = "Le message ne doit pas dépasser 1500 mots";
+          this.handleError.triggerToast("Le message ne doit pas dépasser 1500 mots");
         } else {
           formData.append("message", this.newPost.message);
         }
         if (this.newPost.imageUrl) {
           //throw an error if the image size is too important (over 500ko)
           if (this.newPost.imageUrl.size > 500000) {
-            this.loadMessage =
-              "Attention, la taille de l'image ne doit pas dépasser 500ko";
+            this.handleError.triggerToast("Attention, la taille de l'image ne doit pas dépasser 500ko");
           } else {
             formData.append("image", this.newPost.imageUrl);
           }
@@ -253,26 +254,30 @@ export default {
         postServices
           .createPost(formData)
           .then(async (res) => {
-            console.log(res);
             await this.posts.unshift(res.data);
             this.newPost = "";
           })
-          .catch((err) => {
-            console.log(err);
-          });
+          .catch((err) => this.handleError.triggerToast(err));
       }
     },
 
     //deletes one post
     deletePost(postId) {
-      if (confirm("Cette publication sera supprimée définitivement. Etes-vous sûr(e) de vouloir continuer ?") == true) {
-        postServices.deletePost(postId)
+      if (
+        confirm(
+          "Cette publication sera supprimée définitivement. Etes-vous sûr(e) de vouloir continuer ?"
+        ) == true
+      ) {
+        postServices
+          .deletePost(postId)
           .then(() => {
-            this.posts = Object.values(this.posts).filter(elt => elt._id !== postId);
+            this.posts = Object.values(this.posts).filter(
+              (elt) => elt._id !== postId
+            );
           })
-          .catch((error) => {
-            console.log(error)
-          })
+          .catch((err) => {
+            this.handleError.triggerToast(err);
+          });
       }
     },
   },

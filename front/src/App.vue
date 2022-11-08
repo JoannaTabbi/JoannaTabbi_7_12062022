@@ -3,6 +3,13 @@
     <!-- if no user stored in authstore, the header will not be injected to the page -->
      <Header v-if="auth.user" :user-name="auth.user.userName"/> 
     <router-view > </router-view>
+
+    <!-- display toast to show errors -->
+    <Teleport to="#modals">
+      <Transition name="toast">
+        <Toast v-if="handleError.showToast" :toast-message="handleError.toastMessage" />
+      </Transition>
+    </Teleport>
     <!-- <Footer /> -->
   </div>
 </template>
@@ -10,16 +17,20 @@
 <script>
 import Header from "./components/Header.vue";
 import Footer from "./components/Footer.vue";
-import {useAuthStore} from '@/stores/authStore.js';
+import Toast from "@/components/Toast.vue";
+import { useAuthStore } from '@/stores/authStore.js';
+import { useHandleErrorStore } from "@/stores/handleErrorStore";
 export default {
   name: "App",
   components: {
     Header,
     Footer,
+    Toast
   },
   setup() {
-    const auth = useAuthStore()
-    return { auth }
+    const auth = useAuthStore();
+    const handleError = useHandleErrorStore();
+    return { auth, handleError }
   }
 };
 </script>

@@ -21,9 +21,6 @@ exports.readOnePost = (req, res, next) => {
             }
         ])
         .then((post) => {
-            if (req.body.imageUrl) {
-                post.imageUrl = `${req.protocol}://${req.get("host")}${post.imageUrl}`;
-            }
             res.status(200).json(post, hateoasLinks(req, post._id));
         })
         .catch((error) =>
@@ -70,23 +67,6 @@ exports.readAllPosts = async (req, res, next) => {
             .limit(limit * 1)
             .skip((page - 1) * limit)
             .exec()
-
-        //configure imageUrls to match with the current protocol and host
-        posts.forEach((post) => {
-            post.imageUrl ? post.imageUrl = `${req.protocol}://${req.get("host")}${post.imageUrl}` : post.imageUrl = "";
-            if (post.userId.imageUrl.startsWith(`${req.protocol}://${req.get("host")}`)) {
-                return post.userId.imageUrl
-            } else {
-                post.userId.imageUrl = `${req.protocol}://${req.get("host")}${post.userId.imageUrl}`;
-            };
-            post.comments.forEach((comment) => {
-                if (comment.userId.imageUrl.startsWith(`${req.protocol}://${req.get("host")}`)) {
-                    return comment.userId.imageUrl
-                } else {
-                    comment.userId.imageUrl = `${req.protocol}://${req.get("host")}${comment.userId.imageUrl}`;
-                };
-            });
-        });
 
         // get total documents in Post collection
         const count = await Post.countDocuments()
@@ -144,23 +124,6 @@ exports.readUserPosts = async (req, res, next) => {
             .skip((page - 1) * limit)
             .exec()
 
-        //configure imageUrls to match with the current protocol and host
-        userPosts.forEach((post) => {
-            post.imageUrl ? post.imageUrl = `${req.protocol}://${req.get("host")}${post.imageUrl}` : post.imageUrl = "";
-            if (post.userId.imageUrl.startsWith(`${req.protocol}://${req.get("host")}`)) {
-                return post.userId.imageUrl
-            } else {
-                post.userId.imageUrl = `${req.protocol}://${req.get("host")}${post.userId.imageUrl}`;
-            };
-            post.comments.forEach((comment) => {
-                if (comment.userId.imageUrl.startsWith(`${req.protocol}://${req.get("host")}`)) {
-                    return comment.userId.imageUrl
-                } else {
-                    comment.userId.imageUrl = `${req.protocol}://${req.get("host")}${comment.userId.imageUrl}`;
-                };
-            })
-        });
-
         // get total documents in Post collection
         const count = await Post.countDocuments({
             userId: req.body.userId
@@ -193,7 +156,7 @@ exports.createPost = (req, res, next) => {
 
     const post = new Post({
         ...req.body,
-        imageUrl: req.file ? `/images/${req.file.filename}` : "",
+        imageUrl: req.file ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}` : "",
         userId: req.auth.userId
     });
     post
@@ -204,8 +167,6 @@ exports.createPost = (req, res, next) => {
                     select: ["userName", "imageUrl"]
                 })
                 .then((newPost) => {
-                    newPost.imageUrl ? newPost.imageUrl = `${req.protocol}://${req.get("host")}${newPost.imageUrl}` : newPost.imageUrl = "";
-                    newPost.userId.imageUrl = `${req.protocol}://${req.get("host")}${newPost.userId.imageUrl}`
                     res.status(201).json(newPost, hateoasLinks(req, newPost._id))
                 })
                 .catch((error) =>
@@ -253,13 +214,6 @@ exports.likePost = (req, res, next) => {
                                 select: ["userName", "imageUrl"]
                             })
                             .then((postUpdated) => {
-                                postUpdated.usersLiked.forEach((user) => {
-                                    if (user.imageUrl.startsWith(`${req.protocol}://${req.get("host")}`)) {
-                                        return user.imageUrl
-                                    } else {
-                                        user.imageUrl = `${req.protocol}://${req.get("host")}${user.imageUrl}`;
-                                    };
-                                });
                                 res
                                     .status(200)
                                     .json(postUpdated, hateoasLinks(req, postUpdated._id))
@@ -296,13 +250,6 @@ exports.likePost = (req, res, next) => {
                                 select: ["userName", "imageUrl"]
                             })
                             .then((postUpdated) => {
-                                postUpdated.usersLiked.forEach((user) => {
-                                    if (user.imageUrl.startsWith(`${req.protocol}://${req.get("host")}`)) {
-                                        return user.imageUrl
-                                    } else {
-                                        user.imageUrl = `${req.protocol}://${req.get("host")}${user.imageUrl}`;
-                                    };
-                                });
                                 res
                                     .status(200)
                                     .json(postUpdated, hateoasLinks(req, postUpdated._id))
@@ -344,7 +291,7 @@ exports.updatePost = (req, res, next) => {
         }
         const postObject = req.file ? {
             ...req.body,
-            imageUrl: `/images/${req.file.filename}`
+            imageUrl: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
         } : {
             ...req.body
         };
@@ -364,7 +311,6 @@ exports.updatePost = (req, res, next) => {
                     setDefaultsOnInsert: true
                 })
             .then((postUpdated) => {
-                postUpdated.imageUrl = `${req.protocol}://${req.get("host")}${postUpdated.imageUrl}`;
                 res.status(200).json(postUpdated, hateoasLinks(req, postUpdated._id))
             })
             .catch((error) =>

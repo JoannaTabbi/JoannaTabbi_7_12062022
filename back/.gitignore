@@ -13,6 +13,7 @@ Icon
 
 # image files for sauces
 images/*
+!images/avatar-200.png
 
 # Thumbnails
 ._*

@@ -1,38 +1,40 @@
 <template>
-  <div class="modal__backdrop" @click.self="closeModal">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title text-dark">
-            {{ modalTitle }}
-          </h5>
-          <button
-            type="button"
-            class="btn-close"
-            aria-label="Close"
-            @click="closeModal"
-          ></button>
-        </div>
-        <div class="modal-body text-start" :class="theme">
-          <slot name="modalBody"></slot>
-        </div>
-        <div class="modal-footer">
-          <button
-            v-if="reset"
-            type="button"
-            class="btn btn-outline-dark"
-            @click="closeModal"
-          >
-            {{ dismissModalText }}
-          </button>
-          <button
-            v-if="submit"
-            type="button"
-            class="btn btn-outline-dark"
-            @click="submitModal"
-          >
-            {{ submitModalText }}
-          </button>
+  <div>
+    <div v-if="show" class="modal__backdrop" @click.self="closeModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title text-dark">
+              {{ modalTitle }}
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              aria-label="Close"
+              @click="closeModal"
+            ></button>
+          </div>
+          <div class="modal-body text-start" :class="theme">
+            <slot name="modalBody"></slot>
+          </div>
+          <div class="modal-footer">
+            <button
+              v-if="reset"
+              type="button"
+              class="btn btn-outline-dark"
+              @click="closeModal"
+            >
+              {{ dismissModalText }}
+            </button>
+            <button
+              v-if="submit"
+              type="button"
+              class="btn btn-outline-dark"
+              @click="submitModal"
+            >
+              {{ submitModalText }}
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -42,7 +44,15 @@
 <script>
 export default {
   name: "DynamicModal",
-  props: ["modalTitle", "dismissModalText", "submitModalText", "reset", "submit", "theme"],
+  props: [
+    "show",
+    "modalTitle",
+    "dismissModalText",
+    "submitModalText",
+    "reset",
+    "submit",
+    "theme",
+  ],
   methods: {
     submitModal() {
       this.$emit("submitted");
@@ -67,12 +77,11 @@ export default {
   height: 100%;
 }
 .modal-body.success {
-  background-color: #023b19;
+  background-color: linear-gradient(#FFD7D7, #023b19);
   color: white;
 }
 .modal-body.warning {
-  background-color: #FD2D01;
+  background: linear-gradient(#FFD7D7, #FD2D01);
   color: white;
 }
-
 </style>

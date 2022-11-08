@@ -19,6 +19,8 @@
 import Profile from "@/components/Profile.vue";
 import MostPopular from "@/components/MostPopular.vue";
 import { useAuthStore } from "@/stores/authStore";
+import { useHandleErrorStore } from "@/stores/handleErrorStore";
+import { userServices } from "@/_services";
 
 export default {
   name: "MyProfile",
@@ -28,7 +30,8 @@ export default {
   },
   setup() {
     const auth = useAuthStore();
-    return { auth };
+    const handleError = useHandleErrorStore();
+    return { auth, handleError };
   },
   data() {
     return {
@@ -36,8 +39,17 @@ export default {
       following: [],
     };
   },
+  methods: {
+    // displays user profile
+    getMyProfile() {
+    userServices.getOneself()
+      .then((res) => {
+          this.user = res.data})
+      .catch(err => this.handleError.triggerToast(err))
+  }
+  },
   mounted() {
-    this.auth.editMyProfile();
+    this.getMyProfile();
   },
 };
 </script>

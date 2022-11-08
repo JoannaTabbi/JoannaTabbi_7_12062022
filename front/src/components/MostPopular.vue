@@ -1,9 +1,6 @@
 <template>
   <div>
-    <section
-      id="most_popular"
-      class="shadow rounded-3 mb-3 py-3 ps-2 pe-4"
-    >
+    <section id="most_popular" class="shadow rounded-3 mb-3 py-3 ps-2 pe-4">
       <h2 class="fs-4 text-start ms-2">Les plus populaires</h2>
       <div class="col-12">
         <div class="card card-body border-0 m-0 p-2">
@@ -15,18 +12,14 @@
               <router-link to="/profile">
                 <h5 class="fs-6 mb-0">Jean_Dupont</h5>
               </router-link>
-              <div
-                href=""
-                type="button"
-                class="d-block"
-                @click="toggledModal"
-              >
+              <div href="" type="button" class="d-block" @click="toggledModal">
                 <p class="text-start mb-0 text-truncate">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Illo, quas.
-                  Blanditiis possimus quasi, illo officia quaerat facere cupiditate nihil
-                  ea ab porro, pariatur quibusdam unde provident vero perferendis minus
-                  non et architecto illum deleniti autem repellendus! Dignissimos sint
-                  nostrum aliquam odit rerum, hic corporis animi provident magni, quam
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Illo,
+                  quas. Blanditiis possimus quasi, illo officia quaerat facere
+                  cupiditate nihil ea ab porro, pariatur quibusdam unde
+                  provident vero perferendis minus non et architecto illum
+                  deleniti autem repellendus! Dignissimos sint nostrum aliquam
+                  odit rerum, hic corporis animi provident magni, quam
                   architecto autem delectus numquam blanditiis iste.
                 </p>
               </div>
@@ -36,20 +29,20 @@
       </div>
     </section>
     <!-- Modal -->
-    <div v-if="showModal">
-      <DynamicModal
+    <DynamicModal
+      :show="showModal"
       :modal-title="modalTitle"
       :submit="true"
       submit-modal-text="Fermer"
       @submitted="toggledModal"
-      @closed="toggledModal">
-        <template v-slot:modalBody>
-          <p>
-            <Post />
-          </p>
-        </template>
-     </DynamicModal>
-    </div>
+      @closed="toggledModal"
+    >
+      <template v-slot:modalBody>
+        <p>
+          <Post />
+        </p>
+      </template>
+    </DynamicModal>
   </div>
 </template>
 
@@ -60,7 +53,7 @@ export default {
   name: "MostPopular",
   components: {
     Post,
-    DynamicModal
+    DynamicModal,
   },
   data() {
     return {

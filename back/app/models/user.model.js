@@ -33,8 +33,7 @@ const userSchema = new mongoose.Schema({
         default: "Je suis..." 
     },
     imageUrl: {
-        type: String,
-        default: "/images/avatar-200.png"
+        type: String
     },
     followers: [{
         type: mongoose.Schema.Types.ObjectId,
