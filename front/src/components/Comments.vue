@@ -36,9 +36,9 @@
         <div class="w-100">
           <div class="w-100 text-start bg-light rounded-3 p-2">
             <div class="d-flex align-items-baseline justify-content-between">
-              <div>
+              <router-link :to="auth.profilePage(comment.userId._id)">
                 <h5 class="fs-6 mb-0">{{ comment.userId.userName }}</h5>
-              </div>
+              </router-link>
               <div class="dropdown fs-5 fw-bold">
                 <a
                   href="#"

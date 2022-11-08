@@ -14,7 +14,7 @@
             />
           </div>
           <div class="w-100 text-start">
-            <router-link to="/profile">
+            <router-link :to="auth.profilePage(post.userId._id)">
               <h5 class="fs-6 mb-0">"{{ post.userId.userName }}"</h5>
             </router-link>
             <p class="mb-0 fw-light small fst-italic">
