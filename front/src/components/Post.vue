@@ -112,13 +112,11 @@
                 </label>
               </li>
               <li class="nav-item">
-                <button type="submit" class="btn">
-                  <i class="fa-regular fa-paper-plane fa-2x"></i>
+                <button type="reset" class="btn" @click.prevent="updateToggle(post)">
+                  <i class="fa-solid fa-xmark fa-2x text-danger"></i>
                 </button>
-              </li>
-              <li class="nav-item" @click.prevent="updateToggle">
-                <button type="reset" class="btn">
-                  <i class="fa-regular fa-trash-can fa-2x"></i>
+                <button type="submit" class="btn">
+                  <i class="fa-solid fa-check fa-2x text-success"></i>
                 </button>
               </li>
             </ul>
