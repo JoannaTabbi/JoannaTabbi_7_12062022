@@ -2,7 +2,7 @@
   <div>
     <!-- if no user stored in authstore, the header will not be injected to the page -->
      <Header v-if="auth.user" :user-name="auth.user.userName"/> 
-    <router-view class="mx-auto main-content"> </router-view>
+    <router-view class="mx-auto"> </router-view>
 
     <!-- display toast to show errors -->
     <Teleport to="#modals">

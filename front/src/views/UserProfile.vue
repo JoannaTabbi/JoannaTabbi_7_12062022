@@ -1,6 +1,6 @@
 <template>
   <main>
-    <div class="container-fluid">
+    <div class="container-fluid main-content">
       <div class="row">
         <div class="col-12 mb-3 pt-3 border-end">
           <Profile
@@ -17,15 +17,13 @@
 
 <script>
 import Profile from "@/components/Profile.vue";
-import MostPopular from "@/components/MostPopular.vue";
 import { useAuthStore } from "../stores/authStore";
 import { useHandleErrorStore } from "@/stores/handleErrorStore";
 import { userServices } from "@/_services";
 export default {
   name: "UserProfile",
   components: {
-    Profile,
-    MostPopular,
+    Profile
   },
   setup() {
     const auth = useAuthStore();

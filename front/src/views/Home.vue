@@ -1,5 +1,5 @@
 <template>
-  <main class="h-100">
+  <main class="h-100 main-content">
     <div class="container-fluid">
       <div class="row">
         <!-- WELCOME CARD SECTION -->
@@ -161,7 +161,6 @@
 
 <script>
 import Post from "../components/Post.vue";
-import MostPopular from "../components/MostPopular.vue";
 import Loader from "@/components/Loader.vue";
 import { useAuthStore } from "../stores/authStore";
 import { useHandleErrorStore } from "../stores/handleErrorStore";
@@ -170,7 +169,6 @@ export default {
   name: "Home",
   components: {
     Post,
-    MostPopular,
     Loader
   },
   setup() {
