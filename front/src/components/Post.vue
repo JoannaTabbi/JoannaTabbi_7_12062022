@@ -47,7 +47,7 @@
                   class="dropdown-item"
                   @click="updateToggle(post)"
                 >
-                  Modifiez la publication
+                  Modifier la publication
                 </div>
               </li>
               <li>
@@ -60,7 +60,7 @@
                   class="dropdown-item"
                   @click="deletePost(post._id)"
                 >
-                  Supprimez la publication
+                  Supprimer la publication
                 </div>
               </li>
               <li>
@@ -70,7 +70,7 @@
                   class="dropdown-item"
                   @click="reportPost(post)"
                 >
-                  Signalez la publication
+                  Signaler la publication
                 </div>
               </li>
             </ul>

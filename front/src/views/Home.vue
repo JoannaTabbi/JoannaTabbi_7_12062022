@@ -24,7 +24,7 @@
                 />
               </div>
 
-              <div class="card-body">
+              <div class="card-body my-4">
                 <h5 class="card-title">
                   Bonjour
                   <span
@@ -33,45 +33,13 @@
                     }}</router-link></span
                   >
                 </h5>
-
                 <small class="card-text"
                   >Membre depuis le
                   <div>{{ formattedDate }}</div></small
                 >
-              </div>
-              <ul class="list-group list-group-flush small">
-                <li
+                <div
                   class="
-                    list-group-item
-                    d-flex
-                    flex-wrap
-                    align-items-center
-                    justify-content-between
-                  "
-                >
-                  <router-link to="/myProfile" class="fw-bold text-dark me-2">
-                    <span>{{ auth.followersNb }}</span>
-                    <span class="ms-1">Vous suivent</span>
-                  </router-link>
-                  <router-link to="/myProfile" class="fw-bold text-dark">
-                    <span>{{ auth.followingNb }}</span>
-                    <span class="ms-1">Suivis</span>
-                  </router-link>
-                </li>
-                <li class="list-group-item">
-                  <router-link to="/myProfile" class="fw-bold text-dark">
-                    <span>{{ postsNumber }}</span>
-                    <span class="ms-1">Publications</span>
-                  </router-link>
-                </li>
-
-                <li
-                  class="
-                    list-group-item
-                    d-flex
-                    flex-wrap
-                    align-items-center
-                    justify-content-evenly
+                    mt-3
                   "
                 >
                   <router-link
@@ -79,8 +47,8 @@
                     class="btn btn-outline-dark py-2 px-3 rounded-pill shadow"
                     >Modifier le profil</router-link
                   >
-                </li>
-              </ul>
+                </div>
+              </div>
             </div>
           </section>
         </div>
@@ -92,7 +60,7 @@
           class="h-100 col-12 col-md-8 pt-3 border-start border-end"
         >
           <section id="create_post" class="shadow rounded-3 mb-3 p-3">
-            <h2 class="text-start fs-4">Créez une publication</h2>
+            <h2 class="text-start fs-4">Créer une publication</h2>
             <form
               class="card card-body border-0"
               @submit.prevent="createPost()"

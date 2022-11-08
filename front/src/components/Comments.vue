@@ -65,7 +65,7 @@
                       href="#"
                       @click="updateCommentToggle(comment)"
                     >
-                      Modifiez le commentaire
+                      Modifier le commentaire
                     </div>
                   </li>
                   <li>
@@ -81,7 +81,7 @@
                         $emit('delete-comment', comment._id, comment.postId)
                       "
                     >
-                      Supprimez le commentaire
+                      Supprimer le commentaire
                     </div>
                   </li>
                   <li>
@@ -93,7 +93,7 @@
                       class="dropdown-item"
                       @click="reportComment(comment)"
                     >
-                      Signalez le commentaire
+                      Signaler le commentaire
                     </div>
                   </li>
                 </ul>
