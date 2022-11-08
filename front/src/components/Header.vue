@@ -1,7 +1,7 @@
 <template>
   <header>
     <nav
-      class="navbar navbar-expand-lg navbar-light bg-light border-bottom border-primary border-4"
+      class="navbar navbar-expand-sm navbar-light bg-light border-bottom border-primary border-4"
     >
       <div class="container-fluid main-content">
         <router-link to="/" class="navbar-brand">
@@ -30,7 +30,7 @@
             <li class="nav-item text-start">
               <router-link to="/" class="nav-link active" aria-current="page"
                 ><i class="fa-solid fa-house fa-fw fs-2 mx-2"></i>
-                <span class="d-lg-none">Accueil</span>
+                <span class="d-sm-none">Accueil</span>
               </router-link>
             </li>
             <li class="nav-item text-start dropdown">
@@ -42,7 +42,7 @@
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
                 ><i class="fa-solid fa-user fa-fw fs-2 text-dark mx-2"></i>
-                <span class="d-lg-none">{{ userName }}</span>
+                <span class="d-sm-none">{{ userName }}</span>
               </a>
               <ul
                 class="dropdown-menu dropdown-menu-end"
@@ -65,7 +65,7 @@
                 ><i
                   class="fa-solid fa-arrow-right-from-bracket fa-fw fs-2 text-dark mx-2"
                 ></i>
-                <span class="d-lg-none">Se déconnecter</span>
+                <span class="d-sm-none">Se déconnecter</span>
               </router-link>
             </li>
           </ul>

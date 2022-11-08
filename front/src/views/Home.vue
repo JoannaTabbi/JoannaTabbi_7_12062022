@@ -86,7 +86,8 @@
               </div>
               <ul class="nav d-flex justify-content-around">
                 <li class="nav-item">
-                  <label type="button" for="formFile3">
+                  <div class="btn">
+                    <label type="button" for="formFile3">
                     <i class="fa-regular fa-image fa-2x"></i>
                     <input
                       @change="selectImage"
@@ -98,6 +99,7 @@
                       hidden
                     />
                   </label>
+                  </div>
                 </li>
                 <li class="nav-item">
                   <button type="submit" class="btn">
