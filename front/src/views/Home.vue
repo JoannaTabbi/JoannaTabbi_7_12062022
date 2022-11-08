@@ -254,13 +254,10 @@ export default {
         postServices
           .createPost(formData)
           .then(async (res) => {
-            console.log(res);
             await this.posts.unshift(res.data);
             this.newPost = "";
           })
-          .catch((err) => {
-            this.handleError.triggerToast(err);
-          });
+          .catch((err) => this.handleError.triggerToast(err));
       }
     },
 
@@ -279,7 +276,7 @@ export default {
             );
           })
           .catch((err) => {
-            this.triggerToast(err);
+            this.handleError.triggerToast(err);
           });
       }
     },

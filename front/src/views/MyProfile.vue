@@ -45,7 +45,7 @@ export default {
     userServices.getOneself()
       .then((res) => {
           this.user = res.data})
-      .catch(err => console.log(err))
+      .catch(err => this.handleError.triggerToast(err))
   }
   },
   mounted() {
