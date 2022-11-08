@@ -5,7 +5,7 @@
         <!-- WELCOME CARD SECTION -->
 
         <div class="col-12 col-md-4 mb-3 pt-3">
-          <section id="home" class="shadow rounded-3 mb-3 p-3">
+          <section id="home" class="shadow rounded-3 mb-3 p-3 sticky-md-top">
             <h1 class="text-start fs-3">Accueil</h1>
             <div
               class="card w-100 flex-sm-row flex-md-column align-items-center"
