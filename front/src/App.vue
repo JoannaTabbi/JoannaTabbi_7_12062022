@@ -2,7 +2,7 @@
   <div>
     <!-- if no user stored in authstore, the header will not be injected to the page -->
      <Header v-if="auth.user" :user-name="auth.user.userName"/> 
-    <router-view > </router-view>
+    <router-view class="mx-auto main-content"> </router-view>
 
     <!-- display toast to show errors -->
     <Teleport to="#modals">
@@ -43,6 +43,9 @@ export default {
   text-align: center;
   color: #4e5166;
 }
+.main-content {
+  max-width: 1200px;
+}
 .bg-image {
     background-size: cover;
     background-position: center;
@@ -64,6 +67,9 @@ a {
 }
 a:hover {
   color: #FD2D01;
+}
+textarea {
+  resize: none;
 }
 .form-control:focus {
   border-color: inherit;

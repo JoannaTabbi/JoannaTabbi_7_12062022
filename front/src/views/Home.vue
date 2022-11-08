@@ -4,11 +4,11 @@
       <div class="row">
         <!-- WELCOME CARD SECTION -->
 
-        <div class="col-12 col-lg-3 mb-3 pt-3">
+        <div class="col-12 col-md-4 mb-3 pt-3">
           <section id="home" class="shadow rounded-3 mb-3 p-3">
             <h1 class="text-start fs-3">Accueil</h1>
             <div
-              class="card w-100 flex-sm-row flex-lg-column align-items-center"
+              class="card w-100 flex-sm-row flex-md-column align-items-center"
             >
               <div class="p-5 p-sm-3 p-lg-5">
                 <img
@@ -89,7 +89,7 @@
         <!-- FEEDS AND CREATE POST SECTIONS -->
 
         <div
-          class="h-100 col-12 col-md-8 col-lg-6 pt-3 border-start border-end"
+          class="h-100 col-12 col-md-8 pt-3 border-start border-end"
         >
           <section id="create_post" class="shadow rounded-3 mb-3 p-3">
             <h2 class="text-start fs-4">Créez une publication</h2>
@@ -153,13 +153,7 @@
         </div>
 
         <!-- FEEDS AND CREATE POST SECTIONS END -->
-        <!-- MOST POPULAR SECTION -->
 
-        <div class="col-12 col-md-4 col-lg-3 pt-3">
-          <MostPopular />
-        </div>
-
-        <!-- MOST POPULAR SECTION END -->
       </div>
     </div>
   </main>

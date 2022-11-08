@@ -3,7 +3,7 @@
     <nav
       class="navbar navbar-expand-lg navbar-light bg-light border-bottom border-primary border-4"
     >
-      <div class="container-fluid">
+      <div class="container-fluid main-content">
         <router-link to="/" class="navbar-brand">
           <img
             src="../assets/logos/icon-left-font-transparent-rect.png"
@@ -26,17 +26,6 @@
           class="collapse navbar-collapse justify-content-end"
           id="navbarToggler"
         >
-          <form class="d-flex me-2">
-            <input
-              class="form-control me-2"
-              type="search"
-              placeholder="Votre recherche"
-              aria-label="Search"
-            />
-            <button class="btn" type="submit">
-              <i class="fa-solid fa-magnifying-glass fs-2"></i>
-            </button>
-          </form>
           <ul class="navbar-nav mb-2 mb-lg-0">
             <li class="nav-item text-start">
               <router-link to="/" class="nav-link active" aria-current="page"

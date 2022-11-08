@@ -134,7 +134,7 @@
             v-if="post.imageUrl || post.imageUrl != ''"
             class="card-img mb-3"
           >
-            <img class="w-100" :src="post.imageUrl" alt="image par default" />
+            <img class="w-100 rounded-3" :src="post.imageUrl" alt="image par default" />
           </div>
           <ul class="nav d-flex justify-content-start mb-4 small">
             <li
