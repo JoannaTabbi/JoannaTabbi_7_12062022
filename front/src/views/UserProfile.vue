@@ -22,6 +22,7 @@
 import Profile from "@/components/Profile.vue";
 import MostPopular from "@/components/MostPopular.vue";
 import { useAuthStore } from "../stores/authStore";
+import { useHandleErrorStore } from "@/stores/handleErrorStore";
 import { userServices } from "@/_services";
 export default {
   name: "UserProfile",
@@ -31,7 +32,8 @@ export default {
   },
   setup() {
     const auth = useAuthStore();
-    return { auth };
+    const handleError = useHandleErrorStore();
+    return { auth, handleError };
   },
   data() {
     return {
@@ -67,7 +69,7 @@ export default {
         .then((res) => {
           this.user = res.data;
         })
-        .catch((error) => console.log(error));
+        .catch((err) => this.handleError.triggerToast(err));
     },
 
     //follows user
@@ -78,7 +80,7 @@ export default {
           this.auth.user.following = res.data.userFollowing.following;
           this.user.followers = res.data.userFollowed.followers;
         })
-        .catch((err) => console.log(err));
+        .catch((err) => this.handleError.triggerToast(err));
     },
 
     //unfollows user
@@ -89,7 +91,7 @@ export default {
           this.auth.user.following = res.data.userUnfollowing.following;
           this.user.followers = res.data.userUnfollowed.followers;
         })
-        .catch((err) => console.log(err));
+        .catch((err) => this.handleError.triggerToast(err));
     },
     //toggles between following and unfollowing user
     followToggle() {

@@ -52,9 +52,6 @@
             accept="image/*"
             @change="selectImage"
           />
-          <div v-if="message" class="alert alert-secondary" role="alert">
-            {{ message }}
-          </div>
           <button
           type="submit"
             class="
@@ -125,6 +122,7 @@
 
 <script>
 import { useAuthStore } from "@/stores/authStore";
+import { useHandleErrorStore } from "@/stores/handleErrorStore";
 import DynamicForm from "@/components/DynamicForm";
 import DynamicModal from "@/components/DynamicModal";
 import * as Yup from "yup";
@@ -136,7 +134,8 @@ export default {
   name: "modifyProfile",
   setup() {
     const auth = useAuthStore();
-    return { auth };
+    const handleError = useHandleErrorStore();
+    return { auth, handleError };
   },
   data() {
     // define attributs and verification rules for each input of the form
@@ -235,8 +234,7 @@ export default {
       showModal: false,
 
       //upload image date
-      currentImage: undefined,
-      message: "",
+      currentImage: undefined
     };
   },
   components: {
@@ -264,7 +262,7 @@ export default {
           router.push("/myProfile");
         })
         .catch((err) => {
-          console.log(err);
+          this.handleError.triggerToast(err);
         });
     },
 
@@ -272,7 +270,6 @@ export default {
 
     selectImage(event) {
       this.currentImage = event.target.files[0];
-      this.message = "";
     },
 
     uploadUserFiles() {
@@ -287,7 +284,7 @@ export default {
           router.push("/myProfile");
         })
         .catch((err) => {
-          this.message = "L'image n'a pas pu être changée! " + err;
+          this.handleError.triggerToast(err);
           this.currentImage = undefined;
         });
     },
@@ -299,7 +296,7 @@ export default {
       .then((res) => {
         loadServices.excelParser().exportDataFromJSON(res.data, null, null);
       })
-      .catch((err) => console.log(err))
+      .catch((err) => this.handleError.triggerToast(err))
     },
     
     
@@ -317,7 +314,7 @@ export default {
         // throws away the user from pinia store
         this.auth.loggedOut();
       } catch (err) {
-        console.log(err);
+        this.handleError.triggerToast(err);
       }
     },
   },

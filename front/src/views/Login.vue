@@ -104,7 +104,7 @@ export default {
       this.showModal = !this.showModal;
     },
     // handle error response
-    handleError(status, error) {
+    handleErrors(status, error) {
       if (status === 429) {
         this.modalMessage =
             "Vous avez atteint le nombre d'essais authorisé. Veuillez attendre 15 minutes avant de vous connecter à nouveau";
@@ -147,7 +147,7 @@ export default {
           console.log(err.response);
           this.theme = "warning";
           this.modalTitle = "ATTENTION!";
-          this.handleError(err.response.status, err.response.data.error);
+          this.handleErrors(err.response.status, err.response.data.error);
           this.toggledModal();
         });
     },

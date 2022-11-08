@@ -162,11 +162,6 @@
         <!-- MOST POPULAR SECTION END -->
       </div>
     </div>
-    <Teleport to="#modals">
-      <Transition name="toast">
-        <Toast v-if="handleError.showToast" :toast-message="handleError.toastMessage" />
-      </Transition>
-    </Teleport>
   </main>
 </template>
 
@@ -174,7 +169,6 @@
 import Post from "../components/Post.vue";
 import MostPopular from "../components/MostPopular.vue";
 import Loader from "@/components/Loader.vue";
-import Toast from "@/components/Toast.vue";
 import { useAuthStore } from "../stores/authStore";
 import { useHandleErrorStore } from "../stores/handleErrorStore";
 import { postServices } from "../_services";
@@ -183,8 +177,7 @@ export default {
   components: {
     Post,
     MostPopular,
-    Loader,
-    Toast,
+    Loader
   },
   setup() {
     const auth = useAuthStore();
