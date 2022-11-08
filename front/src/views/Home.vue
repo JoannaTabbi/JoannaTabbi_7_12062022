@@ -164,7 +164,7 @@
     </div>
     <Teleport to="#modals">
       <Transition name="toast">
-        <Toast v-if="showToast" :toast-message="toastMessage" />
+        <Toast v-if="handleError.showToast" :toast-message="handleError.toastMessage" />
       </Transition>
     </Teleport>
   </main>
@@ -176,6 +176,7 @@ import MostPopular from "../components/MostPopular.vue";
 import Loader from "@/components/Loader.vue";
 import Toast from "@/components/Toast.vue";
 import { useAuthStore } from "../stores/authStore";
+import { useHandleErrorStore } from "../stores/handleErrorStore";
 import { postServices } from "../_services";
 export default {
   name: "Home",
@@ -187,8 +188,9 @@ export default {
   },
   setup() {
     const auth = useAuthStore();
+    const handleError = useHandleErrorStore();
     return {
-      auth,
+      auth, handleError
     };
   },
   data() {
@@ -201,9 +203,7 @@ export default {
       },
       showModal: false,
       modalTitle: "Publication",
-      isLoading: false,
-      showToast: false,
-      toastMessage: "",
+      isLoading: false
     };
   },
   computed: {
@@ -213,16 +213,6 @@ export default {
     },
   },
   methods: {
-    //shows the toast notification for a period of time
-    triggerToast(message) {
-      this.showToast = true;
-      this.toastMessage = message;
-      setTimeout(
-        () => ((this.showToast = false), (this.toastMessage = "")),
-        5000
-      );
-    },
-
     //display the posts from one page;
     // called once for the page 1 at mounted lifecycle hook, then the next page every time
     //the scroll reaches the visibility observer at the bottom of the page
@@ -239,7 +229,7 @@ export default {
           this.isLoading = false;
         })
         .catch((err) => {
-          this.triggerToast(`Une erreur est survenue : ${err}`)
+          this.handleError.triggerToast(`Une erreur est survenue : ${err}`)
         });
     },
 
@@ -252,18 +242,18 @@ export default {
       let formData = new FormData();
       //throw an error if neither message nor image posted
       if (this.newPost.message == "" && this.newPost.imageUrl == "") {
-        this.triggerToast("Veuillez saisir un message ou choisir une photo");
+        this.handleError.triggerToast("Veuillez saisir un message ou choisir une photo");
       } else {
         //throw an error if the message is too long (over 1500 letters)
         if (this.newPost.message.length > 1500) {
-          this.triggerToast("Le message ne doit pas dépasser 1500 mots");
+          this.handleError.triggerToast("Le message ne doit pas dépasser 1500 mots");
         } else {
           formData.append("message", this.newPost.message);
         }
         if (this.newPost.imageUrl) {
           //throw an error if the image size is too important (over 500ko)
           if (this.newPost.imageUrl.size > 500000) {
-            this.triggerToast("Attention, la taille de l'image ne doit pas dépasser 500ko");
+            this.handleError.triggerToast("Attention, la taille de l'image ne doit pas dépasser 500ko");
           } else {
             formData.append("image", this.newPost.imageUrl);
           }
@@ -276,7 +266,7 @@ export default {
             this.newPost = "";
           })
           .catch((err) => {
-            this.triggerToast(err);
+            this.handleError.triggerToast(err);
           });
       }
     },

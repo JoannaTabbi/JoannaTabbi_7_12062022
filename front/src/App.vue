@@ -10,7 +10,7 @@
 <script>
 import Header from "./components/Header.vue";
 import Footer from "./components/Footer.vue";
-import {useAuthStore} from '@/stores/authStore.js';
+import { useAuthStore } from '@/stores/authStore.js';
 export default {
   name: "App",
   components: {
