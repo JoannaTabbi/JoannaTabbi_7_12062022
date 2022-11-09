@@ -1,5 +1,5 @@
 <template>
-  <main class="h-100 main-padding-top bg-dark">
+  <main class="h-100 main-margin-top bg-dark">
     <div class="container-fluid main-content">
       <div class="row">
         <!-- WELCOME CARD SECTION -->

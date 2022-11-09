@@ -49,8 +49,8 @@ img {
 .main-content {
   max-width: 1200px;
 }
-.main-padding-top {
-  padding-top: 70px;
+.main-margin-top {
+  margin-top: 70px;
 }
 .bg-connexion {
     background-size: cover;
@@ -80,7 +80,7 @@ textarea {
   box-shadow: none;
 }
 input:focus, textarea:focus {
-  background-image: radial-gradient(ellipse at 40% 50%, #ffebeb 30%, #fff 80%);
+  background: radial-gradient(ellipse at 40% 50%, #ffebeb 30%, #fff 80%);
 }
 .pointer {
   cursor: pointer;

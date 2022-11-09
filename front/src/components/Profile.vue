@@ -1,6 +1,6 @@
 <template>
   <section id="profile" class="shadow rounded-3 bg-white mb-3">
-    <div class="card w-100 container p-0">
+    <div class="card w-100 container-fluid p-0">
       <div class="row">
         <div class="col-12">
           <img
