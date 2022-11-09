@@ -8,18 +8,11 @@
           <section id="home" class="shadow rounded-3 mb-3 p-3 sticky-md-top">
             <h1 class="text-start fs-3">Accueil</h1>
             <div
-              class="card w-100 flex-sm-row flex-md-column align-items-center"
+              class="card w-100 pt-5 pt-sm-0 ps-sm-5 pt-md-5 ps-md-0 flex-sm-row flex-md-column align-items-center"
             >
-              <div class="p-5 p-sm-3 p-lg-5">
+              <div class="avatar-container-round avatar-lg">
                 <img
                   :src="auth.user.imageUrl"
-                  class="
-                    img-fluid
-                    card-img-top
-                    shadow
-                    border border-white border-3
-                    rounded-circle
-                  "
                   alt="mon avatar"
                 />
               </div>
@@ -249,7 +242,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .fa-image:hover,
 .fa-paper-plane:hover {
   color: #fd2d01;

@@ -298,7 +298,7 @@ export default {
       commentServices
         .createComment({ message: this.newComment, postId: post._id })
         .then((res) => {
-          post.comments.unshift(res.data);
+          post.comments.push(res.data);
           this.newComment = "";
         })
         .catch((error) => this.handleError.triggerToast(error));

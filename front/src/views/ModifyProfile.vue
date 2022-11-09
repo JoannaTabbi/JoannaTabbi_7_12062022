@@ -10,22 +10,21 @@
           />
         </div>
       </div>
-      <div class="row d-flex flex-column flex-lg-row mb-3 align-items-center">
-        <div class="avatar col-6 col-sm-3 col-lg-2 ms-0 ms-lg-3 mb-3 mb-lg-0">
+      <div class="d-flex flex-column flex-lg-row mb-5 align-items-center justify-content-evenly">
+        <div class="avatar-container-round avatar-profile avatar-lg col-6 col-sm-3 col-lg-2 ms-0 ms-lg-3 mb-3 mb-lg-0">
           <img
             :src="auth.user.imageUrl"
-            class="img-fluid rounded-circle border border-white border-3 shadow"
             alt="mon avatar"
           />
         </div>
 
-        <div class="d-flex col-12 col-lg-9">
-          <div class="col-6 mt-3 mt-lg-0">
+        <div class="d-flex flex-column flex-sm-row justify-content-center">
+          <div class="mt-3 mx-2 mt-lg-0">
             <button class="btn btn-outline-dark py-2 px-3 rounded-pill shadow" @click="exportData">
               Exporter mes données
             </button>
           </div>
-          <div class="col-6 mt-3 mt-lg-0">
+          <div class="mt-3 mx-2 mt-lg-0">
             <button
               class="btn btn-outline-danger py-2 px-3 rounded-pill shadow"
               @click="toggledModal"

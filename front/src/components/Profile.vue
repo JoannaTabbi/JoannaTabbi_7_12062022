@@ -10,12 +10,14 @@
           />
         </div>
       </div>
-      <div class="row d-flex flex-column flex-lg-row mb-3 align-items-center">
+      <div class="row d-flex flex-column flex-lg-row mb-5 align-items-center justify-content-center">
         <div
           class="
-            main-avatar-container
+            avatar-container-round
+            avatar-profile
+            avatar-lg
             col-6 col-sm-3 col-lg-2
-            ms-0 ms-lg-3
+            mx-0 mx-lg-3
             mb-3 mb-lg-0
           "
         >
@@ -70,7 +72,7 @@
         </div>
         <ul
           v-if="!userProfile"
-          class="nav col-lg-4 justify-content-center align-items-center ms-auto"
+          class="nav col-lg-4 justify-content-center align-items-center pe-0"
         >
           <li class="nav-item">
             <router-link
@@ -191,7 +193,7 @@
 
 <script>
 import Post from "@/components/Post.vue";
-import MiniProfile from "@/components/MiniProfileCard";
+import MiniProfile from "@/components/MiniProfile";
 import Loader from "@/components/Loader";
 import { useAuthStore } from "@/stores/authStore";
 import { useHandleErrorStore } from "@/stores/handleErrorStore";
@@ -270,18 +272,7 @@ export default {
 </script>
 
 <style>
-.main-avatar-container {
+.avatar-profile {
   margin-top: -5%;
-  margin-left: 30px;
-  width: 150px;
-  height: 150px;
-  overflow: hidden;
-  border-radius: 50%;
-  border: 3px solid white;
-  box-shadow: 3px 3px 15px lightgrey;
-}
-.main-avatar-container img {
-    object-fit: contain;
-    object-position: 50% 50%;
 }
 </style>

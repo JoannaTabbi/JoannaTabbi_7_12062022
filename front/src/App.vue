@@ -43,6 +43,9 @@ export default {
   text-align: center;
   color: #4e5166;
 }
+img {
+  object-fit: cover;
+}
 .main-content {
   max-width: 1200px;
 }
@@ -54,10 +57,7 @@ export default {
 }
 .img-sm-container {
   width: 50px;
-}
-img {  
-  object-fit: cover;
-}  
+} 
 h1, h2, h5 {
   font-weight: bold;
 }
@@ -89,5 +89,22 @@ input:focus, textarea:focus {
   color: #FD2D01;
   font-weight: bold; 
 }
-
+/* avatar common styling */
+.avatar-container-round {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 50%;
+  border: 3px solid white;
+  box-shadow: 3px 3px 15px lightgrey;
+}
+.avatar-container-round img {
+  width: 110%;
+  height: 110%;
+}
+.avatar-lg {
+  width: 10rem;
+  height: 10rem;
+}
 </style>

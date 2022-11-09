@@ -3,10 +3,10 @@
   <div v-for="mpUser in mpUsers" :key="mpUser._id" class="col-12 col-sm-6 col-md-4 col-lg-3">
     <router-link :to="auth.profilePage(mpUser._id)">
       <div class="card border-0 align-items-center p-2">
-        <div class="avatar-container col-8 mb-3 d-flex justify-content-center">
+        <div class="avatar-miniprofile-container col-8 mb-3 d-flex justify-content-center">
           <img
             :src="mpUser.imageUrl"
-            alt="mon avatar"
+            alt="avatar"
           />
         </div>
         <div class="col-12 mb-3 mb-lg-0">
@@ -31,7 +31,7 @@ export default {
 </script>
 
 <style>
-.avatar-container {
+.avatar-miniprofile-container {
   width: 100px;
   height: 100px;
   overflow: hidden;
@@ -39,7 +39,5 @@ export default {
   border: 3px solid white;
   box-shadow: 3px 3px 15px lightgrey;
 };
-.avatar-container img {
-  object-fit: cover;
-}
+
 </style>
