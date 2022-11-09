@@ -1,7 +1,7 @@
 <template>
-  <div class="ps-4 border-start">
-    <div class="d-flex mb-3 border-bottom pb-2">
-      <div class="img-sm-container me-3">
+  <div class="ps-2 border-start">
+    <div class="d-flex mb-3">
+      <div class="img-sm-container me-2">
         <img
           class="mw-100 shadow rounded-3"
           :src="auth.user.imageUrl"
@@ -26,7 +26,7 @@
     <div v-for="comment in comments" :key="comment._id" class="my-4">
       <!-- one comment -->
       <div class="d-flex my-2 py-2">
-        <div class="d-flex img-sm-container me-3 align-items-start">
+        <div class="d-flex img-sm-container me-2 align-items-start">
           <img
             class="mw-100 shadow rounded-3"
             :src="comment.userId.imageUrl"

@@ -49,11 +49,14 @@ img {
 .main-content {
   max-width: 1200px;
 }
-.bg-image {
+.main-padding-top {
+  padding-top: 70px;
+}
+.bg-connexion {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    background-image: url('https://picsum.photos/800/1200?random=1&grayscale');
+    background-image: url('./assets/integration.jpg');
 }
 .img-sm-container {
   width: 50px;

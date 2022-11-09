@@ -1,12 +1,12 @@
 <template>
   <div>
     <div v-for="post in posts" :key="post._id">
-      <div class="card card-body border-0 m-0 p-3">
+      <div class="card card-body border-0 mb-3 px-0 p-sm-3">
         <span class="mx-5 border-top border-primary border-3"></span>
         <div
           class="d-flex align-items-center my-3 border-bottom border-top py-2"
         >
-          <div class="d-flex img-sm-container me-3 align-items-center">
+          <div class="d-flex img-sm-container me-2 align-items-center">
             <img
               class="mw-100 shadow rounded-3"
               :src="post.userId.imageUrl"

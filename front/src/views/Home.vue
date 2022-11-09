@@ -1,11 +1,11 @@
 <template>
-  <main class="h-100 main-content">
-    <div class="container-fluid">
+  <main class="h-100 main-padding-top bg-dark">
+    <div class="container-fluid main-content">
       <div class="row">
         <!-- WELCOME CARD SECTION -->
 
         <div class="col-12 col-md-4 mb-3 pt-3">
-          <section id="home" class="shadow rounded-3 mb-3 p-3 sticky-md-top">
+          <section id="home" class="bg-borders shadow rounded-3 mb-3 p-3 sticky-md-top">
             <h1 class="text-start fs-3">Accueil</h1>
             <div
               class="card w-100 pt-5 pt-sm-0 ps-sm-5 pt-md-5 ps-md-0 flex-sm-row flex-md-column align-items-center"
@@ -50,16 +50,16 @@
         <!-- FEEDS AND CREATE POST SECTIONS -->
 
         <div
-          class="h-100 col-12 col-md-8 pt-3 border-start border-end"
+          class="h-100 col-12 col-md-8 pt-3"
         >
-          <section id="create_post" class="shadow rounded-3 mb-3 p-3">
+          <section id="create_post" class="bg-borders shadow rounded-3 mb-3 p-3">
             <h2 class="text-start fs-4">Créer une publication</h2>
             <form
               class="card card-body border-0"
               @submit.prevent="createPost()"
             >
               <div class="d-flex mb-3 border-bottom pb-2">
-                <div class="img-sm-container me-3">
+                <div class="img-sm-container me-2">
                   <img
                     class="mw-100 shadow rounded-3"
                     :src="auth.user.imageUrl"
@@ -102,7 +102,7 @@
               </ul>
             </form>
           </section>
-          <section id="feeds" class="shadow rounded-3 mb-3 p-3">
+          <section id="feeds" class="shadow bg-borders rounded-3 mb-3 p-3">
             <h2 class="text-start fs-4 fw-bolder">Fil d'actualité</h2>
             <Post
               :posts="posts"
@@ -246,5 +246,15 @@ export default {
 .fa-image:hover,
 .fa-paper-plane:hover {
   color: #fd2d01;
+}
+#home {
+  position: sticky;
+  top: 80px;
+}
+.bg-clear {
+  background: rgba(255, 215, 215, 0.2);
+}
+.bg-borders {
+  background: rgba(255, 255, 255, 0.7);
 }
 </style>

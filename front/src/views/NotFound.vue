@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <main class="main-margin-top main-content">
     <div class="vh-100 bg-image">
       <div class="connexion container py-4 bg-secondary h-100">
         <div class="row px-2 px-sm-5 h-100">

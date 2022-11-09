@@ -1,11 +1,11 @@
 <template>
   <div>
-    <div class="vh-100 bg-image">
+    <div class="vh-100 bg-connexion">
       <div class="connexion container py-4 bg-secondary h-100">
         <div class="row px-2 px-sm-5 h-100">
           <div class="col-12 border-bottom border-dark">
             <img
-              class="d-flex mb-5"
+              class="d-flex mb-5 logo"
               src="../assets/logos/icon-left-font-monochrome-black-rect.png"
               alt="logo Groupomania"
             />
@@ -155,12 +155,5 @@ export default {
 };
 </script>
 
-<style scoped>
-img {
-  width: 200px;
-}
-.connexion {
-  width: 100%;
-  max-width: 500px;
-}
+<style>
 </style>
