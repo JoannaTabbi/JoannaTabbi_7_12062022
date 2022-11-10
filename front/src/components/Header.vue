@@ -1,14 +1,14 @@
 <template>
   <header>
     <nav
-      class="navbar navbar-expand-sm navbar-light bg-secondary fixed-top shadow-sm opacity-75"
+      class="navbar navbar-expand-sm navbar-light bg-secondary fixed-top opacity-75"
     >
       <div class="container-fluid main-content">
         <router-link to="/" class="navbar-brand">
           <img
-            src="../assets/logos/icon-left-font-transparent-rect.png"
+            src="../assets/logos/icon-left-font-monochrome-black-rect.png"
             alt="logo Groupomania"
-            class="img-fluid"
+            class="img-fluid rounded-4"
           />
         </router-link>
         <button
@@ -105,6 +105,6 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 img {
-  width: 200px;
+  width: 175px;
 }
 </style>

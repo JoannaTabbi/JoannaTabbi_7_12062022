@@ -10,13 +10,15 @@
           />
         </div>
       </div>
-      <div class="row d-flex flex-column flex-lg-row mb-5 align-items-center justify-content-evenly">
+      <div class="row d-flex flex-column flex-md-row mb-5 align-items-center justify-content-center justify-content-md-evenly">
         <div
           class="
             avatar-container-round
             avatar-profile
             avatar-lg
-            col-6 col-sm-3 col-lg-2
+            col-12
+            col-md-3
+            col-lg-2
             mx-0 mx-lg-3
             mb-3 mb-lg-0
             p-0
@@ -29,11 +31,11 @@
         </div>
         <div
           class="
-            col-12 col-lg-4
+            col-12 col-md-5
             d-flex
             flex-column
-            align-items-lg-start
-            justify-content-end
+            align-items-md-start
+            justify-content-center
             mb-3 mb-lg-0
           "
         >
@@ -42,18 +44,18 @@
             Membre depuis le <span>{{ formattedDate }}</span>
           </p>
         </div>
-        <div class="col-12">
+        <div v-if="userProfile" class="col-12 col-md-3 d-flex flex-column flex-md-row align-items-center justify-content-center">
+          <div>
           <div
-            v-if="userProfile"
             class="
-              btn btn-outline-dark rounded-pill shadow
+              btn btn-outline-dark rounded-pill shadow me-0 me-md-4
             "
             @click="submitFollow"
           >{{ followButtonText }}
             
           </div>
         </div>
-        <div v-if="userProfile" class="col-lg-1 dropdown">
+        <div class="dropdown">
           <div
             role="button"
             id="dropdownMenuLink"
@@ -63,6 +65,7 @@
           >
             ...
           </div>
+        </div>
           <ul
             class="dropdown-menu dropdown-menu-end"
             aria-labelledby="dropdownMenuLink"
@@ -74,7 +77,7 @@
         </div>
         <ul
           v-if="!userProfile"
-          class="nav col-lg-4 justify-content-center align-items-center pe-0"
+          class="nav col-12 col-md-3 justify-content-center align-items-center pe-0"
         >
           <li class="nav-item">
             <router-link
