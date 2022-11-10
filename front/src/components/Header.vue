@@ -1,7 +1,12 @@
 <template>
   <header>
     <nav
-      class="navbar navbar-expand-sm navbar-light bg-secondary fixed-top opacity-75"
+      class="
+        navbar navbar-expand-sm navbar-light
+        bg-secondary
+        fixed-top
+        opacity-75
+      "
     >
       <div class="container-fluid main-content">
         <router-link to="/" class="navbar-brand">
@@ -63,7 +68,12 @@
             <li class="nav-item text-start">
               <router-link to="/login" class="nav-link" @click.prevent="logout"
                 ><i
-                  class="fa-solid fa-arrow-right-from-bracket fa-fw fs-2 text-dark mx-2"
+                  class="
+                    fa-solid fa-arrow-right-from-bracket fa-fw
+                    fs-2
+                    text-dark
+                    mx-2
+                  "
                 ></i>
                 <span class="d-sm-none">Se déconnecter</span>
               </router-link>
@@ -76,12 +86,12 @@
 </template>
 
 <script>
-import { authServices } from '@/_services';
+import { authServices } from "@/_services";
 import router from "@/router/index";
 import { useAuthStore } from "@/stores/authStore";
 export default {
   name: "Header",
-  props: ['userName'],
+  props: ["userName"],
   methods: {
     async logout() {
       try {

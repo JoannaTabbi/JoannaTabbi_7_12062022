@@ -1,11 +1,11 @@
 <template>
-  <main class="h-100 main-margin-top bg-dark">
-    <div class="container-fluid main-content">
+  <main class="h-100 main-padding-top bg-dark">
+    <div class="container-fluid main-content px-0 px-sm-3">
       <div class="row">
         <!-- WELCOME CARD SECTION -->
 
         <div class="col-12 col-md-4 mb-3 pt-3">
-          <section id="home" class="bg-borders shadow rounded-3 mb-3 p-3 sticky-md-top">
+          <aside id="home" class="bg-borders shadow rounded-3 mb-3 p-3 sticky-md-top">
             <h1 class="text-start fs-3">Accueil</h1>
             <div
               class="card w-100 pt-5 pt-sm-0 ps-sm-5 pt-md-5 ps-md-0 flex-sm-row flex-md-column align-items-center"
@@ -18,14 +18,14 @@
               </div>
 
               <div class="card-body my-4">
-                <h5 class="card-title">
+                <h2 class="card-title">
                   Bonjour
                   <span
                     ><router-link to="/myProfile">{{
                       auth.user.userName
                     }}</router-link></span
                   >
-                </h5>
+                </h2>
                 <small class="card-text"
                   >Membre depuis le
                   <div>{{ formattedDate }}</div></small
@@ -43,7 +43,7 @@
                 </div>
               </div>
             </div>
-          </section>
+          </aside>
         </div>
 
         <!-- WELCOME CARD SECTION END -->

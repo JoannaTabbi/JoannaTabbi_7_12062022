@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-for="post in posts" :key="post._id">
+    <article v-for="post in posts" :key="post._id">
       <div class="card card-body border-0 mb-3 px-0 p-sm-3">
         <span class="mx-5 border-top border-primary border-3"></span>
         <div
@@ -15,7 +15,7 @@
           </div>
           <div class="w-100 text-start">
             <router-link :to="auth.profilePage(post.userId._id)">
-              <h5 class="fs-6 mb-0">"{{ post.userId.userName }}"</h5>
+              <h3 class="fs-6 mb-0">"{{ post.userId.userName }}"</h3>
             </router-link>
             <p class="mb-0 fw-light small fst-italic">
               {{ formattedDate(post.createdAt) }}
@@ -167,7 +167,7 @@
           @delete-comment="deleteComment"
         />
       </div>
-    </div>
+    </article>
     <div
       v-if="posts && posts.length"
       v-observe-visibility="handleInfiniteScroll"

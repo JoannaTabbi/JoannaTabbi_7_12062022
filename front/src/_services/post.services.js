@@ -17,7 +17,7 @@ let getPosts = (page) => {
 // gets all the posts of one user
 //warning: XMLHttpRequest seems to ignore the body of the request while using "get" method; 
 //this issue was subverted by using "post" method
-//see https://stackoverflow.com/questions/46404051/send-object-with-axios-get-request
+//for more details, see https://stackoverflow.com/questions/46404051/send-object-with-axios-get-request
 let getUserPosts = (page, credentials) => {
     return Axios.post(`/posts/userPosts?page=${page}`, credentials)
 };
@@ -51,6 +51,7 @@ let reportPost = (id) => {
     return Axios.post("/posts/" + id + "/report")
 }
 
+// export all post functions
 export const postServices = {
     createPost,
     getPosts,

@@ -43,9 +43,11 @@ export default {
     "theme",
   ],
   methods: {
+    /* emits submit function for modal */
     submitModal() {
       this.$emit("submitted");
     },
+    /* emits reset function for modal */ 
     closeModal() {
       this.$emit("closed");
     },
