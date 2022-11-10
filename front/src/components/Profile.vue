@@ -1,6 +1,6 @@
 <template>
   <section id="profile" class="shadow rounded-3 bg-white mb-3">
-    <div class="card w-100 container p-0">
+    <div class="card w-100 container-fluid p-0">
       <div class="row">
         <div class="col-12">
           <img
@@ -10,27 +10,34 @@
           />
         </div>
       </div>
-      <div class="row d-flex flex-column flex-lg-row mb-3 align-items-center">
+      <div
+        class="
+          row
+          d-flex
+          flex-column flex-md-row
+          mb-5
+          align-items-center
+          justify-content-center justify-content-md-evenly
+        "
+      >
         <div
           class="
-            main-avatar-container
-            col-6 col-sm-3 col-lg-2
-            ms-0 ms-lg-3
+            avatar-container-round avatar-profile avatar-lg
+            col-12 col-md-3 col-lg-2
+            mx-0 mx-lg-3
             mb-3 mb-lg-0
+            p-0
           "
         >
-          <img
-            :src="user.imageUrl"
-            alt="mon avatar"
-          />
+          <img :src="user.imageUrl" alt="mon avatar" />
         </div>
         <div
           class="
-            col-12 col-lg-4
+            col-12 col-md-5
             d-flex
             flex-column
-            align-items-lg-start
-            justify-content-end
+            align-items-md-start
+            justify-content-center
             mb-3 mb-lg-0
           "
         >
@@ -40,37 +47,54 @@
           </p>
         </div>
         <div
-            v-if="userProfile"
-            class="
-              w-25 btn btn-outline-dark rounded-pill shadow
-            "
-            @click="submitFollow"
-          >{{ followButtonText }}
-            
+          v-if="userProfile"
+          class="
+            col-12 col-md-3
+            d-flex
+            flex-column flex-md-row
+            align-items-center
+            justify-content-center
+          "
+        >
+          <div>
+            <div
+              class="btn btn-outline-dark rounded-pill shadow me-0 me-md-4"
+              @click="submitFollow"
+            >
+              {{ followButtonText }}
+            </div>
           </div>
-        <div v-if="userProfile" class="col-lg-1 dropdown">
-          <a
-            href="#"
-            role="button"
-            id="dropdownMenuLink"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-            class="fs-3"
-          >
-            ...
-          </a>
+          <div class="dropdown">
+            <div
+              role="button"
+              id="dropdownMenuLink"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              class="fs-3"
+            >
+              ...
+            </div>
+          </div>
           <ul
             class="dropdown-menu dropdown-menu-end"
             aria-labelledby="dropdownMenuLink"
           >
             <li>
-              <div class="dropdown-item" @click="reportUser">Signaler cet utilisateur</div>
+              <div class="dropdown-item" @click="reportUser">
+                Signaler cet utilisateur
+              </div>
             </li>
           </ul>
         </div>
         <ul
           v-if="!userProfile"
-          class="nav col-lg-4 justify-content-center align-items-center ms-auto"
+          class="
+            nav
+            col-12 col-md-3
+            justify-content-center
+            align-items-center
+            pe-0
+          "
         >
           <li class="nav-item">
             <router-link
@@ -81,7 +105,11 @@
           </li>
         </ul>
       </div>
+
+      <!--  TABS  -->
+
       <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <!--  POSTS TAB  -->
         <li class="nav-item" role="presentation">
           <button
             class="nav-link active"
@@ -92,11 +120,12 @@
             role="tab"
             aria-controls="posts"
             aria-selected="false"
-            
           >
             Publications
           </button>
         </li>
+
+        <!--  ABOUT ME TAB  -->
         <li class="nav-item" role="presentation">
           <button
             class="nav-link"
@@ -111,6 +140,8 @@
             A propos
           </button>
         </li>
+
+        <!--  FOLLOWERS TAB  -->
         <li class="nav-item" role="presentation">
           <button
             class="nav-link"
@@ -125,6 +156,8 @@
             Vous suivent
           </button>
         </li>
+
+        <!--  FOLLOWING TAB  -->
         <li class="nav-item" role="presentation">
           <button
             class="nav-link"
@@ -140,18 +173,23 @@
           </button>
         </li>
       </ul>
+
+      <!--  TABS CONTENT  -->
       <div class="tab-content m-4 text-start" id="myTabContent">
+        <!--  POSTS TAB CONTENT  -->
         <div
           class="tab-pane fade show active"
           id="posts"
           role="tabpanel"
           aria-labelledby="posts-tab"
         >
-          <Post :posts="posts" @getPosts="getUserPosts"/>
+          <Post :posts="posts" @getPosts="getUserPosts" />
           <div v-if="isLoading === true">
             <Loader />
           </div>
         </div>
+
+        <!--  ABOUT ME TAB CONTENT  -->
         <div
           class="tab-pane fade"
           id="about"
@@ -160,6 +198,8 @@
         >
           {{ user.aboutMe }}
         </div>
+
+        <!--  FOLLOWERS TAB CONTENT  -->
         <div
           class="tab-pane fade"
           id="followers"
@@ -172,6 +212,8 @@
             </div>
           </div>
         </div>
+
+        <!--  FOLLOWING TAB CONTENT  -->
         <div
           class="tab-pane fade"
           id="following"
@@ -191,7 +233,7 @@
 
 <script>
 import Post from "@/components/Post.vue";
-import MiniProfile from "@/components/MiniProfileCard";
+import MiniProfile from "@/components/MiniProfile";
 import Loader from "@/components/Loader";
 import { useAuthStore } from "@/stores/authStore";
 import { useHandleErrorStore } from "@/stores/handleErrorStore";
@@ -202,30 +244,30 @@ export default {
   components: {
     Post,
     MiniProfile,
-    Loader
+    Loader,
   },
   props: {
     user: {
-        type: Object
-    }, 
+      type: Object,
+    },
     userProfile: {
-        type: Boolean
-    }, 
+      type: Boolean,
+    },
     followButtonText: {
-        type: String
-    }
+      type: String,
+    },
   },
   data() {
-     return {
-        posts: [], 
-        lastPage: 1,
-        isLoading: false
-     }
+    return {
+      posts: [],
+      lastPage: 1,
+      isLoading: false,
+    };
   },
   setup() {
     const auth = useAuthStore();
     const handleError = useHandleErrorStore();
-    return { auth, handleError }
+    return { auth, handleError };
   },
   computed: {
     // formates the the user account's creation date
@@ -234,19 +276,24 @@ export default {
     },
   },
   methods: {
+    // emits submit following / unfollowing function
     submitFollow() {
-        this.$emit("submitFollow");
+      this.$emit("submitFollow");
     },
 
     //display the posts from one page;
-    // displays the first page of posts when clicked on "publication" tag, then the next page every time 
+    // displays the first page of posts when clicked on "publication" tag, then the next page every time
     //the scroll reaches the visibility observer at the bottom of the page till the last page
     getUserPosts(page) {
-        //stops fetching data when the last page is displayed
-      if (page > this.lastPage) { return };
+      //stops fetching data when the last page is displayed
+      if (page > this.lastPage) {
+        return;
+      }
       this.isLoading = true;
       postServices
-        .getUserPosts(page, {postUser: this.user._id || this.$route.params.id})
+        .getUserPosts(page, {
+          postUser: this.user._id || this.$route.params.id,
+        })
         .then((res) => {
           this.posts.push(...res.data.userPosts);
           this.lastPage = res.data.totalPages;
@@ -257,31 +304,25 @@ export default {
 
     //reports user
     reportUser() {
-        userServices.reportUser(this.user._id)
-           .then(() => this.handleError.triggerToast("Votre signalement a bien été pris en compte"))
-           .catch(error => this.handleError.triggerToast(error))
-    }
+      userServices
+        .reportUser(this.user._id)
+        .then(() =>
+          this.handleError.triggerToast(
+            "Votre signalement a bien été pris en compte"
+          )
+        )
+        .catch((error) => this.handleError.triggerToast(error));
+    },
   },
   mounted() {
-    this.getUserPosts(1)
-  }
+    // calls fetching all users data on mounted lifecycle
+    this.getUserPosts(1);
+  },
 };
-
 </script>
 
 <style>
-.main-avatar-container {
+.avatar-profile {
   margin-top: -5%;
-  margin-left: 30px;
-  width: 150px;
-  height: 150px;
-  overflow: hidden;
-  border-radius: 50%;
-  border: 3px solid white;
-  box-shadow: 3px 3px 15px lightgrey;
-}
-.main-avatar-container img {
-    object-fit: contain;
-    object-position: 50% 50%;
 }
 </style>

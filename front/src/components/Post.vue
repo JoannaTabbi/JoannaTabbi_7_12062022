@@ -1,12 +1,12 @@
 <template>
   <div>
-    <div v-for="post in posts" :key="post._id">
-      <div class="card card-body border-0 m-0 p-3">
+    <article v-for="post in posts" :key="post._id">
+      <div class="card card-body border-0 mb-3 px-2 p-sm-3">
         <span class="mx-5 border-top border-primary border-3"></span>
         <div
           class="d-flex align-items-center my-3 border-bottom border-top py-2"
         >
-          <div class="d-flex img-sm-container me-3 align-items-center">
+          <div class="d-flex img-sm-container me-2 align-items-center">
             <img
               class="mw-100 shadow rounded-3"
               :src="post.userId.imageUrl"
@@ -14,8 +14,8 @@
             />
           </div>
           <div class="w-100 text-start">
-            <router-link to="/profile">
-              <h5 class="fs-6 mb-0">"{{ post.userId.userName }}"</h5>
+            <router-link :to="auth.profilePage(post.userId._id)">
+              <h3 class="fs-6 mb-0">"{{ post.userId.userName }}"</h3>
             </router-link>
             <p class="mb-0 fw-light small fst-italic">
               {{ formattedDate(post.createdAt) }}
@@ -47,7 +47,7 @@
                   class="dropdown-item"
                   @click="updateToggle(post)"
                 >
-                  Modifiez la publication
+                  Modifier la publication
                 </div>
               </li>
               <li>
@@ -60,17 +60,20 @@
                   class="dropdown-item"
                   @click="deletePost(post._id)"
                 >
-                  Supprimez la publication
+                  Supprimer la publication
                 </div>
               </li>
               <li>
                 <div
                   type="button"
-                  v-if="post.userId._id != auth.user._id && auth.user.isAdmin === false"
+                  v-if="
+                    post.userId._id != auth.user._id &&
+                    auth.user.isAdmin === false
+                  "
                   class="dropdown-item"
                   @click="reportPost(post)"
                 >
-                  Signalez la publication
+                  Signaler la publication
                 </div>
               </li>
             </ul>
@@ -98,27 +101,31 @@
             </div>
             <ul class="nav d-flex justify-content-around">
               <li class="nav-item">
-                <label type="button" for="formFile2">
-                  <i class="fa-regular fa-image fa-2x"></i>
-                  <input
-                    @change="selectUpdateImage"
-                    type="file"
-                    class="form-control"
-                    name="image"
-                    id="formFile2"
-                    accept="image/*"
-                    hidden
-                  />
-                </label>
+                <div class="btn">
+                  <label type="button" for="formFile2">
+                    <i class="fa-regular fa-image fa-2x"></i>
+                    <input
+                      @change="selectUpdateImage"
+                      type="file"
+                      class="form-control"
+                      name="image"
+                      id="formFile2"
+                      accept="image/*"
+                      hidden
+                    />
+                  </label>
+                </div>
               </li>
               <li class="nav-item">
-                <button type="submit" class="btn">
-                  <i class="fa-regular fa-paper-plane fa-2x"></i>
+                <button
+                  type="reset"
+                  class="btn"
+                  @click.prevent="updateToggle(post)"
+                >
+                  <i class="fa-solid fa-xmark fa-2x text-danger"></i>
                 </button>
-              </li>
-              <li class="nav-item" @click.prevent="updateToggle">
-                <button type="reset" class="btn">
-                  <i class="fa-regular fa-trash-can fa-2x"></i>
+                <button type="submit" class="btn">
+                  <i class="fa-solid fa-check fa-2x text-success"></i>
                 </button>
               </li>
             </ul>
@@ -136,7 +143,11 @@
             v-if="post.imageUrl || post.imageUrl != ''"
             class="card-img mb-3"
           >
-            <img class="w-100" :src="post.imageUrl" alt="image par default" />
+            <img
+              class="w-100 rounded-3"
+              :src="post.imageUrl"
+              alt="image par default"
+            />
           </div>
           <ul class="nav d-flex justify-content-start mb-4 small">
             <li
@@ -167,7 +178,9 @@
           @delete-comment="deleteComment"
         />
       </div>
-    </div>
+    </article>
+
+    <!--  VISIBILITY OBSERVER  -->
     <div
       v-if="posts && posts.length"
       v-observe-visibility="handleInfiniteScroll"
@@ -200,7 +213,7 @@ export default {
         imageUrl: "",
         message: "",
       },
-      newComment: ""
+      newComment: "",
     };
   },
   setup() {
@@ -258,7 +271,9 @@ export default {
       let formData = new FormData();
       if (this.updatedPost.message != "") {
         if (this.updatedPost.message.length > 1500) {
-          this.handleError.triggerToast("Le message ne doit pas dépasser 1500 mots");
+          this.handleError.triggerToast(
+            "Le message ne doit pas dépasser 1500 mots"
+          );
         } else {
           formData.append("message", this.updatedPost.message);
         }
@@ -266,7 +281,9 @@ export default {
       if (this.updatedPost.imageUrl) {
         //throw an error if the image size is too important (over 500ko)
         if (this.updatedPost.imageUrl.size > 500000) {
-          this.handleError.triggerToast("Attention, la taille de l'image ne doit pas dépasser 500ko");
+          this.handleError.triggerToast(
+            "Attention, la taille de l'image ne doit pas dépasser 500ko"
+          );
         } else {
           formData.append("image", this.updatedPost.imageUrl);
         }
@@ -288,9 +305,14 @@ export default {
 
     //reports post
     reportPost(post) {
-        postServices.reportPost(post._id)
-           .then(res => this.handleError.triggerToast("Votre signalement a bien été pris en compte"))
-           .catch(error => this.handleError.triggerToast(error))
+      postServices
+        .reportPost(post._id)
+        .then((res) =>
+          this.handleError.triggerToast(
+            "Votre signalement a bien été pris en compte"
+          )
+        )
+        .catch((error) => this.handleError.triggerToast(error));
     },
 
     // create new comment to one post
@@ -298,24 +320,24 @@ export default {
       commentServices
         .createComment({ message: this.newComment, postId: post._id })
         .then((res) => {
-          post.comments.unshift(res.data);
+          post.comments.push(res.data);
           this.newComment = "";
         })
         .catch((error) => this.handleError.triggerToast(error));
     },
 
-    // deletes one comment 
+    // deletes one comment
     deleteComment(commentId, postId) {
-      commentServices.deleteComment(commentId)
-      .then(() => {
-         const postFound = this.posts.find(post => post._id == postId);
-         postFound.comments = postFound.comments.filter(comment => comment._id != commentId);
-      })
-      .catch((error) => this.handleError.triggerToast(error))
-    } 
+      commentServices
+        .deleteComment(commentId)
+        .then(() => {
+          const postFound = this.posts.find((post) => post._id == postId);
+          postFound.comments = postFound.comments.filter(
+            (comment) => comment._id != commentId
+          );
+        })
+        .catch((error) => this.handleError.triggerToast(error));
+    },
   },
 };
 </script>
-
-<style>
-</style>

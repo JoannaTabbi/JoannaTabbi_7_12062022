@@ -1,11 +1,11 @@
 <template>
   <div>
-    <div class="vh-100 bg-image">
+    <div class="vh-100 bg-connexion">
       <div class="connexion container py-4 bg-secondary h-100">
         <div class="row px-2 px-sm-5 h-100">
           <div class="col-12 border-bottom border-dark">
             <img
-              class="d-flex mb-2"
+              class="d-flex mb-2 logo"
               src="../assets/logos/icon-left-font-monochrome-black-rect.png"
               alt="logo Groupomania"
             />
@@ -54,6 +54,7 @@ import * as Yup from "yup";
 import router from "../router/index";
 export default {
   data() {
+    /* defines inputs properties and validation rules for signup form */
     const formSchema = {
       fields: [
         {
@@ -150,7 +151,6 @@ export default {
 
     //register the new user in the database
     register(value) {
-      console.log(value);
       authServices
         .signupUser(value)
         .then(() => {
@@ -173,8 +173,8 @@ export default {
 };
 </script>
 
-<style scoped>
-img {
+<style>
+.logo {
   width: 200px;
 }
 .connexion {

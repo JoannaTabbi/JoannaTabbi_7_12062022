@@ -1,104 +1,71 @@
 <template>
-  <main class="h-100">
-    <div class="container-fluid">
+  <main class="h-100 bg-dark">
+    <div class="container-fluid main-content px-0 px-sm-3 main-padding-top">
       <div class="row">
         <!-- WELCOME CARD SECTION -->
 
-        <div class="col-12 col-lg-3 mb-3 pt-3">
-          <section id="home" class="shadow rounded-3 mb-3 p-3">
+        <div class="col-12 col-md-4 pt-3">
+          <aside
+            id="home"
+            class="bg-borders shadow rounded-3 p-3 sticky-md-top"
+          >
             <h1 class="text-start fs-3">Accueil</h1>
             <div
-              class="card w-100 flex-sm-row flex-lg-column align-items-center"
+              class="
+                card
+                w-100
+                pt-5 pt-sm-0
+                ps-sm-5
+                pt-md-5
+                ps-md-0
+                flex-sm-row flex-md-column
+                align-items-center
+              "
             >
-              <div class="p-5 p-sm-3 p-lg-5">
-                <img
-                  :src="auth.user.imageUrl"
-                  class="
-                    img-fluid
-                    card-img-top
-                    shadow
-                    border border-white border-3
-                    rounded-circle
-                  "
-                  alt="mon avatar"
-                />
+              <div class="avatar-container-round avatar-lg">
+                <img :src="auth.user.imageUrl" alt="mon avatar" />
               </div>
 
-              <div class="card-body">
-                <h5 class="card-title">
+              <div class="card-body my-4">
+                <h2 class="card-title fs-5">
                   Bonjour
                   <span
                     ><router-link to="/myProfile">{{
                       auth.user.userName
                     }}</router-link></span
                   >
-                </h5>
-
+                </h2>
                 <small class="card-text"
                   >Membre depuis le
                   <div>{{ formattedDate }}</div></small
                 >
-              </div>
-              <ul class="list-group list-group-flush small">
-                <li
-                  class="
-                    list-group-item
-                    d-flex
-                    flex-wrap
-                    align-items-center
-                    justify-content-between
-                  "
-                >
-                  <router-link to="/myProfile" class="fw-bold text-dark me-2">
-                    <span>{{ auth.followersNb }}</span>
-                    <span class="ms-1">Vous suivent</span>
-                  </router-link>
-                  <router-link to="/myProfile" class="fw-bold text-dark">
-                    <span>{{ auth.followingNb }}</span>
-                    <span class="ms-1">Suivis</span>
-                  </router-link>
-                </li>
-                <li class="list-group-item">
-                  <router-link to="/myProfile" class="fw-bold text-dark">
-                    <span>{{ postsNumber }}</span>
-                    <span class="ms-1">Publications</span>
-                  </router-link>
-                </li>
-
-                <li
-                  class="
-                    list-group-item
-                    d-flex
-                    flex-wrap
-                    align-items-center
-                    justify-content-evenly
-                  "
-                >
+                <div class="mt-3">
                   <router-link
                     to="/modifyProfile"
                     class="btn btn-outline-dark py-2 px-3 rounded-pill shadow"
                     >Modifier le profil</router-link
                   >
-                </li>
-              </ul>
+                </div>
+              </div>
             </div>
-          </section>
+          </aside>
         </div>
 
-        <!-- WELCOME CARD SECTION END -->
         <!-- FEEDS AND CREATE POST SECTIONS -->
 
-        <div
-          class="h-100 col-12 col-md-8 col-lg-6 pt-3 border-start border-end"
-        >
-          <section id="create_post" class="shadow rounded-3 mb-3 p-3">
-            <h2 class="text-start fs-4">Créez une publication</h2>
+        <div class="h-100 col-12 col-md-8 pt-3">
+          <!-- CREATE POST SECTION -->
+          <section
+            id="create_post"
+            class="bg-borders shadow rounded-3 mb-3 p-3"
+          >
+            <h2 class="text-start fs-4">Créer une publication</h2>
             <form
-              class="card card-body border-0"
+              class="card card-body border-0 px-2 px-sm-3"
               @submit.prevent="createPost()"
             >
               <div class="d-flex mb-3 border-bottom pb-2">
-                <div class="img-sm-container me-3">
+                <div class="img-sm-container me-2">
                   <img
                     class="mw-100 shadow rounded-3"
                     :src="auth.user.imageUrl"
@@ -118,18 +85,20 @@
               </div>
               <ul class="nav d-flex justify-content-around">
                 <li class="nav-item">
-                  <label type="button" for="formFile3">
-                    <i class="fa-regular fa-image fa-2x"></i>
-                    <input
-                      @change="selectImage"
-                      type="file"
-                      class="form-control"
-                      name="image"
-                      id="formFile3"
-                      accept="image/*"
-                      hidden
-                    />
-                  </label>
+                  <div class="btn">
+                    <label type="button" for="formFile3">
+                      <i class="fa-regular fa-image fa-2x"></i>
+                      <input
+                        @change="selectImage"
+                        type="file"
+                        class="form-control"
+                        name="image"
+                        id="formFile3"
+                        accept="image/*"
+                        hidden
+                      />
+                    </label>
+                  </div>
                 </li>
                 <li class="nav-item">
                   <button type="submit" class="btn">
@@ -139,7 +108,9 @@
               </ul>
             </form>
           </section>
-          <section id="feeds" class="shadow rounded-3 mb-3 p-3">
+
+          <!-- FEEDS SECTION -->
+          <section id="feeds" class="shadow bg-borders rounded-3 mb-3 p-3">
             <h2 class="text-start fs-4 fw-bolder">Fil d'actualité</h2>
             <Post
               :posts="posts"
@@ -151,15 +122,6 @@
             </div>
           </section>
         </div>
-
-        <!-- FEEDS AND CREATE POST SECTIONS END -->
-        <!-- MOST POPULAR SECTION -->
-
-        <div class="col-12 col-md-4 col-lg-3 pt-3">
-          <MostPopular />
-        </div>
-
-        <!-- MOST POPULAR SECTION END -->
       </div>
     </div>
   </main>
@@ -167,7 +129,6 @@
 
 <script>
 import Post from "../components/Post.vue";
-import MostPopular from "../components/MostPopular.vue";
 import Loader from "@/components/Loader.vue";
 import { useAuthStore } from "../stores/authStore";
 import { useHandleErrorStore } from "../stores/handleErrorStore";
@@ -176,14 +137,14 @@ export default {
   name: "Home",
   components: {
     Post,
-    MostPopular,
-    Loader
+    Loader,
   },
   setup() {
     const auth = useAuthStore();
     const handleError = useHandleErrorStore();
     return {
-      auth, handleError
+      auth,
+      handleError,
     };
   },
   data() {
@@ -196,7 +157,7 @@ export default {
       },
       showModal: false,
       modalTitle: "Publication",
-      isLoading: false
+      isLoading: false,
     };
   },
   computed: {
@@ -222,7 +183,7 @@ export default {
           this.isLoading = false;
         })
         .catch((err) => {
-          this.handleError.triggerToast(`Une erreur est survenue : ${err}`)
+          this.handleError.triggerToast(`Une erreur est survenue : ${err}`);
         });
     },
 
@@ -235,18 +196,24 @@ export default {
       let formData = new FormData();
       //throw an error if neither message nor image posted
       if (this.newPost.message == "" && this.newPost.imageUrl == "") {
-        this.handleError.triggerToast("Veuillez saisir un message ou choisir une photo");
+        this.handleError.triggerToast(
+          "Veuillez saisir un message ou choisir une photo"
+        );
       } else {
         //throw an error if the message is too long (over 1500 letters)
         if (this.newPost.message.length > 1500) {
-          this.handleError.triggerToast("Le message ne doit pas dépasser 1500 mots");
+          this.handleError.triggerToast(
+            "Le message ne doit pas dépasser 1500 mots"
+          );
         } else {
           formData.append("message", this.newPost.message);
         }
         if (this.newPost.imageUrl) {
           //throw an error if the image size is too important (over 500ko)
           if (this.newPost.imageUrl.size > 500000) {
-            this.handleError.triggerToast("Attention, la taille de l'image ne doit pas dépasser 500ko");
+            this.handleError.triggerToast(
+              "Attention, la taille de l'image ne doit pas dépasser 500ko"
+            );
           } else {
             formData.append("image", this.newPost.imageUrl);
           }
@@ -287,9 +254,19 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .fa-image:hover,
 .fa-paper-plane:hover {
   color: #fd2d01;
+}
+#home {
+  position: sticky;
+  top: 80px;
+}
+.bg-clear {
+  background: rgba(255, 215, 215, 0.2);
+}
+.bg-borders {
+  background: rgba(255, 255, 255, 0.7);
 }
 </style>

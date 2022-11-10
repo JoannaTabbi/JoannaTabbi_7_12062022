@@ -1,9 +1,9 @@
 <template>
-    <div class="toast-wrapper">
-      <div class="toast-content">
-        {{ toastMessage }}
-      </div>
+  <div class="toast-wrapper">
+    <div class="toast-content">
+      {{ toastMessage }}
     </div>
+  </div>
 </template>
 
 <script>
@@ -20,13 +20,13 @@ export default {
   top: 30px;
 }
 .toast-content {
+  max-width: 400px;
+  margin: 0 auto;
   padding: 20px;
   color: white;
   background: linear-gradient(#ffd7d7, #fd2d01);
   border-radius: 10px;
   box-shadow: 1px 3px 5px rgba(0, 0, 0, 0.2);
-  max-width: 400px;
-  margin: 0 auto;
 }
 /* enter transitions */
 .toast-enter-from {

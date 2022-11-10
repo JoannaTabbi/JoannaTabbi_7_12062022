@@ -15,23 +15,24 @@
       />
       <ErrorMessage class="px-2" as="small" :name="name" />
     </div>
-    <!-- reset -->
+    <div>
+      <!-- reset -->
+      <button
+        type="reset"
+        class="btn btn-danger bg-gradient rounded-5 m-3 text-white fw-bold"
+        v-if="reset"
+      >
+        {{ resetMessage }}
+      </button>
+      <!-- submit -->
 
-    <button
-      type="reset"
-      class="col-5 btn btn-danger bg-gradient rounded-5 m-3 text-white fw-bold"
-      v-if="reset"
-    >
-      {{ resetMessage }}
-    </button>
-    <!-- submit -->
-
-    <button
-      type="submit"
-      class="col-5 btn btn-dark bg-gradient rounded-5 m-3 text-white fw-bold"
-    >
-      {{ submitMessage }}
-    </button>
+      <button
+        type="submit"
+        class="btn btn-dark bg-gradient rounded-5 m-3 text-white fw-bold"
+      >
+        {{ submitMessage }}
+      </button>
+    </div>
   </Form>
 </template>
 
@@ -67,5 +68,3 @@ export default {
   },
 };
 </script>
-
-<style></style>

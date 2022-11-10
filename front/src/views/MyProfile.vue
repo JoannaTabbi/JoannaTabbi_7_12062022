@@ -1,14 +1,9 @@
 <template>
-  <main>
-    <div class="container-fluid">
+  <main class="h-100 bg-dark">
+    <div class="container-fluid main-content main-padding-top px-0 px-sm-3">
       <div class="row">
-        <div class="col-12 col-md-8 col-lg-9 mb-3 pt-3 border-end">
-          <Profile
-            :user="auth.user"
-          />
-        </div>
-        <div class="col-12 col-md-4 col-lg-3 pt-3">
-          <MostPopular />
+        <div class="col-12 mb-3 pt-3">
+          <Profile :user="auth.user" />
         </div>
       </div>
     </div>
@@ -17,7 +12,6 @@
 
 <script>
 import Profile from "@/components/Profile.vue";
-import MostPopular from "@/components/MostPopular.vue";
 import { useAuthStore } from "@/stores/authStore";
 import { useHandleErrorStore } from "@/stores/handleErrorStore";
 import { userServices } from "@/_services";
@@ -26,7 +20,6 @@ export default {
   name: "MyProfile",
   components: {
     Profile,
-    MostPopular,
   },
   setup() {
     const auth = useAuthStore();
@@ -42,17 +35,16 @@ export default {
   methods: {
     // displays user profile
     getMyProfile() {
-    userServices.getOneself()
-      .then((res) => {
-          this.user = res.data})
-      .catch(err => this.handleError.triggerToast(err))
-  }
+      userServices
+        .getOneself()
+        .then((res) => {
+          this.user = res.data;
+        })
+        .catch((err) => this.handleError.triggerToast(err));
+    },
   },
   mounted() {
     this.getMyProfile();
   },
 };
 </script>
-
-
-<style scoped></style>

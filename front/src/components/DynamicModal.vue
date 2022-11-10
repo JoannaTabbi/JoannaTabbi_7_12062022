@@ -1,23 +1,12 @@
 <template>
-  <div>
-    <div v-if="show" class="modal__backdrop" @click.self="closeModal">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title text-dark">
-              {{ modalTitle }}
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              aria-label="Close"
-              @click="closeModal"
-            ></button>
-          </div>
-          <div class="modal-body text-start" :class="theme">
+  <Transition name="myModal">
+    <div v-if="show" class="modal-mask" @click.self="closeModal">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" :class="theme">
+          <div class="modal-body text-start">
             <slot name="modalBody"></slot>
           </div>
-          <div class="modal-footer">
+          <div class="modal-footer border-top-0">
             <button
               v-if="reset"
               type="button"
@@ -38,7 +27,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </Transition>
 </template>
 
 <script>
@@ -54,9 +43,11 @@ export default {
     "theme",
   ],
   methods: {
+    /* emits submit function for modal */
     submitModal() {
       this.$emit("submitted");
     },
+    /* emits reset function for modal */ 
     closeModal() {
       this.$emit("closed");
     },
@@ -67,21 +58,40 @@ export default {
 <style>
 .modal-dialog {
   border-radius: 10px;
+  transition: all 0.3s ease;
 }
-.modal__backdrop {
+.modal-mask {
   top: 0;
   left: 0;
   position: fixed;
   background: rgba(0, 0, 0, 0.5);
   width: 100%;
   height: 100%;
+  transition: all 0.3s ease;
 }
-.modal-body.success {
-  background-color: linear-gradient(#FFD7D7, #023b19);
-  color: white;
+.modal-content {
+  max-width: 450px;
+  margin: 0 auto;
 }
-.modal-body.warning {
-  background: linear-gradient(#FFD7D7, #FD2D01);
-  color: white;
+.modal-content.success {
+  background-color: white;
+  color: #023b19;
+}
+.modal-content.warning {
+  background: white;
+  color: #fd2d01;
+}
+
+/* transition styling */
+.myModal-enter-from,
+.myModal-leave-to {
+  opacity: 0;
+}
+
+.myModal-enter-from .modal-dialog,
+.myModal-leave-to .modal-dialog {
+  -webkit-transform: scale(1.1);
+  transform: scale(1.1);
+  opacity: 0;
 }
 </style>

@@ -2,7 +2,6 @@ import Axios from "@/_interceptors/axios";
 import exportFromJSON from "export-from-json";
 
 //upload user image service
-
 function uploadUserFiles(formData) {
 
   return Axios.put("/auth/", formData, {
@@ -13,7 +12,6 @@ function uploadUserFiles(formData) {
 }
 
 // parse data in order to download it
-
 function excelParser() {
   function exportDataFromJSON(data, newFileName, fileExportType) {
     if (!data) return;
@@ -34,6 +32,7 @@ function excelParser() {
   };
 };
 
+// exports upload / download services
 export const loadServices = {
   uploadUserFiles,
   excelParser

@@ -1,7 +1,7 @@
 <template>
-  <div class="ps-4 border-start">
-    <div class="d-flex mb-3 border-bottom pb-2">
-      <div class="img-sm-container me-3">
+  <div class="ps-2 border-start">
+    <div class="d-flex mb-3">
+      <div class="img-sm-container me-2">
         <img
           class="mw-100 shadow rounded-3"
           :src="auth.user.imageUrl"
@@ -24,9 +24,10 @@
 
     <!-- User's comments area -->
     <div v-for="comment in comments" :key="comment._id" class="my-4">
-      <!-- one comment -->
+
+      <!-- display one comment -->
       <div class="d-flex my-2 py-2">
-        <div class="d-flex img-sm-container me-3 align-items-start">
+        <div class="d-flex img-sm-container me-2 align-items-start">
           <img
             class="mw-100 shadow rounded-3"
             :src="comment.userId.imageUrl"
@@ -36,19 +37,18 @@
         <div class="w-100">
           <div class="w-100 text-start bg-light rounded-3 p-2">
             <div class="d-flex align-items-baseline justify-content-between">
-              <div>
+              <router-link :to="auth.profilePage(comment.userId._id)">
                 <h5 class="fs-6 mb-0">{{ comment.userId.userName }}</h5>
-              </div>
+              </router-link>
               <div class="dropdown fs-5 fw-bold">
-                <a
-                  href="#"
+                <div
                   role="button"
                   id="dropdownMenuLink"
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
                   ...
-                </a>
+                </div>
 
                 <ul
                   class="dropdown-menu dropdown-menu-end text-end"
@@ -65,7 +65,7 @@
                       href="#"
                       @click="updateCommentToggle(comment)"
                     >
-                      Modifiez le commentaire
+                      Modifier le commentaire
                     </div>
                   </li>
                   <li>
@@ -81,25 +81,32 @@
                         $emit('delete-comment', comment._id, comment.postId)
                       "
                     >
-                      Supprimez le commentaire
+                      Supprimer le commentaire
                     </div>
                   </li>
                   <li>
                     <div
                       type="button"
                       v-if="
-                        comment.userId._id !== auth.user._id && auth.user.isAdmin === false
+                        comment.userId._id !== auth.user._id &&
+                        auth.user.isAdmin === false
                       "
                       class="dropdown-item"
                       @click="reportComment(comment)"
                     >
-                      Signalez le commentaire
+                      Signaler le commentaire
                     </div>
                   </li>
                 </ul>
               </div>
             </div>
-            <form v-if="comment.isUpdating" class="d-flex" @submit.prevent="updateComment(comment)">
+
+            <!-- update one comment -->
+            <form
+              v-if="comment.isUpdating"
+              class="d-flex"
+              @submit.prevent="updateComment(comment)"
+            >
               <textarea
                 class="form-control border-0"
                 name="updateComment"
@@ -109,7 +116,11 @@
                 :placeholder="comment.message"
               >
               </textarea>
-              <button type="reset" class="btn text-danger" @click="updateCommentToggle(comment)">
+              <button
+                type="reset"
+                class="btn text-danger"
+                @click="updateCommentToggle(comment)"
+              >
                 <i class="fa-solid fa-xmark fa-lg"></i>
               </button>
               <button type="submit" class="btn">
@@ -120,6 +131,7 @@
               {{ comment.message }}
             </p>
           </div>
+          <!-- likes for one comment -->
           <ul
             class="
               nav nav-divider
@@ -145,7 +157,6 @@
           </ul>
         </div>
       </div>
-      <!-- one comment end -->
     </div>
   </div>
 </template>
@@ -158,8 +169,8 @@ export default {
   name: "Comments",
   data() {
     return {
-      updatedComment: ""
-    }
+      updatedComment: "",
+    };
   },
   props: ["comments", "modelValue"],
   emits: ["update:modelValue", "createComment", "deleteComment"],
@@ -199,22 +210,26 @@ export default {
 
     //updates one comment
     updateComment(comment) {
-      commentServices.updateComment(comment._id, {"message": this.updatedComment})
+      commentServices
+        .updateComment(comment._id, { message: this.updatedComment })
         .then((res) => {
           comment.message = res.data.message;
           this.updateCommentToggle(comment);
         })
-        .catch((error) => this.handleError.triggerToast(error))
+        .catch((error) => this.handleError.triggerToast(error));
     },
 
     //reports comment
     reportComment(comment) {
-        commentServices.reportComment(comment._id)
-           .then(() => this.handleError.triggerToast("Votre signalement a bien été pris en compte"))
-           .catch(error => this.handleError.triggerToast(error))
-    }
+      commentServices
+        .reportComment(comment._id)
+        .then(() =>
+          this.handleError.triggerToast(
+            "Votre signalement a bien été pris en compte"
+          )
+        )
+        .catch((error) => this.handleError.triggerToast(error));
+    },
   },
 };
 </script>
-
-<style></style>

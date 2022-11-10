@@ -1,11 +1,11 @@
 <template>
   <div>
-    <div class="vh-100 bg-image">
+    <div class="vh-100 bg-connexion">
       <div class="connexion container py-4 bg-secondary h-100">
         <div class="row px-2 px-sm-5 h-100">
           <div class="col-12 border-bottom border-dark">
             <img
-              class="d-flex mb-5"
+              class="d-flex mb-5 logo"
               src="../assets/logos/icon-left-font-monochrome-black-rect.png"
               alt="logo Groupomania"
             />
@@ -59,6 +59,7 @@ import { useAuthStore } from "../stores/authStore";
 
 export default {
   data() {
+    /* schema and validation rules for login form inputs  */
     const formSchema = {
       fields: [
         {
@@ -99,32 +100,29 @@ export default {
     DynamicModal,
   },
   methods: {
-    // toggle modal
+    // toggle modal (according to showModal value, injects the modal to or ejects it from the DOM
     toggledModal() {
       this.showModal = !this.showModal;
     },
-    // handle error response
+    // if the loggin info is wrong, display error details for user
     handleErrors(status, error) {
       if (status === 429) {
         this.modalMessage =
-            "Vous avez atteint le nombre d'essais authorisé. Veuillez attendre 15 minutes avant de vous connecter à nouveau";
+          "Vous avez atteint le nombre d'essais authorisé. Veuillez attendre 15 minutes avant de vous connecter à nouveau";
       } else if (status === 401) {
-        switch(error) {
-            case "Incorrect password" :
-            this.modalMessage =
-            "Le mot de passe est incorrect.";
+        switch (error) {
+          case "Incorrect password":
+            this.modalMessage = "Le mot de passe est incorrect.";
             break;
-            case "User not found" :
-            this.modalMessage =
-            "L'email est incorrect.";
+          case "User not found":
+            this.modalMessage = "L'email est incorrect.";
             break;
-            default : 
-            this.modalMessage = `Une erreur est survenue: ${error}`
-          }
+          default:
+            this.modalMessage = `Une erreur est survenue: ${error}`;
+        }
       } else {
-        this.modalMessage = "Une erreur inconnue est survenue"
+        this.modalMessage = "Une erreur inconnue est survenue";
       }
-      
     },
     //logs in user once the connexion fields validated
     login(values) {
@@ -142,7 +140,7 @@ export default {
           //redirects the authenticated user to home page
           router.push("/");
         })
-        // si pas de réponse, redirige l'utilisateur vers la page de login
+        // if error, shows error message
         .catch((err) => {
           console.log(err.response);
           this.theme = "warning";
@@ -155,12 +153,5 @@ export default {
 };
 </script>
 
-<style scoped>
-img {
-  width: 200px;
-}
-.connexion {
-  width: 100%;
-  max-width: 500px;
-}
+<style>
 </style>

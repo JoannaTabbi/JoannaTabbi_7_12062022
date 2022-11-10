@@ -9,14 +9,13 @@ state: () => {
 },
 persist: true,
 actions: {
-    //shows the toast notification of the error during 5 seconds
-
+    //if error occurs, shows the toast notification with error info during 4 seconds
     triggerToast(message) {
         this.showToast = true;
         this.toastMessage = message;
         setTimeout(
           () => ((this.showToast = false), (this.toastMessage = "")),
-          5000
+          4000
         );
       },
 }
