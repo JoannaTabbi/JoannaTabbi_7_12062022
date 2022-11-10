@@ -10,7 +10,7 @@
           />
         </div>
       </div>
-      <div class="row d-flex flex-column flex-lg-row mb-5 align-items-center justify-content-center">
+      <div class="row d-flex flex-column flex-lg-row mb-5 align-items-center justify-content-evenly">
         <div
           class="
             avatar-container-round
@@ -19,6 +19,7 @@
             col-6 col-sm-3 col-lg-2
             mx-0 mx-lg-3
             mb-3 mb-lg-0
+            p-0
           "
         >
           <img
@@ -41,18 +42,19 @@
             Membre depuis le <span>{{ formattedDate }}</span>
           </p>
         </div>
-        <div
+        <div class="col-12">
+          <div
             v-if="userProfile"
             class="
-              w-25 btn btn-outline-dark rounded-pill shadow
+              btn btn-outline-dark rounded-pill shadow
             "
             @click="submitFollow"
           >{{ followButtonText }}
             
           </div>
+        </div>
         <div v-if="userProfile" class="col-lg-1 dropdown">
-          <a
-            href="#"
+          <div
             role="button"
             id="dropdownMenuLink"
             data-bs-toggle="dropdown"
@@ -60,7 +62,7 @@
             class="fs-3"
           >
             ...
-          </a>
+          </div>
           <ul
             class="dropdown-menu dropdown-menu-end"
             aria-labelledby="dropdownMenuLink"

@@ -1,6 +1,8 @@
 <template>
-  <div class="main-content main-margin-top">
-    <div class="card w-100 container-fluid p-0 mt-3">
+  <div class="main-content container main-margin-top bg-dark">
+    <div class="row">
+      <div class="col-12 mb-3 pt-3">
+       <div class="card w-100 container-fluid p-0">
       <div class="row">
         <div class="col-12">
           <img
@@ -115,6 +117,8 @@
           </p>
         </template>
       </DynamicModal>
+    </div>
+      </div>
     </div>
   </div>
 </template>
