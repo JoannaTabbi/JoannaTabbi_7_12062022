@@ -1,155 +1,162 @@
 <template>
-<main class="h-100 bg-dark">
-  <div class="main-content container-fluid px-0 px-sm-3 main-padding-top">
-    <div class="row">
-      <div class="col-12 mb-3 pt-3">
-        <div class="card w-100 container-fluid p-0">
-          <div class="row">
-            <div class="col-12">
-              <img
-                class="img-fluid w-100 rounded-top"
-                src="https://picsum.photos/800/200?random=1&grayscale"
-                alt="photo aléatoire"
-              />
-            </div>
-          </div>
-          
-          <div class="row justify-content-center align-items-md-center">
-            <div
-              class="
-                avatar-container-round avatar-profile avatar-lg
-                col-12 col-md-4
-                ms-0 ms-lg-3
-                mb-3 mb-lg-0
-              "
-            >
-              <img :src="auth.user.imageUrl" alt="mon avatar" />
+  <main class="h-100 bg-dark">
+    <div class="main-content container-fluid px-0 px-sm-3 main-padding-top">
+      <div class="row">
+        <div class="col-12 mb-3 pt-3">
+          <div class="card w-100 container-fluid p-0">
+            <div class="row">
+              <div class="col-12">
+                <img
+                  class="img-fluid w-100 rounded-top"
+                  src="https://picsum.photos/800/200?random=1&grayscale"
+                  alt="photo aléatoire"
+                />
+              </div>
             </div>
 
-            <div class="col-12 col-md-8 d-flex flex-column flex-sm-row justify-content-evenly">
-              <div class="mt-3 mx-2 mt-lg-0">
-                <button
-                  class="btn btn-outline-dark py-2 px-3 rounded-pill shadow"
-                  @click="exportData"
-                >
-                  Exporter mes données
-                </button>
+            <div class="row justify-content-center align-items-md-center">
+              <div
+                class="
+                  avatar-container-round avatar-profile avatar-lg
+                  col-12 col-md-4
+                  ms-0 ms-lg-3
+                  mb-3 mb-lg-0
+                "
+              >
+                <img :src="auth.user.imageUrl" alt="mon avatar" />
               </div>
-              <div class="mt-3 mx-2 mt-lg-0">
-                <button
-                  class="btn btn-outline-danger py-2 px-3 rounded-pill shadow"
-                  @click="toggledModal"
-                >
-                  Supprimer le profil
-                </button>
+
+              <div
+                class="
+                  col-12 col-md-8
+                  d-flex
+                  flex-column flex-sm-row
+                  justify-content-evenly
+                "
+              >
+                <div class="mt-3 mx-2 mt-lg-0">
+                  <button
+                    class="btn btn-outline-dark py-2 px-3 rounded-pill shadow"
+                    @click="exportData"
+                  >
+                    Exporter mes données
+                  </button>
+                </div>
+                <div class="mt-3 mx-2 mt-lg-0">
+                  <button
+                    class="btn btn-outline-danger py-2 px-3 rounded-pill shadow"
+                    @click="toggledModal"
+                  >
+                    Supprimer le profil
+                  </button>
+                </div>
               </div>
             </div>
+            <div class="row px-3 px-md-5">
+              <h1 class="text-start mt-5 mt-md-3 fs-3">Mes informations</h1>
+
+              <!-- UPLOAD FILES FORM -->
+              <section class="my-5 px-3">
+                <form @submit.prevent="uploadUserFiles">
+                  <div class="col-12 border-bottom border-dark mb-5">
+                    <label for="formFile" class="form-label fs-4 fw-bold"
+                      ><h2 class="fs-4">Modifiez la photo</h2></label
+                    >
+                  </div>
+                  <input
+                    class="form-control mb-2"
+                    name="image"
+                    type="file"
+                    id="formFile"
+                    accept="image/*"
+                    @change="selectImage"
+                  />
+                  <div>
+                    <button
+                      type="reset"
+                      class="
+                        btn btn-danger
+                        bg-gradient
+                        rounded-5
+                        m-3
+                        text-white
+                        fw-bold
+                      "
+                    >
+                      Réinitialiser
+                    </button>
+                    <button
+                      type="submit"
+                      class="
+                        btn btn-dark
+                        bg-gradient
+                        rounded-5
+                        m-3
+                        text-white
+                        fw-bold
+                      "
+                    >
+                      Modifier
+                    </button>
+                  </div>
+                </form>
+              </section>
+
+              <!-- MODIFY PROFILE FORM -->
+              <section class="mb-5 px-3">
+                <div class="col-12 border-bottom border-dark mb-5">
+                  <h2 class="fs-4 text-center">Modifiez le profil</h2>
+                </div>
+                <DynamicForm
+                  :schema="formSchema"
+                  reset-message="Réinitialiser"
+                  submit-message="Modifier"
+                  :reset="true"
+                  :submit-function="onSubmit"
+                  :initial-values="this.userUpdate"
+                />
+              </section>
+
+              <!-- MODIFY PASSWORD FORM -->
+              <section class="mb-5 px-3">
+                <div class="col-12 border-bottom border-dark mb-5">
+                  <h2 class="fs-4 text-center">Modifiez le mot de passe</h2>
+                </div>
+                <DynamicForm
+                  :schema="passwordSchema"
+                  reset-message="Réinitialiser"
+                  submit-message="Modifier"
+                  :reset="true"
+                  :submit-function="onSubmit"
+                />
+              </section>
+            </div>
           </div>
-          <div class="row px-3 px-md-5">
-            <h1 class="text-start mt-5 mt-md-3 fs-3">Mes informations</h1>
-            <!-- upload files form -->
-            <section class="my-5 px-3">
-              <form @submit.prevent="uploadUserFiles">
-              <div class="col-12 border-bottom border-dark mb-5">
-                <label for="formFile" class="form-label fs-4 fw-bold"
-                  ><h2 class="fs-4">Modifiez la photo</h2></label
-                >
-              </div>
-              <input
-                class="form-control mb-2"
-                name="image"
-                type="file"
-                id="formFile"
-                accept="image/*"
-                @change="selectImage"
-              />
-              <div>
-                <button
-                  type="reset"
-                  class="
-                    btn btn-danger
-                    bg-gradient
-                    rounded-5
-                    m-3
-                    text-white
-                    fw-bold
-                  "
-                >
-                  Réinitialiser
-                </button>
-                <button
-                  type="submit"
-                  class="
-                    btn btn-dark
-                    bg-gradient
-                    rounded-5
-                    m-3
-                    text-white
-                    fw-bold
-                  "
-                >
-                  Modifier
-                </button>
-              </div>
-            </form>
-            </section>
-            
-            <!-- upload files form end -->
-            <!-- modify profile form start -->
-            <section class="mb-5 px-3">
-              <div class="col-12 border-bottom border-dark mb-5">
-                <h2 class="fs-4 text-center">Modifiez le profil</h2>
-              </div>
-              <DynamicForm
-                :schema="formSchema"
-                reset-message="Réinitialiser"
-                submit-message="Modifier"
-                :reset="true"
-                :submit-function="onSubmit"
-                :initial-values="this.userUpdate"
-              />
-            </section>
-            <!-- modify profile form end -->
-            <!-- modify password form start -->
-            <section class="mb-5 px-3">
-              <div class="col-12 border-bottom border-dark mb-5">
-                <h2 class="fs-4 text-center">Modifiez le mot de passe</h2>
-              </div>
-              <DynamicForm
-                :schema="passwordSchema"
-                reset-message="Réinitialiser"
-                submit-message="Modifier"
-                :reset="true"
-                :submit-function="onSubmit"
-              />
-            </section>
-            <!-- modify password form end -->
+
+          <!-- MODAL -->
+          <div v-if="showModal">
+            <DynamicModal
+              :modal-title="modalTitle"
+              :modal-message="modalMessage"
+              :dismiss-modal-text="dismissModalText"
+              :submitModalText="submitModalText"
+              @closed="toggledModal"
+              @submitted="deleteMyProfile"
+              :reset="true"
+              :submit="true"
+              theme="warning"
+            >
+              <template v-slot:modalBody>
+                <p>
+                  {{ modalMessage }}
+                </p>
+              </template>
+            </DynamicModal>
           </div>
-        </div>
-        <!-- Modal -->
-        <div v-if="showModal">
-          <DynamicModal
-            :modal-title="modalTitle"
-            :modal-message="modalMessage"
-            :dismiss-modal-text="dismissModalText"
-            :submitModalText="submitModalText"
-            @closed="toggledModal"
-            @submitted="deleteMyProfile"
-            :reset="true"
-            :submit="true"
-            theme="warning"
-          >
-            <template v-slot:modalBody>
-              <p>
-                {{ modalMessage }}
-              </p>
-            </template>
-          </DynamicModal>
         </div>
       </div>
     </div>
-  </div>
-</main>
+  </main>
 </template>
 
 <script>
@@ -170,7 +177,7 @@ export default {
     return { auth, handleError };
   },
   data() {
-    // define attributs and verification rules for each input of the form
+    // define attributs and verification rules for each input of the update form
     const formSchema = {
       fields: [
         {

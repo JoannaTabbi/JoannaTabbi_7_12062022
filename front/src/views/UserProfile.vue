@@ -1,8 +1,8 @@
 <template>
-  <main>
-    <div class="container main-content main-margin-top bg-dark">
+  <main class="h-100 bg-dark">
+    <div class="container-fluid main-content main-padding-top px-0 px-sm-3">
       <div class="row">
-        <div class="col-12 mb-3 pt-3 border-end">
+        <div class="col-12 mb-3 pt-3">
           <Profile
             :user="user"
             :user-profile="userProfile"
@@ -23,7 +23,7 @@ import { userServices } from "@/_services";
 export default {
   name: "UserProfile",
   components: {
-    Profile
+    Profile,
   },
   setup() {
     const auth = useAuthStore();
@@ -33,31 +33,33 @@ export default {
   data() {
     return {
       user: {},
-      userProfile: true
-    }
+      userProfile: true,
+    };
   },
   computed: {
-    //transforms user.following object in array, then checks if params.id is present 
+    //transforms user.following object in array, then checks if params.id value is present
     //inside
-    isFollowed: function() { 
+    isFollowed: function () {
       const followingArr = Object.values(this.auth.user.following);
-      const found = followingArr.some((follower) => 
-        follower._id == this.$route.params.id
+      const found = followingArr.some(
+        (follower) => follower._id == this.$route.params.id
       );
-      return found
+      return found;
     },
-     followButtonText: function() {
-      if (this.isFollowed)
-     { return "Ne plus suivre" } 
-     else {return "Suivre" }  
-     }
+    //toggles follow button message
+    followButtonText: function () {
+      if (this.isFollowed) {
+        return "Ne plus suivre";
+      } else {
+        return "Suivre";
+      }
+    },
   },
   // checks if user is already followed, then switches isFollowed value between true and false,
   // followButtonText value between "Follow" and "unfollow" ; this will help to activate
   // the right method (follow / unfollow) while clicking on the follow button
   methods: {
-    
-    // fetching information about user from database
+    // gets current user data from the database
     getUser() {
       userServices
         .getUser(this.$route.params.id)
@@ -90,16 +92,16 @@ export default {
     },
     //toggles between following and unfollowing user
     followToggle() {
-      if(this.isFollowed) {
-        return this.unfollowUser()
+      if (this.isFollowed) {
+        return this.unfollowUser();
       } else {
-        return this.followUser()
+        return this.followUser();
       }
     },
   },
   mounted() {
     this.getUser();
-  }
+  },
 };
 </script>
 

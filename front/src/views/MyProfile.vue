@@ -1,11 +1,9 @@
 <template>
-  <main>
-    <div class="container main-content main-margin-top bg-dark">
+  <main class="h-100 bg-dark">
+    <div class="container-fluid main-content main-padding-top px-0 px-sm-3">
       <div class="row">
         <div class="col-12 mb-3 pt-3">
-          <Profile
-            :user="auth.user"
-          />
+          <Profile :user="auth.user" />
         </div>
       </div>
     </div>
@@ -21,7 +19,7 @@ import { userServices } from "@/_services";
 export default {
   name: "MyProfile",
   components: {
-    Profile
+    Profile,
   },
   setup() {
     const auth = useAuthStore();
@@ -37,17 +35,16 @@ export default {
   methods: {
     // displays user profile
     getMyProfile() {
-    userServices.getOneself()
-      .then((res) => {
-          this.user = res.data})
-      .catch(err => this.handleError.triggerToast(err))
-  }
+      userServices
+        .getOneself()
+        .then((res) => {
+          this.user = res.data;
+        })
+        .catch((err) => this.handleError.triggerToast(err));
+    },
   },
   mounted() {
     this.getMyProfile();
   },
 };
 </script>
-
-
-<style scoped></style>

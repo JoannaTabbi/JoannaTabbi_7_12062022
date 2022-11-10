@@ -9,12 +9,14 @@ import moment from 'moment'
 import 'moment/locale/fr'
 
 const pinia = createPinia()
+// mantain pinia stores persistant and stable
 pinia.use(piniaPluginPersistedstate)
 const app = createApp(App)
 app.use(pinia)
 app.use(router)
 app.directive('observe-visibility', ObserveVisibility)
 
+//add filter to format data
 app.config.globalProperties.$filters = {
     formatDate(value) {
         if (value) {

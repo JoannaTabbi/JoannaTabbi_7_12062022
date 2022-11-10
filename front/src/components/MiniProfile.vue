@@ -42,6 +42,7 @@ export default {
 </script>
 
 <style>
+/* styling profile icon for followers / following section */ 
 .avatar-miniprofile-container {
   width: 100px;
   height: 100px;

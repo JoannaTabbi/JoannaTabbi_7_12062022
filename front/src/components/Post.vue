@@ -1,7 +1,7 @@
 <template>
   <div>
     <article v-for="post in posts" :key="post._id">
-      <div class="card card-body border-0 mb-3 px-0 p-sm-3">
+      <div class="card card-body border-0 mb-3 px-2 p-sm-3">
         <span class="mx-5 border-top border-primary border-3"></span>
         <div
           class="d-flex align-items-center my-3 border-bottom border-top py-2"
@@ -66,7 +66,10 @@
               <li>
                 <div
                   type="button"
-                  v-if="post.userId._id != auth.user._id && auth.user.isAdmin === false"
+                  v-if="
+                    post.userId._id != auth.user._id &&
+                    auth.user.isAdmin === false
+                  "
                   class="dropdown-item"
                   @click="reportPost(post)"
                 >
@@ -99,22 +102,26 @@
             <ul class="nav d-flex justify-content-around">
               <li class="nav-item">
                 <div class="btn">
-                 <label type="button" for="formFile2">
-                  <i class="fa-regular fa-image fa-2x"></i>
-                  <input
-                    @change="selectUpdateImage"
-                    type="file"
-                    class="form-control"
-                    name="image"
-                    id="formFile2"
-                    accept="image/*"
-                    hidden
-                  />
-                </label>
+                  <label type="button" for="formFile2">
+                    <i class="fa-regular fa-image fa-2x"></i>
+                    <input
+                      @change="selectUpdateImage"
+                      type="file"
+                      class="form-control"
+                      name="image"
+                      id="formFile2"
+                      accept="image/*"
+                      hidden
+                    />
+                  </label>
                 </div>
               </li>
               <li class="nav-item">
-                <button type="reset" class="btn" @click.prevent="updateToggle(post)">
+                <button
+                  type="reset"
+                  class="btn"
+                  @click.prevent="updateToggle(post)"
+                >
                   <i class="fa-solid fa-xmark fa-2x text-danger"></i>
                 </button>
                 <button type="submit" class="btn">
@@ -136,7 +143,11 @@
             v-if="post.imageUrl || post.imageUrl != ''"
             class="card-img mb-3"
           >
-            <img class="w-100 rounded-3" :src="post.imageUrl" alt="image par default" />
+            <img
+              class="w-100 rounded-3"
+              :src="post.imageUrl"
+              alt="image par default"
+            />
           </div>
           <ul class="nav d-flex justify-content-start mb-4 small">
             <li
@@ -168,6 +179,8 @@
         />
       </div>
     </article>
+
+    <!--  VISIBILITY OBSERVER  -->
     <div
       v-if="posts && posts.length"
       v-observe-visibility="handleInfiniteScroll"
@@ -200,7 +213,7 @@ export default {
         imageUrl: "",
         message: "",
       },
-      newComment: ""
+      newComment: "",
     };
   },
   setup() {
@@ -258,7 +271,9 @@ export default {
       let formData = new FormData();
       if (this.updatedPost.message != "") {
         if (this.updatedPost.message.length > 1500) {
-          this.handleError.triggerToast("Le message ne doit pas dépasser 1500 mots");
+          this.handleError.triggerToast(
+            "Le message ne doit pas dépasser 1500 mots"
+          );
         } else {
           formData.append("message", this.updatedPost.message);
         }
@@ -266,7 +281,9 @@ export default {
       if (this.updatedPost.imageUrl) {
         //throw an error if the image size is too important (over 500ko)
         if (this.updatedPost.imageUrl.size > 500000) {
-          this.handleError.triggerToast("Attention, la taille de l'image ne doit pas dépasser 500ko");
+          this.handleError.triggerToast(
+            "Attention, la taille de l'image ne doit pas dépasser 500ko"
+          );
         } else {
           formData.append("image", this.updatedPost.imageUrl);
         }
@@ -288,9 +305,14 @@ export default {
 
     //reports post
     reportPost(post) {
-        postServices.reportPost(post._id)
-           .then(res => this.handleError.triggerToast("Votre signalement a bien été pris en compte"))
-           .catch(error => this.handleError.triggerToast(error))
+      postServices
+        .reportPost(post._id)
+        .then((res) =>
+          this.handleError.triggerToast(
+            "Votre signalement a bien été pris en compte"
+          )
+        )
+        .catch((error) => this.handleError.triggerToast(error));
     },
 
     // create new comment to one post
@@ -304,18 +326,18 @@ export default {
         .catch((error) => this.handleError.triggerToast(error));
     },
 
-    // deletes one comment 
+    // deletes one comment
     deleteComment(commentId, postId) {
-      commentServices.deleteComment(commentId)
-      .then(() => {
-         const postFound = this.posts.find(post => post._id == postId);
-         postFound.comments = postFound.comments.filter(comment => comment._id != commentId);
-      })
-      .catch((error) => this.handleError.triggerToast(error))
-    } 
+      commentServices
+        .deleteComment(commentId)
+        .then(() => {
+          const postFound = this.posts.find((post) => post._id == postId);
+          postFound.comments = postFound.comments.filter(
+            (comment) => comment._id != commentId
+          );
+        })
+        .catch((error) => this.handleError.triggerToast(error));
+    },
   },
 };
 </script>
-
-<style>
-</style>

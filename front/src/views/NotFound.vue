@@ -1,9 +1,17 @@
 <template>
-  <main class="main-margin-top main-content">
+  <main class="main-padding-top main-content">
     <div class="vh-100 bg-connexion">
       <div class="connexion container py-4 bg-secondary h-100">
         <div class="row px-2 px-sm-5 h-100">
-          <div class="col-12 border-bottom border-dark d-flex align-items-end justify-content-center">
+          <div
+            class="
+              col-12
+              border-bottom border-dark
+              d-flex
+              align-items-end
+              justify-content-center
+            "
+          >
             <h1 class="fs-2 fw-bold mb-4">404</h1>
           </div>
           <div class="col-12">
@@ -11,7 +19,7 @@
           </div>
         </div>
       </div>
-    </div>  
+    </div>
   </main>
 </template>
 

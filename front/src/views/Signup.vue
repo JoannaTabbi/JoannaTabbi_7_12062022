@@ -54,6 +54,7 @@ import * as Yup from "yup";
 import router from "../router/index";
 export default {
   data() {
+    /* defines inputs properties and validation rules for signup form */
     const formSchema = {
       fields: [
         {

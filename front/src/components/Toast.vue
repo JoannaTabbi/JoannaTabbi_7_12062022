@@ -1,9 +1,9 @@
 <template>
-    <div class="toast-wrapper">
-      <div class="toast-content">
-        {{ toastMessage }}
-      </div>
+  <div class="toast-wrapper">
+    <div class="toast-content">
+      {{ toastMessage }}
     </div>
+  </div>
 </template>
 
 <script>

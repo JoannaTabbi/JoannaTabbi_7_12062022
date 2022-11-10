@@ -10,24 +10,26 @@
           />
         </div>
       </div>
-      <div class="row d-flex flex-column flex-md-row mb-5 align-items-center justify-content-center justify-content-md-evenly">
+      <div
+        class="
+          row
+          d-flex
+          flex-column flex-md-row
+          mb-5
+          align-items-center
+          justify-content-center justify-content-md-evenly
+        "
+      >
         <div
           class="
-            avatar-container-round
-            avatar-profile
-            avatar-lg
-            col-12
-            col-md-3
-            col-lg-2
+            avatar-container-round avatar-profile avatar-lg
+            col-12 col-md-3 col-lg-2
             mx-0 mx-lg-3
             mb-3 mb-lg-0
             p-0
           "
         >
-          <img
-            :src="user.imageUrl"
-            alt="mon avatar"
-          />
+          <img :src="user.imageUrl" alt="mon avatar" />
         </div>
         <div
           class="
@@ -44,40 +46,55 @@
             Membre depuis le <span>{{ formattedDate }}</span>
           </p>
         </div>
-        <div v-if="userProfile" class="col-12 col-md-3 d-flex flex-column flex-md-row align-items-center justify-content-center">
+        <div
+          v-if="userProfile"
+          class="
+            col-12 col-md-3
+            d-flex
+            flex-column flex-md-row
+            align-items-center
+            justify-content-center
+          "
+        >
           <div>
-          <div
-            class="
-              btn btn-outline-dark rounded-pill shadow me-0 me-md-4
-            "
-            @click="submitFollow"
-          >{{ followButtonText }}
-            
+            <div
+              class="btn btn-outline-dark rounded-pill shadow me-0 me-md-4"
+              @click="submitFollow"
+            >
+              {{ followButtonText }}
+            </div>
           </div>
-        </div>
-        <div class="dropdown">
-          <div
-            role="button"
-            id="dropdownMenuLink"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-            class="fs-3"
-          >
-            ...
+          <div class="dropdown">
+            <div
+              role="button"
+              id="dropdownMenuLink"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              class="fs-3"
+            >
+              ...
+            </div>
           </div>
-        </div>
           <ul
             class="dropdown-menu dropdown-menu-end"
             aria-labelledby="dropdownMenuLink"
           >
             <li>
-              <div class="dropdown-item" @click="reportUser">Signaler cet utilisateur</div>
+              <div class="dropdown-item" @click="reportUser">
+                Signaler cet utilisateur
+              </div>
             </li>
           </ul>
         </div>
         <ul
           v-if="!userProfile"
-          class="nav col-12 col-md-3 justify-content-center align-items-center pe-0"
+          class="
+            nav
+            col-12 col-md-3
+            justify-content-center
+            align-items-center
+            pe-0
+          "
         >
           <li class="nav-item">
             <router-link
@@ -88,7 +105,11 @@
           </li>
         </ul>
       </div>
+
+      <!--  TABS  -->
+
       <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <!--  POSTS TAB  -->
         <li class="nav-item" role="presentation">
           <button
             class="nav-link active"
@@ -99,11 +120,12 @@
             role="tab"
             aria-controls="posts"
             aria-selected="false"
-            
           >
             Publications
           </button>
         </li>
+
+        <!--  ABOUT ME TAB  -->
         <li class="nav-item" role="presentation">
           <button
             class="nav-link"
@@ -118,6 +140,8 @@
             A propos
           </button>
         </li>
+
+        <!--  FOLLOWERS TAB  -->
         <li class="nav-item" role="presentation">
           <button
             class="nav-link"
@@ -132,6 +156,8 @@
             Vous suivent
           </button>
         </li>
+
+        <!--  FOLLOWING TAB  -->
         <li class="nav-item" role="presentation">
           <button
             class="nav-link"
@@ -147,18 +173,23 @@
           </button>
         </li>
       </ul>
+
+      <!--  TABS CONTENT  -->
       <div class="tab-content m-4 text-start" id="myTabContent">
+        <!--  POSTS TAB CONTENT  -->
         <div
           class="tab-pane fade show active"
           id="posts"
           role="tabpanel"
           aria-labelledby="posts-tab"
         >
-          <Post :posts="posts" @getPosts="getUserPosts"/>
+          <Post :posts="posts" @getPosts="getUserPosts" />
           <div v-if="isLoading === true">
             <Loader />
           </div>
         </div>
+
+        <!--  ABOUT ME TAB CONTENT  -->
         <div
           class="tab-pane fade"
           id="about"
@@ -167,6 +198,8 @@
         >
           {{ user.aboutMe }}
         </div>
+
+        <!--  FOLLOWERS TAB CONTENT  -->
         <div
           class="tab-pane fade"
           id="followers"
@@ -179,6 +212,8 @@
             </div>
           </div>
         </div>
+
+        <!--  FOLLOWING TAB CONTENT  -->
         <div
           class="tab-pane fade"
           id="following"
@@ -209,30 +244,30 @@ export default {
   components: {
     Post,
     MiniProfile,
-    Loader
+    Loader,
   },
   props: {
     user: {
-        type: Object
-    }, 
+      type: Object,
+    },
     userProfile: {
-        type: Boolean
-    }, 
+      type: Boolean,
+    },
     followButtonText: {
-        type: String
-    }
+      type: String,
+    },
   },
   data() {
-     return {
-        posts: [], 
-        lastPage: 1,
-        isLoading: false
-     }
+    return {
+      posts: [],
+      lastPage: 1,
+      isLoading: false,
+    };
   },
   setup() {
     const auth = useAuthStore();
     const handleError = useHandleErrorStore();
-    return { auth, handleError }
+    return { auth, handleError };
   },
   computed: {
     // formates the the user account's creation date
@@ -241,19 +276,24 @@ export default {
     },
   },
   methods: {
+    // emits submit following / unfollowing function
     submitFollow() {
-        this.$emit("submitFollow");
+      this.$emit("submitFollow");
     },
 
     //display the posts from one page;
-    // displays the first page of posts when clicked on "publication" tag, then the next page every time 
+    // displays the first page of posts when clicked on "publication" tag, then the next page every time
     //the scroll reaches the visibility observer at the bottom of the page till the last page
     getUserPosts(page) {
-        //stops fetching data when the last page is displayed
-      if (page > this.lastPage) { return };
+      //stops fetching data when the last page is displayed
+      if (page > this.lastPage) {
+        return;
+      }
       this.isLoading = true;
       postServices
-        .getUserPosts(page, {postUser: this.user._id || this.$route.params.id})
+        .getUserPosts(page, {
+          postUser: this.user._id || this.$route.params.id,
+        })
         .then((res) => {
           this.posts.push(...res.data.userPosts);
           this.lastPage = res.data.totalPages;
@@ -264,16 +304,21 @@ export default {
 
     //reports user
     reportUser() {
-        userServices.reportUser(this.user._id)
-           .then(() => this.handleError.triggerToast("Votre signalement a bien été pris en compte"))
-           .catch(error => this.handleError.triggerToast(error))
-    }
+      userServices
+        .reportUser(this.user._id)
+        .then(() =>
+          this.handleError.triggerToast(
+            "Votre signalement a bien été pris en compte"
+          )
+        )
+        .catch((error) => this.handleError.triggerToast(error));
+    },
   },
   mounted() {
-    this.getUserPosts(1)
-  }
+    // calls fetching all users data on mounted lifecycle
+    this.getUserPosts(1);
+  },
 };
-
 </script>
 
 <style>

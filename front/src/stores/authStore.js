@@ -16,12 +16,13 @@ export const useAuthStore = defineStore('AuthStore', {
     followingNb: (state) => state.user ? state.user.following.length : 0,
   },
   actions: {
-    // fetches the user information 
+    // register token, refreshToken and current user data once logged in 
     loggedIn(token, refreshToken, user) {
       this.token = token;
       this.refreshToken = refreshToken;
       this.user = user;
     },
+    //removes token, refreshtoken and users data from the store once the current user logged out
     loggedOut() {
       this.token = null;
       this.refreshToken = null;

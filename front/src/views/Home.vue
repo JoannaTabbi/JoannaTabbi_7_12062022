@@ -1,24 +1,33 @@
 <template>
-  <main class="h-100 main-padding-top bg-dark">
-    <div class="container-fluid main-content px-0 px-sm-3">
+  <main class="h-100 bg-dark">
+    <div class="container-fluid main-content px-0 px-sm-3 main-padding-top">
       <div class="row">
         <!-- WELCOME CARD SECTION -->
 
-        <div class="col-12 col-md-4 mb-3 pt-3">
-          <aside id="home" class="bg-borders shadow rounded-3 mb-3 p-3 sticky-md-top">
+        <div class="col-12 col-md-4 pt-3">
+          <aside
+            id="home"
+            class="bg-borders shadow rounded-3 p-3 sticky-md-top"
+          >
             <h1 class="text-start fs-3">Accueil</h1>
             <div
-              class="card w-100 pt-5 pt-sm-0 ps-sm-5 pt-md-5 ps-md-0 flex-sm-row flex-md-column align-items-center"
+              class="
+                card
+                w-100
+                pt-5 pt-sm-0
+                ps-sm-5
+                pt-md-5
+                ps-md-0
+                flex-sm-row flex-md-column
+                align-items-center
+              "
             >
               <div class="avatar-container-round avatar-lg">
-                <img
-                  :src="auth.user.imageUrl"
-                  alt="mon avatar"
-                />
+                <img :src="auth.user.imageUrl" alt="mon avatar" />
               </div>
 
               <div class="card-body my-4">
-                <h2 class="card-title">
+                <h2 class="card-title fs-5">
                   Bonjour
                   <span
                     ><router-link to="/myProfile">{{
@@ -30,11 +39,7 @@
                   >Membre depuis le
                   <div>{{ formattedDate }}</div></small
                 >
-                <div
-                  class="
-                    mt-3
-                  "
-                >
+                <div class="mt-3">
                   <router-link
                     to="/modifyProfile"
                     class="btn btn-outline-dark py-2 px-3 rounded-pill shadow"
@@ -46,16 +51,17 @@
           </aside>
         </div>
 
-        <!-- WELCOME CARD SECTION END -->
         <!-- FEEDS AND CREATE POST SECTIONS -->
 
-        <div
-          class="h-100 col-12 col-md-8 pt-3"
-        >
-          <section id="create_post" class="bg-borders shadow rounded-3 mb-3 p-3">
+        <div class="h-100 col-12 col-md-8 pt-3">
+          <!-- CREATE POST SECTION -->
+          <section
+            id="create_post"
+            class="bg-borders shadow rounded-3 mb-3 p-3"
+          >
             <h2 class="text-start fs-4">Créer une publication</h2>
             <form
-              class="card card-body border-0"
+              class="card card-body border-0 px-2 px-sm-3"
               @submit.prevent="createPost()"
             >
               <div class="d-flex mb-3 border-bottom pb-2">
@@ -81,17 +87,17 @@
                 <li class="nav-item">
                   <div class="btn">
                     <label type="button" for="formFile3">
-                    <i class="fa-regular fa-image fa-2x"></i>
-                    <input
-                      @change="selectImage"
-                      type="file"
-                      class="form-control"
-                      name="image"
-                      id="formFile3"
-                      accept="image/*"
-                      hidden
-                    />
-                  </label>
+                      <i class="fa-regular fa-image fa-2x"></i>
+                      <input
+                        @change="selectImage"
+                        type="file"
+                        class="form-control"
+                        name="image"
+                        id="formFile3"
+                        accept="image/*"
+                        hidden
+                      />
+                    </label>
                   </div>
                 </li>
                 <li class="nav-item">
@@ -102,6 +108,8 @@
               </ul>
             </form>
           </section>
+
+          <!-- FEEDS SECTION -->
           <section id="feeds" class="shadow bg-borders rounded-3 mb-3 p-3">
             <h2 class="text-start fs-4 fw-bolder">Fil d'actualité</h2>
             <Post
@@ -114,9 +122,6 @@
             </div>
           </section>
         </div>
-
-        <!-- FEEDS AND CREATE POST SECTIONS END -->
-
       </div>
     </div>
   </main>
@@ -132,13 +137,14 @@ export default {
   name: "Home",
   components: {
     Post,
-    Loader
+    Loader,
   },
   setup() {
     const auth = useAuthStore();
     const handleError = useHandleErrorStore();
     return {
-      auth, handleError
+      auth,
+      handleError,
     };
   },
   data() {
@@ -151,7 +157,7 @@ export default {
       },
       showModal: false,
       modalTitle: "Publication",
-      isLoading: false
+      isLoading: false,
     };
   },
   computed: {
@@ -177,7 +183,7 @@ export default {
           this.isLoading = false;
         })
         .catch((err) => {
-          this.handleError.triggerToast(`Une erreur est survenue : ${err}`)
+          this.handleError.triggerToast(`Une erreur est survenue : ${err}`);
         });
     },
 
@@ -190,18 +196,24 @@ export default {
       let formData = new FormData();
       //throw an error if neither message nor image posted
       if (this.newPost.message == "" && this.newPost.imageUrl == "") {
-        this.handleError.triggerToast("Veuillez saisir un message ou choisir une photo");
+        this.handleError.triggerToast(
+          "Veuillez saisir un message ou choisir une photo"
+        );
       } else {
         //throw an error if the message is too long (over 1500 letters)
         if (this.newPost.message.length > 1500) {
-          this.handleError.triggerToast("Le message ne doit pas dépasser 1500 mots");
+          this.handleError.triggerToast(
+            "Le message ne doit pas dépasser 1500 mots"
+          );
         } else {
           formData.append("message", this.newPost.message);
         }
         if (this.newPost.imageUrl) {
           //throw an error if the image size is too important (over 500ko)
           if (this.newPost.imageUrl.size > 500000) {
-            this.handleError.triggerToast("Attention, la taille de l'image ne doit pas dépasser 500ko");
+            this.handleError.triggerToast(
+              "Attention, la taille de l'image ne doit pas dépasser 500ko"
+            );
           } else {
             formData.append("image", this.newPost.imageUrl);
           }

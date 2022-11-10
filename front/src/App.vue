@@ -1,13 +1,16 @@
 <template>
   <div>
     <!-- if no user stored in authstore, the header will not be injected to the page -->
-     <Header v-if="auth.user" :user-name="auth.user.userName"/> 
+    <Header v-if="auth.user" :user-name="auth.user.userName" />
     <router-view class="mx-0 mx-sm-auto"> </router-view>
 
     <!-- display toast to show errors -->
     <Teleport to="#modals">
       <Transition name="toast">
-        <Toast v-if="handleError.showToast" :toast-message="handleError.toastMessage" />
+        <Toast
+          v-if="handleError.showToast"
+          :toast-message="handleError.toastMessage"
+        />
       </Transition>
     </Teleport>
     <!-- <Footer /> -->
@@ -18,20 +21,20 @@
 import Header from "./components/Header.vue";
 import Footer from "./components/Footer.vue";
 import Toast from "@/components/Toast.vue";
-import { useAuthStore } from '@/stores/authStore.js';
+import { useAuthStore } from "@/stores/authStore.js";
 import { useHandleErrorStore } from "@/stores/handleErrorStore";
 export default {
   name: "App",
   components: {
     Header,
     Footer,
-    Toast
+    Toast,
   },
   setup() {
     const auth = useAuthStore();
     const handleError = useHandleErrorStore();
-    return { auth, handleError }
-  }
+    return { auth, handleError };
+  },
 };
 </script>
 
@@ -53,15 +56,17 @@ img {
   padding-top: 70px;
 }
 .bg-connexion {
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-image: url('./assets/integration.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-image: url("./assets/integration.jpg");
 }
 .img-sm-container {
   width: 50px;
-} 
-h1, h2, h5 {
+}
+h1,
+h2,
+h5 {
   font-weight: bold;
 }
 a {
@@ -69,7 +74,7 @@ a {
   color: #4e5166;
 }
 a:hover {
-  color: #FD2D01;
+  color: #fd2d01;
 }
 textarea {
   resize: none;
@@ -79,18 +84,19 @@ textarea {
   -webkit-box-shadow: none;
   box-shadow: none;
 }
-input:focus, textarea:focus {
+input:focus,
+textarea:focus {
   background: radial-gradient(ellipse at 40% 50%, #ffebeb 30%, #fff 80%);
 }
 .pointer {
   cursor: pointer;
 }
 .pointer:hover {
-  color: #FD2D01;
+  color: #fd2d01;
 }
 .like {
-  color: #FD2D01;
-  font-weight: bold; 
+  color: #fd2d01;
+  font-weight: bold;
 }
 /* avatar common styling */
 .avatar-container-round {
