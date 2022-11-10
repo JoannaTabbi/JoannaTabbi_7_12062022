@@ -2,7 +2,7 @@
   <div>
     <!-- if no user stored in authstore, the header will not be injected to the page -->
      <Header v-if="auth.user" :user-name="auth.user.userName"/> 
-    <router-view class="mx-auto"> </router-view>
+    <router-view class="mx-0 mx-sm-auto"> </router-view>
 
     <!-- display toast to show errors -->
     <Teleport to="#modals">
@@ -49,8 +49,8 @@ img {
 .main-content {
   max-width: 1200px;
 }
-.main-margin-top {
-  margin-top: 70px;
+.main-padding-top {
+  padding-top: 70px;
 }
 .bg-connexion {
     background-size: cover;

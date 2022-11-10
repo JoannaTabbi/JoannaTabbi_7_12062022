@@ -1,5 +1,6 @@
 <template>
-  <div class="main-content container main-margin-top bg-dark">
+<main class="h-100 bg-dark">
+  <div class="main-content container-fluid px-0 px-sm-3 main-padding-top">
     <div class="row">
       <div class="col-12 mb-3 pt-3">
         <div class="card w-100 container-fluid p-0">
@@ -12,19 +13,12 @@
               />
             </div>
           </div>
-          <div
-            class="
-              d-flex
-              flex-column flex-md-row
-              mb-5
-              align-items-center
-              justify-content-evenly
-            "
-          >
+          
+          <div class="row justify-content-center align-items-md-center">
             <div
               class="
                 avatar-container-round avatar-profile avatar-lg
-                col-6 col-sm-3 col-lg-2
+                col-12 col-md-4
                 ms-0 ms-lg-3
                 mb-3 mb-lg-0
               "
@@ -32,7 +26,7 @@
               <img :src="auth.user.imageUrl" alt="mon avatar" />
             </div>
 
-            <div class="d-flex flex-column flex-sm-row justify-content-center">
+            <div class="col-12 col-md-8 d-flex flex-column flex-sm-row justify-content-evenly">
               <div class="mt-3 mx-2 mt-lg-0">
                 <button
                   class="btn btn-outline-dark py-2 px-3 rounded-pill shadow"
@@ -51,13 +45,14 @@
               </div>
             </div>
           </div>
-          <div class="container">
+          <div class="row px-3 px-md-5">
+            <h1 class="text-start mt-5 mt-md-3 fs-3">Mes informations</h1>
             <!-- upload files form -->
-
-            <form class="my-5 px-5" @submit.prevent="uploadUserFiles">
+            <section class="my-5 px-3">
+              <form @submit.prevent="uploadUserFiles">
               <div class="col-12 border-bottom border-dark mb-5">
                 <label for="formFile" class="form-label fs-4 fw-bold"
-                  >Modifiez la photo</label
+                  ><h2 class="fs-4">Modifiez la photo</h2></label
                 >
               </div>
               <input
@@ -97,12 +92,13 @@
                 </button>
               </div>
             </form>
-
+            </section>
+            
             <!-- upload files form end -->
-
-            <div class="row mx-2 mx-sm-5 my-5">
+            <!-- modify profile form start -->
+            <section class="mb-5 px-3">
               <div class="col-12 border-bottom border-dark mb-5">
-                <h1 class="fs-4 text-center">Modifiez le profil</h1>
+                <h2 class="fs-4 text-center">Modifiez le profil</h2>
               </div>
               <DynamicForm
                 :schema="formSchema"
@@ -112,10 +108,12 @@
                 :submit-function="onSubmit"
                 :initial-values="this.userUpdate"
               />
-            </div>
-            <div class="row mx-2 mx-sm-5 my-5">
+            </section>
+            <!-- modify profile form end -->
+            <!-- modify password form start -->
+            <section class="mb-5 px-3">
               <div class="col-12 border-bottom border-dark mb-5">
-                <h1 class="fs-4 text-center">Modifiez le mot de passe</h1>
+                <h2 class="fs-4 text-center">Modifiez le mot de passe</h2>
               </div>
               <DynamicForm
                 :schema="passwordSchema"
@@ -124,7 +122,8 @@
                 :reset="true"
                 :submit-function="onSubmit"
               />
-            </div>
+            </section>
+            <!-- modify password form end -->
           </div>
         </div>
         <!-- Modal -->
@@ -150,6 +149,7 @@
       </div>
     </div>
   </div>
+</main>
 </template>
 
 <script>
