@@ -121,10 +121,11 @@
                   type="reset"
                   class="btn"
                   @click.prevent="updateToggle(post)"
+                  aria-label="abandonner les modifications"
                 >
                   <i class="fa-solid fa-xmark fa-2x text-danger"></i>
                 </button>
-                <button type="submit" class="btn">
+                <button type="submit" class="btn" aria-label="soumettre les modifications">
                   <i class="fa-solid fa-check fa-2x text-success"></i>
                 </button>
               </li>

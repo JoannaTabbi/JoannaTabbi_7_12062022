@@ -73,6 +73,7 @@
                   />
                 </div>
                 <div class="w-100 form-group">
+                  <label for="post" aria-label="écrire une publication" hidden></label>
                   <textarea
                     v-model="newPost.message"
                     id="post"
@@ -101,7 +102,7 @@
                   </div>
                 </li>
                 <li class="nav-item">
-                  <button type="submit" class="btn">
+                  <button type="submit" class="btn" aria-label="créer la publicité">
                     <i class="fa-regular fa-paper-plane fa-2x"></i>
                   </button>
                 </li>

@@ -53,14 +53,14 @@
               </div>
             </div>
             <div class="row px-3 px-md-5">
-              <h1 class="text-start mt-5 mt-md-3 fs-3">Mes informations</h1>
+              <h1 class="text-start mt-5 mt-md-3 fs-3">Modifier mes informations</h1>
 
               <!-- UPLOAD FILES FORM -->
               <section class="my-5 px-3">
                 <form @submit.prevent="uploadUserFiles">
                   <div class="col-12 border-bottom border-dark mb-5">
                     <label for="formFile" class="form-label fs-4 fw-bold"
-                      ><h2 class="fs-4">Modifiez la photo</h2></label
+                      ><h2 class="fs-4">Photo de profil</h2></label
                     >
                   </div>
                   <input
@@ -105,7 +105,7 @@
               <!-- MODIFY PROFILE FORM -->
               <section class="mb-5 px-3">
                 <div class="col-12 border-bottom border-dark mb-5">
-                  <h2 class="fs-4 text-center">Modifiez le profil</h2>
+                  <h2 class="fs-4 text-center">Données personnelles</h2>
                 </div>
                 <DynamicForm
                   :schema="formSchema"
@@ -120,7 +120,7 @@
               <!-- MODIFY PASSWORD FORM -->
               <section class="mb-5 px-3">
                 <div class="col-12 border-bottom border-dark mb-5">
-                  <h2 class="fs-4 text-center">Modifiez le mot de passe</h2>
+                  <h2 class="fs-4 text-center">Mot de passe</h2>
                 </div>
                 <DynamicForm
                   :schema="passwordSchema"

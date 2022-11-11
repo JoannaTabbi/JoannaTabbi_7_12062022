@@ -9,14 +9,17 @@
         />
       </div>
       <form class="w-100 d-flex" @submit.prevent="submitNewComment">
+        <label for="comment" aria-label="écrire un commentaire"></label>
         <textarea
+          id="comment"
+          name="comment"
           :value="modelValue"
           @input="$emit('update:modelValue', $event.target.value)"
           class="form-control border-0 p-2"
           placeholder="Qu'en dites-vous?"
           rows="1"
         ></textarea>
-        <button type="submit" class="btn">
+        <button type="submit" class="btn" aria-label="créer le commentaire">
           <i class="fa-regular fa-paper-plane fa-lg"></i>
         </button>
       </form>
@@ -38,7 +41,7 @@
           <div class="w-100 text-start bg-light rounded-3 p-2">
             <div class="d-flex align-items-baseline justify-content-between">
               <router-link :to="auth.profilePage(comment.userId._id)">
-                <h5 class="fs-6 mb-0">{{ comment.userId.userName }}</h5>
+                <h4 class="fs-6 mb-0">{{ comment.userId.userName }}</h4>
               </router-link>
               <div class="dropdown fs-5 fw-bold">
                 <div
@@ -119,11 +122,12 @@
               <button
                 type="reset"
                 class="btn text-danger"
+                aria-label="réinitialiser les modifications du commentaire"
                 @click="updateCommentToggle(comment)"
               >
                 <i class="fa-solid fa-xmark fa-lg"></i>
               </button>
-              <button type="submit" class="btn">
+              <button type="submit" class="btn" aria-label="soumettre les modifications du commentaire">
                 <i class="fa-solid fa-check fa-lg text-success"></i>
               </button>
             </form>
