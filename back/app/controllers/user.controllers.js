@@ -136,7 +136,6 @@ exports.login = (req, res, next) => {
               maxAge: 1000 * 60 * 60 * 8760,
             });
             res.status(200).json({
-                userId: user._id,
                 // creating a token for a new session
                 token: jwt.sign({
                     userId: user._id, isAdmin: user.isAdmin// the method takes two arguments :
@@ -307,25 +306,42 @@ exports.updateUser = (req, res, next) => {
       if (!user) {
         res.status(404).json(error);
       } else {
-        const update = req.file ? req.body.user : req.body;
-        // the password is updated
-        if (update.password) {
-          const hash = await bcrypt.hash(update.password, 10); // the password is crypted
-          update.password = hash;
-        }
+        const update = {}
+
+        // userName is updated
+        if (req.body.userName) {
+          update.userName = req.body.userName
+        };
+
+        // aboutMe is updated
+        if (req.body.aboutMe) {
+          update.aboutMe = req.body.aboutMe
+        };
+
         // the email is updated
-        if (update.email) {
+        if (req.body.email) {
           // validates the email format
-          const emailValidated = validator.isEmail(update.email);
+          const emailValidated = validator.isEmail(req.body.email);
           if (!emailValidated) {
             return res.status(400).json({
               error: "Invalid email format",
             });
           } else {
-            update.email = encryptMail(update.email); // the email is crypted
-            console.log(update.email);
+            update.email = encryptMail(req.body.email); // the email is crypted
           }
         }
+
+        // the password is updated
+        if (req.body.password) {
+          const hash = await bcrypt.hash(req.body.password, 10); // the password is crypted
+          update.password = hash;
+        }
+        
+        // isAdmin is updated 
+        if (req.body.isAdmin) {
+          update.isAdmin = req.body.isAdmin
+        };
+
         // check if image file is present
         const userObject = req.file ?
           {
@@ -349,7 +365,7 @@ exports.updateUser = (req, res, next) => {
         User.findByIdAndUpdate({
               _id: req.auth.userId,
             },
-            userObject, {
+              userObject, {
               new: true,
               upsert: true,
               setDefaultsOnInsert: true,
