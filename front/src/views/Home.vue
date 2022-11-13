@@ -23,7 +23,7 @@
               "
             >
               <div class="avatar-container-round avatar-lg">
-                <img :src="auth.user.imageUrl" alt="mon avatar" />
+                <img :src="auth.user.imageUrl" :alt="`image de ${auth.user.userName}`" />
               </div>
 
               <div class="card-body my-4">
@@ -69,11 +69,11 @@
                   <img
                     class="mw-100 shadow rounded-3"
                     :src="auth.user.imageUrl"
-                    alt="avatar"
+                    :alt="`avatar de ${auth.user.userName}`"
                   />
                 </div>
                 <div class="w-100 form-group">
-                  <label for="post" aria-label="écrire une publication" hidden></label>
+                  <label for="post" aria-label="écrire une publication" class="visuallyhidden">Ecrire une publication</label>
                   <textarea
                     v-model="newPost.message"
                     id="post"
@@ -88,6 +88,7 @@
                 <li class="nav-item">
                   <div class="btn">
                     <label type="button" for="formFile3">
+                      <span class="visuallyhidden">Choisir une nouvelle image</span>
                       <i class="fa-regular fa-image fa-2x"></i>
                       <input
                         @change="selectImage"
@@ -102,7 +103,7 @@
                   </div>
                 </li>
                 <li class="nav-item">
-                  <button type="submit" class="btn" aria-label="créer la publicité">
+                  <button type="submit" class="btn" aria-label="soumettre une publication">
                     <i class="fa-regular fa-paper-plane fa-2x"></i>
                   </button>
                 </li>

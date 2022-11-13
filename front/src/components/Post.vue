@@ -10,7 +10,7 @@
             <img
               class="mw-100 shadow rounded-3"
               :src="post.userId.imageUrl"
-              alt="avatar"
+              :alt="`avatar de ${post.userId.userName}`"
             />
           </div>
           <div class="w-100 text-start">
@@ -23,15 +23,14 @@
           </div>
           <!-- dropdown menu -->
           <div class="dropdown fs-2">
-            <a
-              href="#"
+            <div
               role="button"
               id="dropdownMenuLink"
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
               ...
-            </a>
+            </div>
 
             <ul
               class="dropdown-menu dropdown-menu-end text-end"
@@ -147,7 +146,7 @@
             <img
               class="w-100 rounded-3"
               :src="post.imageUrl"
-              alt="image par default"
+              :alt="`image publiée par ${post.userId.userName}`"
             />
           </div>
           <ul class="nav d-flex justify-content-start mb-4 small">
@@ -174,6 +173,7 @@
         <!--  COMMENTS  -->
         <Comments
           :comments="post.comments"
+          :postId="post._id"
           v-model="newComment"
           @create-comment="createComment(post)"
           @delete-comment="deleteComment"

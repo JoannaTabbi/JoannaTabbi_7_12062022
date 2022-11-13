@@ -16,7 +16,7 @@
               justify-content-center
             "
           >
-            <img :src="mpUser.imageUrl" alt="avatar" />
+            <img :src="mpUser.imageUrl" :alt="`avatar de ${mpUser.userName}`" />
           </div>
           <div class="col-12 mb-3 mb-lg-0">
             <h3 class="card-title text-center fs-6 mb-0">

@@ -9,7 +9,7 @@
                 <img
                   class="img-fluid w-100 rounded-top"
                   src="https://picsum.photos/800/200?random=1&grayscale"
-                  alt="photo aléatoire"
+                  alt="photo d'arrière-plan aléatoire"
                 />
               </div>
             </div>

@@ -9,9 +9,9 @@
         />
       </div>
       <form class="w-100 d-flex" @submit.prevent="submitNewComment">
-        <label for="comment" aria-label="écrire un commentaire"></label>
+        <label :for="`comment-${postId}`" aria-label="écrire un commentaire" class="visuallyhidden">Ecrire un commentaire</label>
         <textarea
-          id="comment"
+          :id="`comment-${postId}`"
           name="comment"
           :value="modelValue"
           @input="$emit('update:modelValue', $event.target.value)"
@@ -34,7 +34,7 @@
           <img
             class="mw-100 shadow rounded-3"
             :src="comment.userId.imageUrl"
-            alt="avatar"
+            :alt="`avatar de ${comment.userId.userName}`"
           />
         </div>
         <div class="w-100">
@@ -176,7 +176,7 @@ export default {
       updatedComment: "",
     };
   },
-  props: ["comments", "modelValue"],
+  props: ["comments", "modelValue", "postId"],
   emits: ["update:modelValue", "createComment", "deleteComment"],
   setup() {
     const auth = useAuthStore();
