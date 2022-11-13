@@ -134,8 +134,9 @@
           </div>
 
           <!-- MODAL -->
-          <div v-if="showModal">
+          
             <DynamicModal
+              :show="showModal"
               :modal-title="modalTitle"
               :modal-message="modalMessage"
               :dismiss-modal-text="dismissModalText"
@@ -152,7 +153,7 @@
                 </p>
               </template>
             </DynamicModal>
-          </div>
+          
         </div>
       </div>
     </div>
@@ -257,7 +258,7 @@ export default {
       formSchema,
       passwordSchema,
       userUpdate: {
-        _id: this.auth.user._id,
+        //_id: this.auth.user._id,
         userName: this.auth.user.userName,
         aboutMe: this.auth.user.aboutMe,
         email: this.auth.user.email,
@@ -292,7 +293,6 @@ export default {
       if (value.password && value.password === this.auth.user.password) {
         delete value.password;
       }
-
       // updates user's data on the server
       userServices
         .updateUser(value)
@@ -313,8 +313,11 @@ export default {
 
     uploadUserFiles() {
       let formData = new FormData();
-      formData.append("user", this.userUpdate);
       formData.append("image", this.currentImage);
+      //iterate on userUpdated to append each property to formData
+      for (const property in this.userUpdate) {
+        formData.append(`${property}`, this.userUpdate[property])
+      };
 
       loadServices
         .uploadUserFiles(formData)

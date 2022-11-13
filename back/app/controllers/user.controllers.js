@@ -333,8 +333,7 @@ exports.updateUser = (req, res, next) => {
 
         // the password is updated
         if (req.body.password) {
-          const hash = await bcrypt.hash(req.body.password, 10); // the password is crypted
-          update.password = hash;
+          update.password = await bcrypt.hash(req.body.password, 10); // the password is crypted
         }
         
         // isAdmin is updated 
@@ -371,6 +370,15 @@ exports.updateUser = (req, res, next) => {
               setDefaultsOnInsert: true,
             }
           )
+          .populate([{
+            path: "following",
+            select: ["userName", "imageUrl"]
+          },
+          {
+            path: "followers",
+            select: ["userName", "imageUrl"]
+          },
+        ])
           .then((userUpdated) => {
             userUpdated.email = decryptMail(userUpdated.email); // decrypts user's email
             res
