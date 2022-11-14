@@ -101,14 +101,14 @@
             <ul class="nav d-flex justify-content-around">
               <li class="nav-item">
                 <div class="btn">
-                  <label type="button" for="formFile2">
+                  <label type="button" :for="`updatePostFormFile-${post._id}`">
                     <i class="fa-regular fa-image fa-2x"></i>
                     <input
                       @change="selectUpdateImage"
                       type="file"
                       class="form-control"
                       name="image"
-                      id="formFile2"
+                      :id="`updatePostFormFile-${post._id}`"
                       accept="image/*"
                       hidden
                     />
@@ -152,10 +152,9 @@
           <ul class="nav d-flex justify-content-start mb-4 small">
             <li
               class="nav-item me-3 pointer"
-              :class="{ like: isLiked(post.usersLiked) }"
             >
               <div @click="likeToggle(post)">
-                <i class="fa-solid fa-thumbs-up fa-lg"></i>
+                <i class="fa-solid fa-thumbs-up fa-lg" :class="{ like: isLiked(post.usersLiked) }"></i>
                 J'aime
                 <span v-if="post.likes">{{ post.likes }}</span>
               </div>
@@ -295,6 +294,8 @@ export default {
           post.message = res.data.message;
           post.imageUrl = res.data.imageUrl;
           this.updateToggle(post);
+          this.updatedPost.message = "";
+          this.updatedPost.imageUrl = "";
         })
         .catch((error) => this.handleError.triggerToast(error));
     },

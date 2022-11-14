@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <main>
     <div class="vh-100 bg-connexion">
       <div class="connexion container py-4 bg-secondary h-100">
         <div class="row px-2 px-sm-5 h-100">
@@ -43,7 +43,7 @@
         </p>
       </template>
     </DynamicModal>
-  </div>
+  </main>
 </template>
 
 <script>

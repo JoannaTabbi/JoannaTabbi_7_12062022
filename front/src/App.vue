@@ -95,7 +95,7 @@ textarea:focus {
   color: #fd2d01;
 }
 .like {
-  color: #A71D01;
+  color: #fd2d01;
   font-weight: bold;
 }
 /* avatar common styling */

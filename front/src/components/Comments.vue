@@ -145,7 +145,6 @@
               px-2
               mt-1
             "
-            :class="{ like: isLiked(comment.usersLiked) }"
           >
             <li class="nav-item pointer" @click="likeToggle(comment)">
               <div>J'aime</div>
@@ -155,7 +154,7 @@
                 <span v-if="comment.likes" class="me-2">{{
                   comment.likes
                 }}</span>
-                <i class="fa-solid fa-thumbs-up fa-lg"></i>
+                <i class="fa-solid fa-thumbs-up fa-lg" :class="{ like: isLiked(comment.usersLiked) }"></i>
               </div>
             </li>
           </ul>
@@ -219,6 +218,7 @@ export default {
         .then((res) => {
           comment.message = res.data.message;
           this.updateCommentToggle(comment);
+          this.updatedComment = "";
         })
         .catch((error) => this.handleError.triggerToast(error));
     },

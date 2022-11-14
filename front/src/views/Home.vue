@@ -1,5 +1,5 @@
 <template>
-  <main class="h-100 bg-dark">
+  <main class="h-100 min-vh-100 bg-dark">
     <div class="container-fluid main-content px-0 px-sm-3 main-padding-top">
       <div class="row">
         <!-- WELCOME CARD SECTION -->
@@ -7,7 +7,7 @@
         <div class="col-12 col-md-4 pt-3">
           <aside
             id="home"
-            class="bg-borders shadow rounded-3 p-3 sticky-md-top"
+            class="bg-borders shadow rounded-sm-3 p-3 sticky-md-top"
           >
             <h1 class="text-start fs-3">Accueil</h1>
             <div
@@ -57,7 +57,7 @@
           <!-- CREATE POST SECTION -->
           <section
             id="create_post"
-            class="bg-borders shadow rounded-3 mb-3 p-3"
+            class="bg-borders shadow rounded-sm-3 mb-3 p-3"
           >
             <h2 class="text-start fs-4">Créer une publication</h2>
             <form
@@ -87,7 +87,7 @@
               <ul class="nav d-flex justify-content-around">
                 <li class="nav-item">
                   <div class="btn">
-                    <label type="button" for="formFile3">
+                    <label type="button" for="newPostFormFile">
                       <span class="visuallyhidden">Choisir une nouvelle image</span>
                       <i class="fa-regular fa-image fa-2x"></i>
                       <input
@@ -95,7 +95,7 @@
                         type="file"
                         class="form-control"
                         name="image"
-                        id="formFile3"
+                        id="newPostFormFile"
                         accept="image/*"
                         hidden
                       />
@@ -112,7 +112,7 @@
           </section>
 
           <!-- FEEDS SECTION -->
-          <section id="feeds" class="shadow bg-borders rounded-3 mb-3 p-3">
+          <section id="feeds" class="shadow bg-borders rounded-sm-3 mb-3 p-3">
             <h2 class="text-start fs-4 fw-bolder">Fil d'actualité</h2>
             <Post
               :posts="posts"

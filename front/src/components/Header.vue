@@ -5,7 +5,7 @@
         navbar navbar-expand-sm navbar-light
         bg-secondary
         fixed-top
-        opacity-75
+        opacity-100 opacity-sm-85
       "
     >
       <div class="container-fluid main-content">

@@ -1,0 +1,46 @@
+//override the utilities
+$utilities: () !default;
+
+$utilities: map-merge(
+  $utilities,
+  (
+    "rounded": (
+      property: border-radius,
+      class: rounded,
+      responsive: true,
+      values: (
+        0: 0,
+        1: $border-radius-sm,
+        2: $border-radius,
+        3: $border-radius-lg,
+        circle: 50%,
+        pill: $border-radius-pill
+      ),
+    ),
+    "rounded-top": (
+      property: border-top-left-radius border-top-right-radius,
+      class: rounded-top,
+      responsive: true,
+      values: (
+        null: $border-radius,
+        0: 0,
+        1: $border-radius-sm,
+        2: $border-radius,
+        3: $border-radius-lg
+      )
+    ),
+     // scss-docs-start utils-opacity
+     "opacity": (
+        property: opacity,
+        responsive: true,
+        values: (
+          0: 0,
+          25: .25,
+          50: .5,
+          75: .75,
+          85: .85,
+          100: 1,
+        )
+      ),
+  )
+);

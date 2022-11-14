@@ -7,23 +7,24 @@
             <div class="row">
               <div class="col-12">
                 <img
-                  class="img-fluid w-100 rounded-top"
+                  class="img-fluid w-100 rounded-top-sm-3"
                   src="https://picsum.photos/800/200?random=1&grayscale"
                   alt="photo d'arrière-plan aléatoire"
                 />
               </div>
             </div>
 
-            <div class="row justify-content-center align-items-md-center">
+            <div class="row align-items-center justify-content-center justify-content-md-evenly">
               <div
                 class="
                   avatar-container-round avatar-profile avatar-lg
-                  col-12 col-md-4
-                  ms-0 ms-lg-3
+                  col-12 col-md-3
+                  mx-0 mx-lg-3
                   mb-3 mb-lg-0
+                  p-0
                 "
               >
-                <img :src="auth.user.imageUrl" alt="mon avatar" />
+                <img :src="auth.user.imageUrl" :alt="`avatar de ${auth.user.userName}`" />
               </div>
 
               <div

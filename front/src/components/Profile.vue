@@ -1,10 +1,10 @@
 <template>
-  <section id="profile" class="shadow rounded-3 bg-white mb-3">
+  <section id="profile" class="shadow rounded-sm-3 bg-white mb-3">
     <div class="card w-100 container-fluid p-0">
       <div class="row">
         <div class="col-12">
           <img
-            class="img-fluid w-100 rounded-top"
+            class="img-fluid w-100 rounded-top-sm-3"
             src="https://picsum.photos/800/200?random=1&grayscale"
             alt="photo aléatoire"
           />
@@ -13,8 +13,6 @@
       <div
         class="
           row
-          d-flex
-          flex-column flex-md-row
           mb-5
           align-items-center
           justify-content-center justify-content-md-evenly
@@ -29,7 +27,7 @@
             p-0
           "
         >
-          <img :src="user.imageUrl" alt="mon avatar" />
+          <img :src="user.imageUrl" :alt="`avatar de ${user.userName}`" />
         </div>
         <div
           class="
@@ -111,7 +109,7 @@
       <ul class="nav nav-tabs" id="myTab" role="tablist">
         <!--  POSTS TAB  -->
         <li class="nav-item" role="presentation">
-          <button
+          <div
             class="nav-link active"
             id="posts-tab"
             data-bs-toggle="tab"
@@ -120,9 +118,9 @@
             role="tab"
             aria-controls="posts"
             aria-selected="false"
-          >
-            Publications
-          </button>
+          ><h2 class="fs-6 mb-0">Publications</h2>
+            
+          </div>
         </li>
 
         <!--  ABOUT ME TAB  -->
@@ -136,8 +134,7 @@
             role="tab"
             aria-controls="about"
             aria-selected="true"
-          >
-            A propos
+          ><h2 class="fs-6 mb-0">A propos</h2>
           </button>
         </li>
 
@@ -152,8 +149,7 @@
             role="tab"
             aria-controls="followers"
             aria-selected="true"
-          >
-            Vous suivent
+          ><h2 class="fs-6 mb-0">Vous suivent</h2>
           </button>
         </li>
 
@@ -168,14 +164,13 @@
             role="tab"
             aria-controls="following"
             aria-selected="false"
-          >
-            Suivis
+          ><h2 class="fs-6 mb-0">Suivis</h2>
           </button>
         </li>
       </ul>
 
       <!--  TABS CONTENT  -->
-      <div class="tab-content m-4 text-start" id="myTabContent">
+      <div class="tab-content m-4 text-start pt-3" id="myTabContent">
         <!--  POSTS TAB CONTENT  -->
         <div
           class="tab-pane fade show active"
