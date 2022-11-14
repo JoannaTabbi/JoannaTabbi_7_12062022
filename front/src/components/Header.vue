@@ -5,7 +5,7 @@
         navbar navbar-expand-sm navbar-light
         bg-secondary
         fixed-top
-        opacity-75
+        opacity-100 opacity-sm-85
       "
     >
       <div class="container-fluid main-content">
@@ -39,16 +39,15 @@
               </router-link>
             </li>
             <li class="nav-item text-start dropdown">
-              <a
+              <div
                 class="nav-link dropdown-toggle"
-                href="#"
                 id="navbarDropdown"
                 role="button"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
                 ><i class="fa-solid fa-user fa-fw fs-2 text-dark mx-2"></i>
                 <span class="d-sm-none">{{ userName }}</span>
-              </a>
+              </div>
               <ul
                 class="dropdown-menu dropdown-menu-end"
                 aria-labelledby="navbarDropdown"

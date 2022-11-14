@@ -92,7 +92,7 @@ textarea:focus {
   cursor: pointer;
 }
 .pointer:hover {
-  color: #fd2d01;
+  color: black;
 }
 .like {
   color: #fd2d01;
@@ -115,5 +115,17 @@ textarea:focus {
 .avatar-lg {
   width: 10rem;
   height: 10rem;
+}
+
+/* hide the redundant label text for everyone except the screenreaders */
+.visuallyhidden {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
 }
 </style>

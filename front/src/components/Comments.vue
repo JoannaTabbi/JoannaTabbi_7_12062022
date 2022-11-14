@@ -9,14 +9,22 @@
         />
       </div>
       <form class="w-100 d-flex" @submit.prevent="submitNewComment">
+        <label
+          :for="`comment-${postId}`"
+          aria-label="écrire un commentaire"
+          class="visuallyhidden"
+          >Ecrire un commentaire</label
+        >
         <textarea
+          :id="`comment-${postId}`"
+          name="comment"
           :value="modelValue"
           @input="$emit('update:modelValue', $event.target.value)"
           class="form-control border-0 p-2"
           placeholder="Qu'en dites-vous?"
           rows="1"
         ></textarea>
-        <button type="submit" class="btn">
+        <button type="submit" class="btn" aria-label="créer le commentaire">
           <i class="fa-regular fa-paper-plane fa-lg"></i>
         </button>
       </form>
@@ -24,26 +32,25 @@
 
     <!-- User's comments area -->
     <div v-for="comment in comments" :key="comment._id" class="my-4">
-
       <!-- display one comment -->
       <div class="d-flex my-2 py-2">
         <div class="d-flex img-sm-container me-2 align-items-start">
           <img
             class="mw-100 shadow rounded-3"
             :src="comment.userId.imageUrl"
-            alt="avatar"
+            :alt="`avatar de ${comment.userId.userName}`"
           />
         </div>
         <div class="w-100">
           <div class="w-100 text-start bg-light rounded-3 p-2">
             <div class="d-flex align-items-baseline justify-content-between">
               <router-link :to="auth.profilePage(comment.userId._id)">
-                <h5 class="fs-6 mb-0">{{ comment.userId.userName }}</h5>
+                <h4 class="fs-6 mb-0">{{ comment.userId.userName }}</h4>
               </router-link>
               <div class="dropdown fs-5 fw-bold">
                 <div
                   role="button"
-                  id="dropdownMenuLink"
+                  :id="`dropdownMenuLink-comment${comment._id}`"
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
@@ -52,17 +59,15 @@
 
                 <ul
                   class="dropdown-menu dropdown-menu-end text-end"
-                  aria-labelledby="dropdownMenuLink"
+                  :aria-labelledby="`dropdownMenuLink-comment${comment._id}`"
                 >
                   <li>
                     <div
-                      type="button"
                       v-if="
                         comment.userId._id === auth.user._id ||
                         auth.user.isAdmin
                       "
-                      class="dropdown-item"
-                      href="#"
+                      class="dropdown-item pointer"
                       @click="updateCommentToggle(comment)"
                     >
                       Modifier le commentaire
@@ -70,13 +75,11 @@
                   </li>
                   <li>
                     <div
-                      type="button"
                       v-if="
                         comment.userId._id === auth.user._id ||
                         auth.user.isAdmin
                       "
-                      class="dropdown-item"
-                      href="#"
+                      class="dropdown-item pointer"
                       @click="
                         $emit('delete-comment', comment._id, comment.postId)
                       "
@@ -86,12 +89,11 @@
                   </li>
                   <li>
                     <div
-                      type="button"
                       v-if="
                         comment.userId._id !== auth.user._id &&
                         auth.user.isAdmin === false
                       "
-                      class="dropdown-item"
+                      class="dropdown-item pointer"
                       @click="reportComment(comment)"
                     >
                       Signaler le commentaire
@@ -107,10 +109,16 @@
               class="d-flex"
               @submit.prevent="updateComment(comment)"
             >
+              <label
+                :for="`updateComment-${comment._id}`"
+                aria-label="modifier le commentaire"
+                class="visuallyhidden"
+                >Modifier le commentaire</label
+              >
               <textarea
                 class="form-control border-0"
                 name="updateComment"
-                id="updateComment"
+                :id="`updateComment-${comment._id}`"
                 rows="2"
                 v-model="updatedComment"
                 :placeholder="comment.message"
@@ -119,11 +127,16 @@
               <button
                 type="reset"
                 class="btn text-danger"
+                aria-label="réinitialiser les modifications du commentaire"
                 @click="updateCommentToggle(comment)"
               >
                 <i class="fa-solid fa-xmark fa-lg"></i>
               </button>
-              <button type="submit" class="btn">
+              <button
+                type="submit"
+                class="btn"
+                aria-label="soumettre les modifications du commentaire"
+              >
                 <i class="fa-solid fa-check fa-lg text-success"></i>
               </button>
             </form>
@@ -141,7 +154,6 @@
               px-2
               mt-1
             "
-            :class="{ like: isLiked(comment.usersLiked) }"
           >
             <li class="nav-item pointer" @click="likeToggle(comment)">
               <div>J'aime</div>
@@ -151,7 +163,10 @@
                 <span v-if="comment.likes" class="me-2">{{
                   comment.likes
                 }}</span>
-                <i class="fa-solid fa-thumbs-up fa-lg"></i>
+                <i
+                  class="fa-solid fa-thumbs-up fa-lg"
+                  :class="{ like: isLiked(comment.usersLiked) }"
+                ></i>
               </div>
             </li>
           </ul>
@@ -172,7 +187,7 @@ export default {
       updatedComment: "",
     };
   },
-  props: ["comments", "modelValue"],
+  props: ["comments", "modelValue", "postId"],
   emits: ["update:modelValue", "createComment", "deleteComment"],
   setup() {
     const auth = useAuthStore();
@@ -215,6 +230,7 @@ export default {
         .then((res) => {
           comment.message = res.data.message;
           this.updateCommentToggle(comment);
+          this.updatedComment = "";
         })
         .catch((error) => this.handleError.triggerToast(error));
     },

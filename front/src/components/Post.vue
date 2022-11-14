@@ -10,7 +10,7 @@
             <img
               class="mw-100 shadow rounded-3"
               :src="post.userId.imageUrl"
-              alt="avatar"
+              :alt="`avatar de ${post.userId.userName}`"
             />
           </div>
           <div class="w-100 text-start">
@@ -23,28 +23,26 @@
           </div>
           <!-- dropdown menu -->
           <div class="dropdown fs-2">
-            <a
-              href="#"
+            <div
               role="button"
-              id="dropdownMenuLink"
+              :id="`dropdownMenuLink-post${post._id}`"
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
               ...
-            </a>
+            </div>
 
             <ul
               class="dropdown-menu dropdown-menu-end text-end"
-              aria-labelledby="dropdownMenuLink"
+              :aria-labelledby="`dropdownMenuLink-post${post._id}`"
             >
               <li>
                 <div
-                  type="button"
                   v-if="
                     post.userId._id == auth.user._id ||
                     auth.user.isAdmin === true
                   "
-                  class="dropdown-item"
+                  class="dropdown-item pointer"
                   @click="updateToggle(post)"
                 >
                   Modifier la publication
@@ -52,12 +50,11 @@
               </li>
               <li>
                 <div
-                  type="button"
                   v-if="
                     post.userId._id == auth.user._id ||
                     auth.user.isAdmin === true
                   "
-                  class="dropdown-item"
+                  class="dropdown-item pointer"
                   @click="deletePost(post._id)"
                 >
                   Supprimer la publication
@@ -65,12 +62,11 @@
               </li>
               <li>
                 <div
-                  type="button"
                   v-if="
                     post.userId._id != auth.user._id &&
                     auth.user.isAdmin === false
                   "
-                  class="dropdown-item"
+                  class="dropdown-item pointer"
                   @click="reportPost(post)"
                 >
                   Signaler la publication
@@ -82,16 +78,17 @@
 
         <!-- UPDATE POST SECTION -->
 
-        <section v-if="post.isUpdating" class="shadow rounded-3 mb-3 p-3">
+        <div v-if="post.isUpdating" class="shadow rounded-3 mb-3 p-3">
           <form
             class="card card-body border-0"
             @submit.prevent="updatePost(post)"
           >
             <div class="d-flex mb-3 border-bottom pb-2">
               <div class="w-100 form-group">
+                <label :for="`updatePost-${post._id}`" aria-label="modifier la publication" class="visuallyhidden">Modifier la publication</label>
                 <textarea
                   v-model="updatedPost.message"
-                  id="updatePost"
+                  :id="`updatePost-${post._id}`"
                   name="updatePost"
                   class="form-control border-0 p-2"
                   :placeholder="post.message"
@@ -102,14 +99,14 @@
             <ul class="nav d-flex justify-content-around">
               <li class="nav-item">
                 <div class="btn">
-                  <label type="button" for="formFile2">
+                  <label :for="`updatePostFormFile-${post._id}`">
                     <i class="fa-regular fa-image fa-2x"></i>
                     <input
                       @change="selectUpdateImage"
                       type="file"
                       class="form-control"
                       name="image"
-                      id="formFile2"
+                      :id="`updatePostFormFile-${post._id}`"
                       accept="image/*"
                       hidden
                     />
@@ -121,19 +118,20 @@
                   type="reset"
                   class="btn"
                   @click.prevent="updateToggle(post)"
+                  aria-label="abandonner les modifications"
                 >
                   <i class="fa-solid fa-xmark fa-2x text-danger"></i>
                 </button>
-                <button type="submit" class="btn">
+                <button type="submit" class="btn" aria-label="soumettre les modifications">
                   <i class="fa-solid fa-check fa-2x text-success"></i>
                 </button>
               </li>
             </ul>
           </form>
-        </section>
+        </div>
 
         <!-- DISPLAY POST SECTION -->
-        <section v-else>
+        <div v-else>
           <div>
             <p class="text-start">
               {{ post.message }}
@@ -146,16 +144,15 @@
             <img
               class="w-100 rounded-3"
               :src="post.imageUrl"
-              alt="image par default"
+              :alt="`image publiée par ${post.userId.userName}`"
             />
           </div>
           <ul class="nav d-flex justify-content-start mb-4 small">
             <li
               class="nav-item me-3 pointer"
-              :class="{ like: isLiked(post.usersLiked) }"
             >
               <div @click="likeToggle(post)">
-                <i class="fa-solid fa-thumbs-up fa-lg"></i>
+                <i class="fa-solid fa-thumbs-up fa-lg" :class="{ like: isLiked(post.usersLiked) }"></i>
                 J'aime
                 <span v-if="post.likes">{{ post.likes }}</span>
               </div>
@@ -168,11 +165,12 @@
               </div>
             </li>
           </ul>
-        </section>
+        </div>
 
         <!--  COMMENTS  -->
         <Comments
           :comments="post.comments"
+          :postId="post._id"
           v-model="newComment"
           @create-comment="createComment(post)"
           @delete-comment="deleteComment"
@@ -294,6 +292,8 @@ export default {
           post.message = res.data.message;
           post.imageUrl = res.data.imageUrl;
           this.updateToggle(post);
+          this.updatedPost.message = "";
+          this.updatedPost.imageUrl = "";
         })
         .catch((error) => this.handleError.triggerToast(error));
     },

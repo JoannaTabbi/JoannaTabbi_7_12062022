@@ -1,5 +1,5 @@
 <template>
-  <main class="h-100 bg-dark">
+  <main class="h-100 min-vh-100 bg-dark">
     <div class="container-fluid main-content px-0 px-sm-3 main-padding-top">
       <div class="row">
         <!-- WELCOME CARD SECTION -->
@@ -7,7 +7,7 @@
         <div class="col-12 col-md-4 pt-3">
           <aside
             id="home"
-            class="bg-borders shadow rounded-3 p-3 sticky-md-top"
+            class="bg-borders shadow rounded-sm-3 p-3 sticky-md-top"
           >
             <h1 class="text-start fs-3">Accueil</h1>
             <div
@@ -23,7 +23,10 @@
               "
             >
               <div class="avatar-container-round avatar-lg">
-                <img :src="auth.user.imageUrl" alt="mon avatar" />
+                <img
+                  :src="auth.user.imageUrl"
+                  :alt="`image de ${auth.user.userName}`"
+                />
               </div>
 
               <div class="card-body my-4">
@@ -36,8 +39,7 @@
                   >
                 </h2>
                 <small class="card-text"
-                  >Membre depuis le
-                  <div>{{ formattedDate }}</div></small
+                  >Membre depuis le {{ formattedDate }}</small
                 >
                 <div class="mt-3">
                   <router-link
@@ -57,7 +59,7 @@
           <!-- CREATE POST SECTION -->
           <section
             id="create_post"
-            class="bg-borders shadow rounded-3 mb-3 p-3"
+            class="bg-borders shadow rounded-sm-3 mb-3 p-3"
           >
             <h2 class="text-start fs-4">Créer une publication</h2>
             <form
@@ -69,10 +71,16 @@
                   <img
                     class="mw-100 shadow rounded-3"
                     :src="auth.user.imageUrl"
-                    alt="avatar"
+                    :alt="`avatar de ${auth.user.userName}`"
                   />
                 </div>
                 <div class="w-100 form-group">
+                  <label
+                    for="post"
+                    aria-label="écrire une publication"
+                    class="visuallyhidden"
+                    >Ecrire une publication</label
+                  >
                   <textarea
                     v-model="newPost.message"
                     id="post"
@@ -86,14 +94,17 @@
               <ul class="nav d-flex justify-content-around">
                 <li class="nav-item">
                   <div class="btn">
-                    <label type="button" for="formFile3">
+                    <label for="newPostFormFile">
+                      <span class="visuallyhidden"
+                        >Choisir une nouvelle image</span
+                      >
                       <i class="fa-regular fa-image fa-2x"></i>
                       <input
                         @change="selectImage"
                         type="file"
                         class="form-control"
                         name="image"
-                        id="formFile3"
+                        id="newPostFormFile"
                         accept="image/*"
                         hidden
                       />
@@ -101,7 +112,11 @@
                   </div>
                 </li>
                 <li class="nav-item">
-                  <button type="submit" class="btn">
+                  <button
+                    type="submit"
+                    class="btn"
+                    aria-label="soumettre une publication"
+                  >
                     <i class="fa-regular fa-paper-plane fa-2x"></i>
                   </button>
                 </li>
@@ -110,7 +125,7 @@
           </section>
 
           <!-- FEEDS SECTION -->
-          <section id="feeds" class="shadow bg-borders rounded-3 mb-3 p-3">
+          <section id="feeds" class="shadow bg-borders rounded-sm-3 mb-3 p-3">
             <h2 class="text-start fs-4 fw-bolder">Fil d'actualité</h2>
             <Post
               :posts="posts"

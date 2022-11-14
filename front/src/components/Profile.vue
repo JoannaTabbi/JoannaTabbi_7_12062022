@@ -1,10 +1,10 @@
 <template>
-  <section id="profile" class="shadow rounded-3 bg-white mb-3">
+  <section id="profile" class="shadow rounded-sm-3 bg-white mb-3">
     <div class="card w-100 container-fluid p-0">
       <div class="row">
         <div class="col-12">
           <img
-            class="img-fluid w-100 rounded-top"
+            class="img-fluid w-100 rounded-top-sm-3"
             src="https://picsum.photos/800/200?random=1&grayscale"
             alt="photo aléatoire"
           />
@@ -13,8 +13,6 @@
       <div
         class="
           row
-          d-flex
-          flex-column flex-md-row
           mb-5
           align-items-center
           justify-content-center justify-content-md-evenly
@@ -29,7 +27,7 @@
             p-0
           "
         >
-          <img :src="user.imageUrl" alt="mon avatar" />
+          <img :src="user.imageUrl" :alt="`avatar de ${user.userName}`" />
         </div>
         <div
           class="
@@ -111,71 +109,64 @@
       <ul class="nav nav-tabs" id="myTab" role="tablist">
         <!--  POSTS TAB  -->
         <li class="nav-item" role="presentation">
-          <button
+          <div
             class="nav-link active"
             id="posts-tab"
             data-bs-toggle="tab"
             data-bs-target="#posts"
-            type="button"
             role="tab"
             aria-controls="posts"
             aria-selected="false"
-          >
-            Publications
-          </button>
+          ><h2 class="fs-6 mb-0">Publications</h2>
+            
+          </div>
         </li>
 
         <!--  ABOUT ME TAB  -->
         <li class="nav-item" role="presentation">
-          <button
+          <div
             class="nav-link"
             id="about-tab"
             data-bs-toggle="tab"
             data-bs-target="#about"
-            type="button"
             role="tab"
             aria-controls="about"
             aria-selected="true"
-          >
-            A propos
-          </button>
+          ><h2 class="fs-6 mb-0">A propos</h2>
+          </div>
         </li>
 
         <!--  FOLLOWERS TAB  -->
         <li class="nav-item" role="presentation">
-          <button
+          <div
             class="nav-link"
             id="followers-tab"
             data-bs-toggle="tab"
             data-bs-target="#followers"
-            type="button"
             role="tab"
             aria-controls="followers"
             aria-selected="true"
-          >
-            Vous suivent
-          </button>
+          ><h2 class="fs-6 mb-0">Vous suivent</h2>
+          </div>
         </li>
 
         <!--  FOLLOWING TAB  -->
         <li class="nav-item" role="presentation">
-          <button
+          <div
             class="nav-link"
             id="following-tab"
             data-bs-toggle="tab"
             data-bs-target="#following"
-            type="button"
             role="tab"
             aria-controls="following"
             aria-selected="false"
-          >
-            Suivis
-          </button>
+          ><h2 class="fs-6 mb-0">Suivis</h2>
+          </div>
         </li>
       </ul>
 
       <!--  TABS CONTENT  -->
-      <div class="tab-content m-4 text-start" id="myTabContent">
+      <div class="tab-content m-4 text-start pt-3" id="myTabContent">
         <!--  POSTS TAB CONTENT  -->
         <div
           class="tab-pane fade show active"

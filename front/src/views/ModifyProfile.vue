@@ -7,23 +7,33 @@
             <div class="row">
               <div class="col-12">
                 <img
-                  class="img-fluid w-100 rounded-top"
+                  class="img-fluid w-100 rounded-top-sm-3"
                   src="https://picsum.photos/800/200?random=1&grayscale"
-                  alt="photo aléatoire"
+                  alt="photo d'arrière-plan aléatoire"
                 />
               </div>
             </div>
 
-            <div class="row justify-content-center align-items-md-center">
+            <div
+              class="
+                row
+                align-items-center
+                justify-content-center justify-content-md-evenly
+              "
+            >
               <div
                 class="
                   avatar-container-round avatar-profile avatar-lg
-                  col-12 col-md-4
-                  ms-0 ms-lg-3
+                  col-12 col-md-3
+                  mx-0 mx-lg-3
                   mb-3 mb-lg-0
+                  p-0
                 "
               >
-                <img :src="auth.user.imageUrl" alt="mon avatar" />
+                <img
+                  :src="auth.user.imageUrl"
+                  :alt="`avatar de ${auth.user.userName}`"
+                />
               </div>
 
               <div
@@ -53,21 +63,27 @@
               </div>
             </div>
             <div class="row px-3 px-md-5">
-              <h1 class="text-start mt-5 mt-md-3 fs-3">Mes informations</h1>
+              <h1 class="text-start mt-5 mt-md-3 fs-3">
+                Modifier mes informations
+              </h1>
 
               <!-- UPLOAD FILES FORM -->
               <section class="my-5 px-3">
                 <form @submit.prevent="uploadUserFiles">
                   <div class="col-12 border-bottom border-dark mb-5">
-                    <label for="formFile" class="form-label fs-4 fw-bold"
-                      ><h2 class="fs-4">Modifiez la photo</h2></label
-                    >
+                    <h2 class="fs-4 fw-bold">Photo de profil</h2>
                   </div>
+                  <label
+                    for="updateUserFormFile"
+                    aria-label="modifier l'image"
+                    class="visuallyhidden"
+                    >Modifier l'image</label
+                  >
                   <input
                     class="form-control mb-2"
                     name="image"
                     type="file"
-                    id="formFile"
+                    id="updateUserFormFile"
                     accept="image/*"
                     @change="selectImage"
                   />
@@ -105,7 +121,7 @@
               <!-- MODIFY PROFILE FORM -->
               <section class="mb-5 px-3">
                 <div class="col-12 border-bottom border-dark mb-5">
-                  <h2 class="fs-4 text-center">Modifiez le profil</h2>
+                  <h2 class="fs-4 text-center">Données personnelles</h2>
                 </div>
                 <DynamicForm
                   :schema="formSchema"
@@ -120,7 +136,7 @@
               <!-- MODIFY PASSWORD FORM -->
               <section class="mb-5 px-3">
                 <div class="col-12 border-bottom border-dark mb-5">
-                  <h2 class="fs-4 text-center">Modifiez le mot de passe</h2>
+                  <h2 class="fs-4 text-center">Mot de passe</h2>
                 </div>
                 <DynamicForm
                   :schema="passwordSchema"
@@ -134,25 +150,25 @@
           </div>
 
           <!-- MODAL -->
-          <div v-if="showModal">
-            <DynamicModal
-              :modal-title="modalTitle"
-              :modal-message="modalMessage"
-              :dismiss-modal-text="dismissModalText"
-              :submitModalText="submitModalText"
-              @closed="toggledModal"
-              @submitted="deleteMyProfile"
-              :reset="true"
-              :submit="true"
-              theme="warning"
-            >
-              <template v-slot:modalBody>
-                <p>
-                  {{ modalMessage }}
-                </p>
-              </template>
-            </DynamicModal>
-          </div>
+
+          <DynamicModal
+            :show="showModal"
+            :modal-title="modalTitle"
+            :modal-message="modalMessage"
+            :dismiss-modal-text="dismissModalText"
+            :submitModalText="submitModalText"
+            @closed="toggledModal"
+            @submitted="deleteMyProfile"
+            :reset="true"
+            :submit="true"
+            theme="warning"
+          >
+            <template v-slot:modalBody>
+              <p>
+                {{ modalMessage }}
+              </p>
+            </template>
+          </DynamicModal>
         </div>
       </div>
     </div>
@@ -200,7 +216,6 @@ export default {
           label: "A PROPOS...",
           name: "aboutMe",
           as: "textarea",
-          type: "text",
           id: "aboutMe",
           rows: "3",
           rules: Yup.string(),
@@ -257,7 +272,6 @@ export default {
       formSchema,
       passwordSchema,
       userUpdate: {
-        _id: this.auth.user._id,
         userName: this.auth.user.userName,
         aboutMe: this.auth.user.aboutMe,
         email: this.auth.user.email,
@@ -272,7 +286,7 @@ export default {
       submitModalText: "Supprimer",
       showModal: false,
 
-      //upload image date
+      //upload image data
       currentImage: undefined,
     };
   },
@@ -292,7 +306,6 @@ export default {
       if (value.password && value.password === this.auth.user.password) {
         delete value.password;
       }
-
       // updates user's data on the server
       userServices
         .updateUser(value)
@@ -313,8 +326,11 @@ export default {
 
     uploadUserFiles() {
       let formData = new FormData();
-      formData.append("user", this.userUpdate);
       formData.append("image", this.currentImage);
+      //iterate on userUpdated to append each property to formData
+      for (const property in this.userUpdate) {
+        formData.append(`${property}`, this.userUpdate[property]);
+      }
 
       loadServices
         .uploadUserFiles(formData)
