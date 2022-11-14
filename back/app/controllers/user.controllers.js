@@ -193,10 +193,9 @@ exports.logout = (req, res, next) => {
         )
         .then(() => {
           res.clearCookie("jwt", {
-            //removes refresh token
+            //removes refresh token from cookies
             httpOnly: true,
           });
-          //res.redirect('/'); // warning: returns error!
           res.status(200).json({
             message: "user logged out successfully",
           });

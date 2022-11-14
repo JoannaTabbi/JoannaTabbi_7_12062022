@@ -1,7 +1,7 @@
 ## GROUPOMANIA SOCIAL NETWORK
 
 Groupomania is a modern internal social network which will allow employees to get to know each other and exchange in a more informal context.
-This project is created as part of the Web Development vocational training by OpenClassrooms. It particularly aimes to authenticate the user and maintain his session, implement securised database and develop a website interface with a front-end framework, in our case : Vue.js. 
+This project is created as part of the Web Development vocational training by OpenClassrooms. It particularly aimes to authenticate the user and maintain his session, implement securised database and develop a website interface with a front-end framework, which is Vue.js. 
 
 
 ## REQUIREMENTS
@@ -80,7 +80,7 @@ The comment routes are available for a post id given.
 
 
 ### Project setup
-Created using the @vue/cli 5.0.6.    
+Created using the @vue/cli 5.0.6 and npm v8.19.3.     
 Move to the front directory, run  
 ```
 npm install
@@ -91,7 +91,7 @@ npm install
 npm run serve
 ```
 The server will run on port 8080 (default).  
-Create .env.local file in the root directory, then copy/paste the content of the .env file. Set your own values to the environment variables that it contains.  
+Create .env.local file in the front directory, then copy/paste the content of the .env file. Set your own values.  
 
 
 ### Compiles and minifies for production

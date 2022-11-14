@@ -14,7 +14,7 @@ module.exports = async (req, res) => {
     const refreshToken = cookies.jwt;
    
     //delete the current jwt cookie in order to replace it with the new one
-    res.clearCookie('jwt', { httpOnly: true, sameSite: 'None' })
+    res.clearCookie('jwt', { httpOnly: true })
     
     const userFound = await User.findOne({refreshToken}).exec();
 
@@ -65,13 +65,13 @@ module.exports = async (req, res) => {
                     
                 // refresh token is valid
                 const accessToken = jwt.sign(   // create new acces token
-                    { userId: userFound._id },
+                    { userId: userFound._id, isAdmin: userFound.isAdmin },
                     process.env.TOKEN_SECRET,
                     { expiresIn: process.env.TOKEN_EXPIRATION }
                 );
 
                 const newRefreshToken = jwt.sign(   // create new refresh token
-                    { userId: userFound._id },
+                    { userId: userFound._id, isAdmin: userFound.isAdmin },
                     process.env.REFRESH_TOKEN_SECRET,
                     { expiresIn: process.env.REFRESH_TOKEN_EXPIRATION }
                 );
@@ -93,60 +93,3 @@ module.exports = async (req, res) => {
             }
     )
 } 
-
-
-
-/* 
-module.exports = (req, res) => {
-    try {
-        const cookies = req.cookies;
-        if (!cookies?.jwt) return res.sendStatus(401);
-        const refreshToken = cookies.jwt;
-        res.clearCookie('jwt', { httpOnly: true, sameSite: 'None' });
-
-        const decodedRefreshToken = jwt.verify(
-            refreshToken,
-            process.env.REFRESH_TOKEN_SECRET
-        );
-        const userId = decodedRefreshToken.userId;
-        req.auth = {
-            userId
-        };
-        if (req.body.userId && req.body.userId !== userId) {
-            throw 'Invalid user ID';
-        } else {
-            //replace the refreshToken in dataBase
-
-
-            //create new access token
-            const accessToken = jwt.sign({
-                userId: decodedRefreshToken.userId
-                },
-                process.env.TOKEN_SECRET, {
-                expiresIn: process.env.TOKEN_EXPIRATION
-                }
-            );
-
-            // create new refresh token
-            const newRefreshToken = jwt.sign(   
-                { userId: decodedRefreshToken.userId },
-                process.env.REFRESH_TOKEN_SECRET,
-                { expiresIn: process.env.REFRESH_TOKEN_EXPIRATION }
-            );
-
-            //send new refresh token in cookies
-            res.cookie('jwt', newRefreshToken, {
-                httpOnly: true,
-                sameSite: "None"
-            });
-
-            res.json({
-                accessToken, newRefreshToken
-            });
-        }
-    } catch {
-        res.status(403).json({
-            error: new Error('Unauthorized request!')
-        });
-    }
-} */
