@@ -327,10 +327,6 @@ export default {
     uploadUserFiles() {
       let formData = new FormData();
       formData.append("image", this.currentImage);
-      //iterate on userUpdated to append each property to formData
-      for (const property in this.userUpdate) {
-        formData.append(`${property}`, this.userUpdate[property]);
-      }
 
       loadServices
         .uploadUserFiles(formData)
