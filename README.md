@@ -55,6 +55,7 @@ Finally, for moderation purposes, admin user can modify or delete post or commen
 |:---|:---|:---|:---|
 |readOnePost   |GET   |/api/posts/:id   |displays one post   |
 |readAllPosts  |GET   |/api/posts/   |displays all the posts   |
+|readUserPosts  |POST   |/api/posts/userPosts   |displays the posts of one user   |
 |createPost   |POST   |/api/posts/   |creates a new post   |
 |likePost   |POST  |/api/posts/:id/like   |controls one post's likes. The "like" key value equal to 1 gives a like to the chosen post, equal to 0 removes the like already given.    |
 |updatePost   |PUT   |/api/posts/:id   |updates one post   |
@@ -77,4 +78,26 @@ The comment routes are available for a post id given.
 
 ## FRONT-END
 
-Created using the Vue.js framework. (...coming soon :)) 
+
+### Project setup
+Created using the @vue/cli 5.0.6.    
+Move to the front directory, run  
+```
+npm install
+```
+
+### Compiles and hot-reloads for development
+```
+npm run serve
+```
+The server will run on port 8080 (default).  
+Create .env.local file in the root directory, then copy/paste the content of the .env file. Set your own values to the environment variables that it contains.  
+
+
+### Compiles and minifies for production
+```
+npm run build
+```
+
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).
