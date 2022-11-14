@@ -9,7 +9,12 @@
         />
       </div>
       <form class="w-100 d-flex" @submit.prevent="submitNewComment">
-        <label :for="`comment-${postId}`" aria-label="écrire un commentaire" class="visuallyhidden">Ecrire un commentaire</label>
+        <label
+          :for="`comment-${postId}`"
+          aria-label="écrire un commentaire"
+          class="visuallyhidden"
+          >Ecrire un commentaire</label
+        >
         <textarea
           :id="`comment-${postId}`"
           name="comment"
@@ -27,7 +32,6 @@
 
     <!-- User's comments area -->
     <div v-for="comment in comments" :key="comment._id" class="my-4">
-
       <!-- display one comment -->
       <div class="d-flex my-2 py-2">
         <div class="d-flex img-sm-container me-2 align-items-start">
@@ -46,7 +50,7 @@
               <div class="dropdown fs-5 fw-bold">
                 <div
                   role="button"
-                  id="dropdownMenuLink"
+                  :id="`dropdownMenuLink-comment${comment._id}`"
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
@@ -55,17 +59,15 @@
 
                 <ul
                   class="dropdown-menu dropdown-menu-end text-end"
-                  aria-labelledby="dropdownMenuLink"
+                  :aria-labelledby="`dropdownMenuLink-comment${comment._id}`"
                 >
                   <li>
                     <div
-                      type="button"
                       v-if="
                         comment.userId._id === auth.user._id ||
                         auth.user.isAdmin
                       "
-                      class="dropdown-item"
-                      href="#"
+                      class="dropdown-item pointer"
                       @click="updateCommentToggle(comment)"
                     >
                       Modifier le commentaire
@@ -73,13 +75,11 @@
                   </li>
                   <li>
                     <div
-                      type="button"
                       v-if="
                         comment.userId._id === auth.user._id ||
                         auth.user.isAdmin
                       "
-                      class="dropdown-item"
-                      href="#"
+                      class="dropdown-item pointer"
                       @click="
                         $emit('delete-comment', comment._id, comment.postId)
                       "
@@ -89,12 +89,11 @@
                   </li>
                   <li>
                     <div
-                      type="button"
                       v-if="
                         comment.userId._id !== auth.user._id &&
                         auth.user.isAdmin === false
                       "
-                      class="dropdown-item"
+                      class="dropdown-item pointer"
                       @click="reportComment(comment)"
                     >
                       Signaler le commentaire
@@ -110,10 +109,16 @@
               class="d-flex"
               @submit.prevent="updateComment(comment)"
             >
+              <label
+                :for="`updateComment-${comment._id}`"
+                aria-label="modifier le commentaire"
+                class="visuallyhidden"
+                >Modifier le commentaire</label
+              >
               <textarea
                 class="form-control border-0"
                 name="updateComment"
-                id="updateComment"
+                :id="`updateComment-${comment._id}`"
                 rows="2"
                 v-model="updatedComment"
                 :placeholder="comment.message"
@@ -127,7 +132,11 @@
               >
                 <i class="fa-solid fa-xmark fa-lg"></i>
               </button>
-              <button type="submit" class="btn" aria-label="soumettre les modifications du commentaire">
+              <button
+                type="submit"
+                class="btn"
+                aria-label="soumettre les modifications du commentaire"
+              >
                 <i class="fa-solid fa-check fa-lg text-success"></i>
               </button>
             </form>
@@ -154,7 +163,10 @@
                 <span v-if="comment.likes" class="me-2">{{
                   comment.likes
                 }}</span>
-                <i class="fa-solid fa-thumbs-up fa-lg" :class="{ like: isLiked(comment.usersLiked) }"></i>
+                <i
+                  class="fa-solid fa-thumbs-up fa-lg"
+                  :class="{ like: isLiked(comment.usersLiked) }"
+                ></i>
               </div>
             </li>
           </ul>

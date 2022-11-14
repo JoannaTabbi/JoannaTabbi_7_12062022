@@ -92,7 +92,7 @@ textarea:focus {
   cursor: pointer;
 }
 .pointer:hover {
-  color: #fd2d01;
+  color: black;
 }
 .like {
   color: #fd2d01;

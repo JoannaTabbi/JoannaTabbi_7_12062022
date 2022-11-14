@@ -25,7 +25,7 @@
           <div class="dropdown fs-2">
             <div
               role="button"
-              id="dropdownMenuLink"
+              :id="`dropdownMenuLink-post${post._id}`"
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
@@ -34,16 +34,15 @@
 
             <ul
               class="dropdown-menu dropdown-menu-end text-end"
-              aria-labelledby="dropdownMenuLink"
+              :aria-labelledby="`dropdownMenuLink-post${post._id}`"
             >
               <li>
                 <div
-                  type="button"
                   v-if="
                     post.userId._id == auth.user._id ||
                     auth.user.isAdmin === true
                   "
-                  class="dropdown-item"
+                  class="dropdown-item pointer"
                   @click="updateToggle(post)"
                 >
                   Modifier la publication
@@ -51,12 +50,11 @@
               </li>
               <li>
                 <div
-                  type="button"
                   v-if="
                     post.userId._id == auth.user._id ||
                     auth.user.isAdmin === true
                   "
-                  class="dropdown-item"
+                  class="dropdown-item pointer"
                   @click="deletePost(post._id)"
                 >
                   Supprimer la publication
@@ -64,12 +62,11 @@
               </li>
               <li>
                 <div
-                  type="button"
                   v-if="
                     post.userId._id != auth.user._id &&
                     auth.user.isAdmin === false
                   "
-                  class="dropdown-item"
+                  class="dropdown-item pointer"
                   @click="reportPost(post)"
                 >
                   Signaler la publication
@@ -81,16 +78,17 @@
 
         <!-- UPDATE POST SECTION -->
 
-        <section v-if="post.isUpdating" class="shadow rounded-3 mb-3 p-3">
+        <div v-if="post.isUpdating" class="shadow rounded-3 mb-3 p-3">
           <form
             class="card card-body border-0"
             @submit.prevent="updatePost(post)"
           >
             <div class="d-flex mb-3 border-bottom pb-2">
               <div class="w-100 form-group">
+                <label :for="`updatePost-${post._id}`" aria-label="modifier la publication" class="visuallyhidden">Modifier la publication</label>
                 <textarea
                   v-model="updatedPost.message"
-                  id="updatePost"
+                  :id="`updatePost-${post._id}`"
                   name="updatePost"
                   class="form-control border-0 p-2"
                   :placeholder="post.message"
@@ -101,7 +99,7 @@
             <ul class="nav d-flex justify-content-around">
               <li class="nav-item">
                 <div class="btn">
-                  <label type="button" :for="`updatePostFormFile-${post._id}`">
+                  <label :for="`updatePostFormFile-${post._id}`">
                     <i class="fa-regular fa-image fa-2x"></i>
                     <input
                       @change="selectUpdateImage"
@@ -130,10 +128,10 @@
               </li>
             </ul>
           </form>
-        </section>
+        </div>
 
         <!-- DISPLAY POST SECTION -->
-        <section v-else>
+        <div v-else>
           <div>
             <p class="text-start">
               {{ post.message }}
@@ -167,7 +165,7 @@
               </div>
             </li>
           </ul>
-        </section>
+        </div>
 
         <!--  COMMENTS  -->
         <Comments

@@ -14,7 +14,13 @@
               </div>
             </div>
 
-            <div class="row align-items-center justify-content-center justify-content-md-evenly">
+            <div
+              class="
+                row
+                align-items-center
+                justify-content-center justify-content-md-evenly
+              "
+            >
               <div
                 class="
                   avatar-container-round avatar-profile avatar-lg
@@ -24,7 +30,10 @@
                   p-0
                 "
               >
-                <img :src="auth.user.imageUrl" :alt="`avatar de ${auth.user.userName}`" />
+                <img
+                  :src="auth.user.imageUrl"
+                  :alt="`avatar de ${auth.user.userName}`"
+                />
               </div>
 
               <div
@@ -54,21 +63,27 @@
               </div>
             </div>
             <div class="row px-3 px-md-5">
-              <h1 class="text-start mt-5 mt-md-3 fs-3">Modifier mes informations</h1>
+              <h1 class="text-start mt-5 mt-md-3 fs-3">
+                Modifier mes informations
+              </h1>
 
               <!-- UPLOAD FILES FORM -->
               <section class="my-5 px-3">
                 <form @submit.prevent="uploadUserFiles">
                   <div class="col-12 border-bottom border-dark mb-5">
-                    <label for="formFile" class="form-label fs-4 fw-bold"
-                      ><h2 class="fs-4">Photo de profil</h2></label
-                    >
+                    <h2 class="fs-4 fw-bold">Photo de profil</h2>
                   </div>
+                  <label
+                    for="updateUserFormFile"
+                    aria-label="modifier l'image"
+                    class="visuallyhidden"
+                    >Modifier l'image</label
+                  >
                   <input
                     class="form-control mb-2"
                     name="image"
                     type="file"
-                    id="formFile"
+                    id="updateUserFormFile"
                     accept="image/*"
                     @change="selectImage"
                   />
@@ -135,26 +150,25 @@
           </div>
 
           <!-- MODAL -->
-          
-            <DynamicModal
-              :show="showModal"
-              :modal-title="modalTitle"
-              :modal-message="modalMessage"
-              :dismiss-modal-text="dismissModalText"
-              :submitModalText="submitModalText"
-              @closed="toggledModal"
-              @submitted="deleteMyProfile"
-              :reset="true"
-              :submit="true"
-              theme="warning"
-            >
-              <template v-slot:modalBody>
-                <p>
-                  {{ modalMessage }}
-                </p>
-              </template>
-            </DynamicModal>
-          
+
+          <DynamicModal
+            :show="showModal"
+            :modal-title="modalTitle"
+            :modal-message="modalMessage"
+            :dismiss-modal-text="dismissModalText"
+            :submitModalText="submitModalText"
+            @closed="toggledModal"
+            @submitted="deleteMyProfile"
+            :reset="true"
+            :submit="true"
+            theme="warning"
+          >
+            <template v-slot:modalBody>
+              <p>
+                {{ modalMessage }}
+              </p>
+            </template>
+          </DynamicModal>
         </div>
       </div>
     </div>
@@ -202,7 +216,6 @@ export default {
           label: "A PROPOS...",
           name: "aboutMe",
           as: "textarea",
-          type: "text",
           id: "aboutMe",
           rows: "3",
           rules: Yup.string(),
@@ -259,7 +272,6 @@ export default {
       formSchema,
       passwordSchema,
       userUpdate: {
-        //_id: this.auth.user._id,
         userName: this.auth.user.userName,
         aboutMe: this.auth.user.aboutMe,
         email: this.auth.user.email,
@@ -274,7 +286,7 @@ export default {
       submitModalText: "Supprimer",
       showModal: false,
 
-      //upload image date
+      //upload image data
       currentImage: undefined,
     };
   },
@@ -317,8 +329,8 @@ export default {
       formData.append("image", this.currentImage);
       //iterate on userUpdated to append each property to formData
       for (const property in this.userUpdate) {
-        formData.append(`${property}`, this.userUpdate[property])
-      };
+        formData.append(`${property}`, this.userUpdate[property]);
+      }
 
       loadServices
         .uploadUserFiles(formData)

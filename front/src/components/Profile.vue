@@ -114,7 +114,6 @@
             id="posts-tab"
             data-bs-toggle="tab"
             data-bs-target="#posts"
-            type="button"
             role="tab"
             aria-controls="posts"
             aria-selected="false"
@@ -125,47 +124,44 @@
 
         <!--  ABOUT ME TAB  -->
         <li class="nav-item" role="presentation">
-          <button
+          <div
             class="nav-link"
             id="about-tab"
             data-bs-toggle="tab"
             data-bs-target="#about"
-            type="button"
             role="tab"
             aria-controls="about"
             aria-selected="true"
           ><h2 class="fs-6 mb-0">A propos</h2>
-          </button>
+          </div>
         </li>
 
         <!--  FOLLOWERS TAB  -->
         <li class="nav-item" role="presentation">
-          <button
+          <div
             class="nav-link"
             id="followers-tab"
             data-bs-toggle="tab"
             data-bs-target="#followers"
-            type="button"
             role="tab"
             aria-controls="followers"
             aria-selected="true"
           ><h2 class="fs-6 mb-0">Vous suivent</h2>
-          </button>
+          </div>
         </li>
 
         <!--  FOLLOWING TAB  -->
         <li class="nav-item" role="presentation">
-          <button
+          <div
             class="nav-link"
             id="following-tab"
             data-bs-toggle="tab"
             data-bs-target="#following"
-            type="button"
             role="tab"
             aria-controls="following"
             aria-selected="false"
           ><h2 class="fs-6 mb-0">Suivis</h2>
-          </button>
+          </div>
         </li>
       </ul>
 

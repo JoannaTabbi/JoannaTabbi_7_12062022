@@ -23,7 +23,10 @@
               "
             >
               <div class="avatar-container-round avatar-lg">
-                <img :src="auth.user.imageUrl" :alt="`image de ${auth.user.userName}`" />
+                <img
+                  :src="auth.user.imageUrl"
+                  :alt="`image de ${auth.user.userName}`"
+                />
               </div>
 
               <div class="card-body my-4">
@@ -36,8 +39,7 @@
                   >
                 </h2>
                 <small class="card-text"
-                  >Membre depuis le
-                  <div>{{ formattedDate }}</div></small
+                  >Membre depuis le {{ formattedDate }}</small
                 >
                 <div class="mt-3">
                   <router-link
@@ -73,7 +75,12 @@
                   />
                 </div>
                 <div class="w-100 form-group">
-                  <label for="post" aria-label="écrire une publication" class="visuallyhidden">Ecrire une publication</label>
+                  <label
+                    for="post"
+                    aria-label="écrire une publication"
+                    class="visuallyhidden"
+                    >Ecrire une publication</label
+                  >
                   <textarea
                     v-model="newPost.message"
                     id="post"
@@ -87,8 +94,10 @@
               <ul class="nav d-flex justify-content-around">
                 <li class="nav-item">
                   <div class="btn">
-                    <label type="button" for="newPostFormFile">
-                      <span class="visuallyhidden">Choisir une nouvelle image</span>
+                    <label for="newPostFormFile">
+                      <span class="visuallyhidden"
+                        >Choisir une nouvelle image</span
+                      >
                       <i class="fa-regular fa-image fa-2x"></i>
                       <input
                         @change="selectImage"
@@ -103,7 +112,11 @@
                   </div>
                 </li>
                 <li class="nav-item">
-                  <button type="submit" class="btn" aria-label="soumettre une publication">
+                  <button
+                    type="submit"
+                    class="btn"
+                    aria-label="soumettre une publication"
+                  >
                     <i class="fa-regular fa-paper-plane fa-2x"></i>
                   </button>
                 </li>
