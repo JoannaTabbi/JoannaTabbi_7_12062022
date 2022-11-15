@@ -1,4 +1,4 @@
-import axios from '@/_interceptors/axios';
+import axios from '@/_interceptors/api';
 
 // signup
 let signupUser = (credentials) => {

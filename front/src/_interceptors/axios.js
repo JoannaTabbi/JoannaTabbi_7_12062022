@@ -1,4 +1,4 @@
-import axios from "axios";
+import Axios from "./api";
 import {
     useAuthStore
 } from '@/stores/authStore';
@@ -6,19 +6,11 @@ import {
     authServices
 } from '@/_services/auth.services';
 
-// create new instance for axios, define url base for requests, 
-// add default content-type header 
-// set credentials to true in order to handle cookies
 
-let Axios = axios.create({
-    baseURL: process.env.VUE_APP_API_URL,
-    headers: {
-        "Content-Type": "application/json",
-    },
-    withCredentials: true
-})
 
-// intercepting any axios request to inject an access token to headers - Authorization
+const axiosInterceptors = () => {
+
+ // intercepting any axios request to inject an access token to headers - Authorization
 Axios.interceptors.request.use(
     (request) => {
 
@@ -60,5 +52,6 @@ Axios.interceptors.response.use(resp => resp, async error => {
     refresh = false; // avoids that the request turn in infinite loop
     return Promise.reject(error);
 });
+}
 
-export default Axios;
+export default axiosInterceptors;

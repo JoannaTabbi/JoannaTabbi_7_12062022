@@ -1,4 +1,4 @@
-import Axios from "@/_interceptors/axios";
+import Axios from "@/_interceptors/api";
 
 // create comment message: 
 let createComment = (payload) => {
