@@ -38,13 +38,17 @@ export default {
       userServices
         .getOneself()
         .then((res) => {
+          console.log(res);
           this.user = res.data;
         })
-        .catch((err) => this.handleError.triggerToast(err));
+        .catch((err) => {
+          console.log(err);
+          this.handleError.triggerToast(err)})
     },
   },
   mounted() {
     this.getMyProfile();
+    console.log("monté");
   },
 };
 </script>

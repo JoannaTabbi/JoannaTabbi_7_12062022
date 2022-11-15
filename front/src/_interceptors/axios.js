@@ -37,10 +37,10 @@ Axios.interceptors.request.use(
 let refresh = false;
 
 Axios.interceptors.response.use(resp => resp, async error => {
-        const auth = useAuthStore();
-        if (error.response.status === 403 && !refresh) {
-            refresh = true;
-
+    const auth = useAuthStore();
+    if (error.response.status === 401 && !refresh) {
+        refresh = true;
+        try {
             const {
                 status,
                 data
@@ -53,8 +53,10 @@ Axios.interceptors.response.use(resp => resp, async error => {
 
                 return Axios(error.config);
             }
+        } catch (_error) {
+            return Promise.reject(_error);
         }
-
+    }
     refresh = false; // avoids that the request turn in infinite loop
     return Promise.reject(error);
 });

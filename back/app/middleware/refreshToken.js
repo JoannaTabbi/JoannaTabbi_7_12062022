@@ -38,7 +38,7 @@ module.exports = async (req, res) => {
                 const result = await userHacked.save();
             }
         )
-        return res.sendStatus(403); 
+        return res.sendStatus(401); 
     }
 
     /******  handle if refresh token found in the database   ******/
@@ -60,7 +60,7 @@ module.exports = async (req, res) => {
                 }
                 // rf expired or the decoded refresh token doesn't match
                 if (err || userFound._id != decoded.userId) {
-                  return res.sendStatus(403);
+                  return res.sendStatus(401);
                 }
                     
                 // refresh token is valid
