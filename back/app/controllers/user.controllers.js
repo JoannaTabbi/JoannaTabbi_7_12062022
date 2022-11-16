@@ -349,7 +349,7 @@ exports.updateUser = (req, res, next) => {
         try {
           if (
             userObject.imageUrl &&
-            userObject.imageUrl !== `${req.protocol}://${req.get("host")}/images/avatar-200.png`
+            filename !== "avatar-200.png"
           ) {
             fs.unlinkSync(`images/${filename}`);
           }

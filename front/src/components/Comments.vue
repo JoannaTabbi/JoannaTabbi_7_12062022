@@ -1,7 +1,7 @@
 <template>
   <div class="ps-2 border-start">
     <!-- User's comments area -->
-    <div v-for="comment in comments" :key="comment._id" class="mb-4">
+    <div v-for="comment in comments" :key="comment._id" class="mb-2">
       <!-- display one comment -->
       <div class="d-flex py-2">
         <div class="d-flex img-sm-container me-2 align-items-start">
