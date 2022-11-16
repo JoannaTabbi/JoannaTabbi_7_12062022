@@ -24,7 +24,7 @@ export default {
   margin: 0 auto;
   padding: 20px;
   color: white;
-  background: linear-gradient(#fd2d01, #A71D01);
+  background: linear-gradient(#fd2d01 10%, #A71D01 80%, #fd2d01 10%);
   border-radius: 10px;
   box-shadow: 1px 3px 5px rgba(0, 0, 0, 0.2);
 }

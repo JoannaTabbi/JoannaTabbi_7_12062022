@@ -46,7 +46,6 @@ export default {
   },
   mounted() {
     this.getMyProfile();
-    console.log("monté");
   },
 };
 </script>

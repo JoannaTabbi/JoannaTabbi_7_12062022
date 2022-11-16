@@ -284,7 +284,7 @@ exports.updatePost = (req, res, next) => {
                 error: "No such post !"
             })
         }
-        if ((post.userId !== req.auth.userId) && req.auth.isAdmin === false) {
+        if ((post.userId != req.auth.userId) && req.auth.isAdmin === false) {
             return res.status(401).json({
                 error: "Unauthorized request!"
             });

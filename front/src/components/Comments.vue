@@ -1,39 +1,9 @@
 <template>
   <div class="ps-2 border-start">
-    <div class="d-flex mb-3">
-      <div class="img-sm-container me-2">
-        <img
-          class="mw-100 shadow rounded-3"
-          :src="auth.user.imageUrl"
-          :alt="`avatar de ${auth.user.userName}`"
-        />
-      </div>
-      <form class="w-100 d-flex" @submit.prevent="submitNewComment">
-        <label
-          :for="`comment-${postId}`"
-          aria-label="écrire un commentaire"
-          class="visuallyhidden"
-          >Ecrire un commentaire</label
-        >
-        <textarea
-          :id="`comment-${postId}`"
-          name="comment"
-          :value="modelValue"
-          @input="$emit('update:modelValue', $event.target.value)"
-          class="form-control border-0 p-2"
-          placeholder="Qu'en dites-vous?"
-          rows="1"
-        ></textarea>
-        <button type="submit" class="btn" aria-label="créer le commentaire">
-          <i class="fa-regular fa-paper-plane fa-lg"></i>
-        </button>
-      </form>
-    </div>
-
     <!-- User's comments area -->
-    <div v-for="comment in comments" :key="comment._id" class="my-4">
+    <div v-for="comment in comments" :key="comment._id" class="mb-4">
       <!-- display one comment -->
-      <div class="d-flex my-2 py-2">
+      <div class="d-flex py-2">
         <div class="d-flex img-sm-container me-2 align-items-start">
           <img
             class="mw-100 shadow rounded-3"
@@ -172,6 +142,37 @@
           </ul>
         </div>
       </div>
+    </div>
+
+    <!-- create one comment -->
+    <div class="d-flex mb-2">
+      <div class="img-sm-container me-2">
+        <img
+          class="mw-100 shadow rounded-3"
+          :src="auth.user.imageUrl"
+          :alt="`avatar de ${auth.user.userName}`"
+        />
+      </div>
+      <form class="w-100 d-flex" @submit.prevent="submitNewComment">
+        <label
+          :for="`comment-${postId}`"
+          aria-label="écrire un commentaire"
+          class="visuallyhidden"
+          >Ecrire un commentaire</label
+        >
+        <textarea
+          :id="`comment-${postId}`"
+          name="comment"
+          :value="modelValue"
+          @input="$emit('update:modelValue', $event.target.value)"
+          class="form-control border-0 p-2"
+          placeholder="Qu'en dites-vous?"
+          rows="1"
+        ></textarea>
+        <button type="submit" class="btn" aria-label="créer le commentaire">
+          <i class="fa-regular fa-paper-plane fa-lg"></i>
+        </button>
+      </form>
     </div>
   </div>
 </template>
