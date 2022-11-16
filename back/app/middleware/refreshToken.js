@@ -12,9 +12,6 @@ module.exports = async (req, res) => {
     if (!cookies?.jwt) return res.sendStatus(401);
     
     const refreshToken = cookies.jwt;
-   
-    //delete the current jwt cookie in order to replace it with the new one
-    res.clearCookie('jwt', { httpOnly: true })
     
     const userFound = await User.findOne({refreshToken}).exec();
 
@@ -34,7 +31,7 @@ module.exports = async (req, res) => {
                 const userHacked = await User.findOne({
                     _id: decoded.userId
                 }).exec();
-                userHacked.refreshToken = [];
+                userHacked.refreshToken = "";
                 const result = await userHacked.save();
             }
         )
@@ -42,9 +39,6 @@ module.exports = async (req, res) => {
     }
 
     /******  handle if refresh token found in the database   ******/
-    
-    // isolate other potential refresh tokens of the user 
-    const newRefreshTokenArray = userFound.refreshToken.filter(rt => rt !== refreshToken)
     
     console.log(`refresh token found: ${refreshToken}`);
     // evaluate jwt
@@ -55,7 +49,7 @@ module.exports = async (req, res) => {
 
                 // if refresh token is expired
                 if (err) {
-                    userFound.refreshToken = [...newRefreshTokenArray];
+                    userFound.refreshToken = "";
                     const result = userFound.save();
                 }
                 // rf expired or the decoded refresh token doesn't match
@@ -70,25 +64,8 @@ module.exports = async (req, res) => {
                     { expiresIn: process.env.TOKEN_EXPIRATION }
                 );
 
-                const newRefreshToken = jwt.sign(   // create new refresh token
-                    { userId: userFound._id, isAdmin: userFound.isAdmin },
-                    process.env.REFRESH_TOKEN_SECRET,
-                    { expiresIn: process.env.REFRESH_TOKEN_EXPIRATION }
-                );
-
-                // save the new refresh token with current user
-                userFound.refreshToken = [...newRefreshTokenArray, newRefreshToken];
-                const result = await userFound.save();
-                
-                // provide responses
-                res.cookie('jwt', newRefreshToken, {
-                    httpOnly: true,
-                    maxAge: 1000 * 60 * 60 * 8760
-                });
-
                 res.status(200).json({ 
-                    accessToken : accessToken,
-                    refreshToken : newRefreshToken
+                    accessToken : accessToken
                 });
             }
     )

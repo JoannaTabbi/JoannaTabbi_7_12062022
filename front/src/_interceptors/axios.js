@@ -7,7 +7,6 @@ import {
 } from '@/_services/auth.services';
 
 
-
 const axiosInterceptors = () => {
 
  // intercepting any axios request to inject an access token to headers - Authorization
@@ -26,10 +25,10 @@ Axios.interceptors.request.use(
 
 // intercepting status 403 while the old access token is expiring; a new request is sent to 
 // auth/token to control the refresh token and receive a new access token
-let refresh = false;
 
 Axios.interceptors.response.use(resp => resp, async error => {
     const auth = useAuthStore();
+    let refresh = false;
     if (error.response.status === 401 && !refresh) {
         refresh = true;
         try {
@@ -42,12 +41,11 @@ Axios.interceptors.response.use(resp => resp, async error => {
                 auth.token = data.accessToken;
                 auth.refreshToken = data.refreshToken;
                 Axios.defaults.headers.common['Authorization'] = `Bearer ${data.accessToken}`;
-
                 return Axios(error.config);
             }
         } catch (_error) {
             return Promise.reject(_error);
-        }
+        }       
     }
     refresh = false; // avoids that the request turn in infinite loop
     return Promise.reject(error);

@@ -7,7 +7,7 @@ This project is created as part of the Web Development vocational training by Op
 ## REQUIREMENTS
 
 Node.js, version: 16.15.1 LTS or later  
-npm version 8.19.3 or later 
+npm version 9.1.1 or later 
 
 
 ## GETTING STARTED
@@ -18,7 +18,7 @@ Create .env file in the back directory, then copy/paste the content of the .env.
 
 ## DATABASE
 
-The API works with MongoDB NoSQL database : If needed, sign up as indicated on the [MongoDB](https://www.mongodb.com/cloud/atlas/register) website and get your SRV address. Paste it to the MONGO_URI value in .env file in order to connect to the database: don't forget to replace PASSWORD by your own one. 
+The API works with MongoDB NoSQL database : If needed, sign up as indicated on the [MongoDB Atlas](https://www.mongodb.com/cloud/atlas/register) website and get your SRV address. Paste it to the MONGO_URI value in .env file in order to connect to the database: don't forget to replace PASSWORD by your own one. 
 
 
 ## USE

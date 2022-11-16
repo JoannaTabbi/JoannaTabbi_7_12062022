@@ -116,9 +116,7 @@ exports.login = (req, res, next) => {
           );
           User.findByIdAndUpdate(
             user._id, {
-              $push: {
-                refreshToken: newRefreshToken,
-              },
+              refreshToken: newRefreshToken      
             }, {
               new: true,
               upsert: true,
