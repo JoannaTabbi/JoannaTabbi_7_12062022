@@ -180,9 +180,7 @@ exports.logout = (req, res, next) => {
 
       User.findByIdAndUpdate(
           userFound._id, {
-            $pull: {
-              refreshToken: cookies.jwt,
-            },
+              refreshToken: ""
           }, {
             new: true,
             upsert: true,

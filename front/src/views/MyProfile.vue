@@ -38,11 +38,9 @@ export default {
       userServices
         .getOneself()
         .then((res) => {
-          console.log(res);
           this.user = res.data;
         })
         .catch((err) => {
-          console.log(err);
           this.handleError.triggerToast(err)})
     },
   },

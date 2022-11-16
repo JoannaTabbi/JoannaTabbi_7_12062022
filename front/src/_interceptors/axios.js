@@ -23,32 +23,34 @@ Axios.interceptors.request.use(
         return Promise.reject(error);
     })
 
-// intercepting status 403 while the old access token is expiring; a new request is sent to 
+// intercepting status 401 while the old access token is expiring; a new request is sent to 
 // auth/token to control the refresh token and receive a new access token
 
-Axios.interceptors.response.use(resp => resp, async error => {
+Axios.interceptors.response.use(resp => resp, async err => {
     const auth = useAuthStore();
-    let refresh = false;
-    if (error.response.status === 401 && !refresh) {
-        refresh = true;
-        try {
-            const {
-                status,
-                data
-            } = await authServices.getNewToken();
-
-            if (status === 200) {
-                auth.token = data.accessToken;
-                auth.refreshToken = data.refreshToken;
-                Axios.defaults.headers.common['Authorization'] = `Bearer ${data.accessToken}`;
-                return Axios(error.config);
-            }
-        } catch (_error) {
-            return Promise.reject(_error);
-        }       
+    const originalConfig = err.config;
+    if (originalConfig.url !== "/auth/login" && err.response) {
+        if (err.response.status === 401 && !originalConfig._retry) {
+            originalConfig._retry = true;
+            try {
+                const {
+                    status,
+                    data
+                } = await authServices.getNewToken();
+    
+                if (status === 200) {
+                    auth.token = data.accessToken;
+                    auth.refreshToken = data.refreshToken;
+                    Axios.defaults.headers.common['Authorization'] = `Bearer ${data.accessToken}`;
+                    return Axios(originalConfig);
+                }
+            } catch (_error) {
+                return Promise.reject(_error);
+            }       
+        }
     }
-    refresh = false; // avoids that the request turn in infinite loop
-    return Promise.reject(error);
+    
+    return Promise.reject(err);
 });
 }
 
