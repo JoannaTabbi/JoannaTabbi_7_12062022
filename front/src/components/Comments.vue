@@ -125,7 +125,7 @@
               mt-1
             "
           >
-            <li class="nav-item pointer" @click="likeToggle(comment)">
+            <li class="nav-item pointer" :class="{ like: isLiked(comment.usersLiked) }" @click="likeToggle(comment)">
               <div>J'aime</div>
             </li>
             <li class="nav-item">
@@ -135,7 +135,6 @@
                 }}</span>
                 <i
                   class="fa-solid fa-thumbs-up fa-lg"
-                  :class="{ like: isLiked(comment.usersLiked) }"
                 ></i>
               </div>
             </li>

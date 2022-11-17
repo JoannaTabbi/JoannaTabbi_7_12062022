@@ -108,7 +108,7 @@
 
       <ul class="nav nav-tabs" id="myTab" role="tablist">
         <!--  POSTS TAB  -->
-        <li class="nav-item" role="presentation">
+        <li class="nav-item pointer" role="presentation">
           <div
             class="nav-link active"
             id="posts-tab"
@@ -123,7 +123,7 @@
         </li>
 
         <!--  ABOUT ME TAB  -->
-        <li class="nav-item" role="presentation">
+        <li class="nav-item pointer" role="presentation">
           <div
             class="nav-link"
             id="about-tab"
@@ -137,7 +137,7 @@
         </li>
 
         <!--  FOLLOWERS TAB  -->
-        <li class="nav-item" role="presentation">
+        <li class="nav-item pointer" role="presentation">
           <div
             class="nav-link"
             id="followers-tab"
@@ -151,7 +151,7 @@
         </li>
 
         <!--  FOLLOWING TAB  -->
-        <li class="nav-item" role="presentation">
+        <li class="nav-item pointer" role="presentation">
           <div
             class="nav-link"
             id="following-tab"

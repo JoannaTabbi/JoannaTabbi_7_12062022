@@ -74,7 +74,7 @@ a {
   color: #4e5166;
 }
 a:hover {
-  color: #fd2d01;
+  color: #E42701;
 }
 textarea {
   resize: none;
@@ -92,10 +92,10 @@ textarea:focus {
   cursor: pointer;
 }
 .pointer:hover {
-  color: black;
+  color: #E42701;
 }
 .like {
-  color: #fd2d01;
+  color: #E42701;
   font-weight: bold;
 }
 /* avatar common styling */

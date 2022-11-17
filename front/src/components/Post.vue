@@ -150,9 +150,10 @@
           <ul class="nav d-flex justify-content-start mb-4 small">
             <li
               class="nav-item me-3 pointer"
+              :class="{ like: isLiked(post.usersLiked) }"
             >
               <div @click="likeToggle(post)">
-                <i class="fa-solid fa-thumbs-up fa-lg" :class="{ like: isLiked(post.usersLiked) }"></i>
+                <i class="fa-solid fa-thumbs-up fa-lg"></i>
                 J'aime
                 <span v-if="post.likes">{{ post.likes }}</span>
               </div>
