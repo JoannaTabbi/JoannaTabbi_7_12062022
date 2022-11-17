@@ -5,7 +5,7 @@ import axios from "axios";
 // set credentials to true in order to handle cookies
 
 let Axios = axios.create({
-    baseURL: process.env.VUE_APP_API_URL,
+    baseURL: process.env.VUE_APP_URL + "/api",
     headers: {
         "Content-Type": "application/json",
     },
