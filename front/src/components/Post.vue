@@ -270,7 +270,7 @@ export default {
       let formData = new FormData();
       if (this.updatedPost.message != "") {
         if (this.updatedPost.message.length > 1500) {
-          this.handleError.triggerToast(
+          return this.handleError.triggerToast(
             "Le message ne doit pas dépasser 1500 mots"
           );
         } else {
@@ -280,7 +280,7 @@ export default {
       if (this.updatedPost.imageUrl) {
         //throw an error if the image size is too important (over 500ko)
         if (this.updatedPost.imageUrl.size > 500000) {
-          this.handleError.triggerToast(
+          return this.handleError.triggerToast(
             "Attention, la taille de l'image ne doit pas dépasser 500ko"
           );
         } else {
@@ -308,7 +308,7 @@ export default {
     reportPost(post) {
       postServices
         .reportPost(post._id)
-        .then((res) =>
+        .then(() =>
           this.handleError.triggerToast(
             "Votre signalement a bien été pris en compte"
           )

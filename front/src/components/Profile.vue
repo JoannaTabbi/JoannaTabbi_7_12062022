@@ -174,7 +174,7 @@
           role="tabpanel"
           aria-labelledby="posts-tab"
         >
-          <Post :posts="posts" @getPosts="getUserPosts" />
+          <Post :posts="posts" @get-posts="getUserPosts" @delete-post="deletePost" />
           <div v-if="isLoading === true">
             <Loader />
           </div>
@@ -292,7 +292,27 @@ export default {
         })
         .catch((error) => this.handleError.triggerToast(error));
     },
-
+    
+    //deletes one post
+    deletePost(postId) {
+      if (
+        confirm(
+          "Cette publication sera supprimée définitivement. Etes-vous sûr(e) de vouloir continuer ?"
+        ) == true
+      ) {
+        postServices
+          .deletePost(postId)
+          .then(() => {
+            this.posts = Object.values(this.posts).filter(
+              (elt) => elt._id !== postId
+            );
+          })
+          .catch((err) => {
+            this.handleError.triggerToast(err);
+          });
+      }
+    },
+    
     //reports user
     reportUser() {
       userServices
