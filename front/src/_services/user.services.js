@@ -1,4 +1,4 @@
-import axios from '@/_interceptors/axios';
+import axios from '@/_interceptors/api';
 
 // gets user's data by id given
 let getUser = (uid) => {

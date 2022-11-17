@@ -1,5 +1,5 @@
 // overrides primary, secondary and dark colors
-$primary: #fd2d01;
+$primary: #E42701;
 $secondary: #ffd7d7;
 $dark: #4e5166;
 
@@ -11,8 +11,3 @@ $border-radius:               .25rem !default;
 $border-radius-sm:            .2rem !default;
 $border-radius-lg:            .3rem !default;
 $border-radius-pill:          50rem !default;
-
-//overrides tabs default styles
-$nav-tabs-border-color:  $primary;
-$nav-tabs-link-active-border-color: $nav-tabs-border-color $nav-tabs-border-color transparent;
-$link-color: $dark;

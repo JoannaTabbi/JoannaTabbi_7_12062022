@@ -8,6 +8,9 @@ import { ObserveVisibility } from 'vue-observe-visibility'
 import moment from 'moment'
 import 'moment/locale/fr'
 
+import axiosInterceptors from "./_interceptors/axios"
+axiosInterceptors()
+
 const pinia = createPinia()
 // mantain pinia stores persistant and stable
 pinia.use(piniaPluginPersistedstate)

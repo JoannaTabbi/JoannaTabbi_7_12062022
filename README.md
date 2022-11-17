@@ -1,25 +1,24 @@
 ## GROUPOMANIA SOCIAL NETWORK
 
 Groupomania is a modern internal social network which will allow employees to get to know each other and exchange in a more informal context.
-This project is created as part of the Web Development vocational training by OpenClassrooms. It particularly aimes to authenticate the user and maintain his session, implement securised database and develop a website interface with a front-end framework, in our case : Vue.js. 
+This project is created as part of the Web Development vocational training by OpenClassrooms. It particularly aimes to authenticate the user and maintain his session, implement securised database and develop a website interface with a front-end framework, which is Vue.js. 
 
 
 ## REQUIREMENTS
 
 Node.js, version: 16.15.1 LTS or later  
-npm version 8.12.1 or later  
-MongoDB  
-API client e.g. POSTMAN
+npm version 9.1.1 or later 
 
 
 ## GETTING STARTED
 
 Clone this repository and open it in your code editor. Move to the back directory, run *npm install* then *nodemon server*, the server will run on port 3000 (default).  
-Create .env file in the root directory, then copy/paste the content of the .dot.exemple file. Set your own values to the environment variables that it contains.
+Create .env file in the back directory, then copy/paste the content of the .env.exemple file. Set your own values to the environment variables that it contains.
+
 
 ## DATABASE
 
-The API works with MongoDB NoSQL database : If needed, sign up as indicated on the [MongoDB](https://www.mongodb.com/cloud/atlas/register) website and get your SRV address. Paste it to the MONGO_URI value in .env file in order to connect to the database: don't forget to replace PASSWORD by your own one. 
+The API works with MongoDB NoSQL database : If needed, sign up as indicated on the [MongoDB Atlas](https://www.mongodb.com/cloud/atlas/register) website and get your SRV address. Paste it to the MONGO_URI value in .env file in order to connect to the database: don't forget to replace PASSWORD by your own one. 
 
 
 ## USE
@@ -29,9 +28,10 @@ You can test this API with an API client, like POSTMAN or Thunder client which i
 ## DOCUMENTATION
 
 You'll find below the routes that you can test with an API client. Note that the responses contain the HATEOAS links that allow you to directly reach the object related routes.
-The *create*, *like*, *follow*, *unfollow* or *report* routes are available to any authenticated user. 
+The *create*, *like*, *follow*, *unfollow* routes are available to any authenticated user. 
+The *report* routes are available to any non admin user.
 The *readOneself*, *exportData* and all *update* and *delete* routes are not available to the user who didn't create this data.
-Finally, for moderation purposes, admin user can modify or delete post or comment content.  
+Finally, for moderation purposes, admin user can modify or delete any post or comment content.  
 
 ### USER
 
@@ -55,6 +55,7 @@ Finally, for moderation purposes, admin user can modify or delete post or commen
 |:---|:---|:---|:---|
 |readOnePost   |GET   |/api/posts/:id   |displays one post   |
 |readAllPosts  |GET   |/api/posts/   |displays all the posts   |
+|readUserPosts  |POST   |/api/posts/userPosts   |displays the posts of one user   |
 |createPost   |POST   |/api/posts/   |creates a new post   |
 |likePost   |POST  |/api/posts/:id/like   |controls one post's likes. The "like" key value equal to 1 gives a like to the chosen post, equal to 0 removes the like already given.    |
 |updatePost   |PUT   |/api/posts/:id   |updates one post   |
@@ -77,4 +78,26 @@ The comment routes are available for a post id given.
 
 ## FRONT-END
 
-Created using the Vue.js framework. (...coming soon :)) 
+
+### Project setup
+Created using the @vue/cli 5.0.6.     
+Move to the front directory, run  
+```
+npm install
+```
+
+### Compiles and hot-reloads for development
+```
+npm run serve
+```
+The server will run on port 8080 (default).  
+Create .env.local file in the front directory, then copy/paste the content of the .env file. Set your own values.  
+
+
+### Compiles and minifies for production
+```
+npm run build
+```
+
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).

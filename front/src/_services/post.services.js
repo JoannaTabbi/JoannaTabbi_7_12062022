@@ -1,4 +1,4 @@
-import Axios from '@/_interceptors/axios'
+import Axios from '@/_interceptors/api'
 
 //upload post image and message: 
 let createPost = (formData) => {

@@ -284,8 +284,8 @@ exports.updatePost = (req, res, next) => {
                 error: "No such post !"
             })
         }
-        if ((post.userId !== req.auth.userId) && req.auth.isAdmin === false) {
-            return res.status(403).json({
+        if ((post.userId != req.auth.userId) && req.auth.isAdmin === false) {
+            return res.status(401).json({
                 error: "Unauthorized request!"
             });
         }
@@ -334,7 +334,7 @@ exports.deletePost = (req, res, next) => {
                 });
             };
             if (post.userId != req.auth.userId && req.auth.isAdmin == false) {
-                return res.status(403).json({
+                return res.status(401).json({
                     error: "Unauthorized request"
                 });
             };

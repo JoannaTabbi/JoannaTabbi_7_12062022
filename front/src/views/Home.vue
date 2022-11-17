@@ -272,7 +272,7 @@ export default {
 <style>
 .fa-image:hover,
 .fa-paper-plane:hover {
-  color: #fd2d01;
+  color: #E42701;
 }
 #home {
   position: sticky;

@@ -1,4 +1,4 @@
-import Axios from "@/_interceptors/axios";
+import Axios from "@/_interceptors/api";
 import exportFromJSON from "export-from-json";
 
 //upload user image service

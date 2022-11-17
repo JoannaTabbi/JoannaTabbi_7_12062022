@@ -79,7 +79,7 @@ export default {
 }
 .modal-content.warning {
   background: white;
-  color: #fd2d01;
+  color: #AD1D01;
 }
 
 /* transition styling */

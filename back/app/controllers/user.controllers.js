@@ -91,7 +91,7 @@ exports.login = (req, res, next) => {
     ])
     .then((user) => {
       if (!user) {
-        return res.status(401).json({
+        return res.status(404).json({
           error: "User not found"
         });
       }
@@ -116,9 +116,7 @@ exports.login = (req, res, next) => {
           );
           User.findByIdAndUpdate(
             user._id, {
-              $push: {
-                refreshToken: newRefreshToken,
-              },
+              refreshToken: newRefreshToken      
             }, {
               new: true,
               upsert: true,
@@ -182,9 +180,7 @@ exports.logout = (req, res, next) => {
 
       User.findByIdAndUpdate(
           userFound._id, {
-            $pull: {
-              refreshToken: cookies.jwt,
-            },
+              refreshToken: ""
           }, {
             new: true,
             upsert: true,
@@ -193,10 +189,9 @@ exports.logout = (req, res, next) => {
         )
         .then(() => {
           res.clearCookie("jwt", {
-            //removes refresh token
+            //removes refresh token from cookies
             httpOnly: true,
           });
-          //res.redirect('/'); // warning: returns error!
           res.status(200).json({
             message: "user logged out successfully",
           });
@@ -354,7 +349,7 @@ exports.updateUser = (req, res, next) => {
         try {
           if (
             userObject.imageUrl &&
-            userObject.imageUrl !== `${req.protocol}://${req.get("host")}/images/avatar-200.png`
+            filename !== "avatar-200.png"
           ) {
             fs.unlinkSync(`images/${filename}`);
           }

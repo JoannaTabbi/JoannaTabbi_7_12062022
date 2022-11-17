@@ -40,7 +40,8 @@ export default {
         .then((res) => {
           this.user = res.data;
         })
-        .catch((err) => this.handleError.triggerToast(err));
+        .catch((err) => {
+          this.handleError.triggerToast(err)})
     },
   },
   mounted() {
