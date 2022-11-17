@@ -211,13 +211,13 @@ export default {
       let formData = new FormData();
       //throw an error if neither message nor image posted
       if (this.newPost.message == "" && this.newPost.imageUrl == "") {
-        this.handleError.triggerToast(
+        return this.handleError.triggerToast(
           "Veuillez saisir un message ou choisir une photo"
         );
       } else {
         //throw an error if the message is too long (over 1500 letters)
         if (this.newPost.message.length > 1500) {
-          this.handleError.triggerToast(
+          return this.handleError.triggerToast(
             "Le message ne doit pas dépasser 1500 mots"
           );
         } else {
@@ -226,7 +226,7 @@ export default {
         if (this.newPost.imageUrl) {
           //throw an error if the image size is too important (over 500ko)
           if (this.newPost.imageUrl.size > 500000) {
-            this.handleError.triggerToast(
+            return this.handleError.triggerToast(
               "Attention, la taille de l'image ne doit pas dépasser 500ko"
             );
           } else {
@@ -237,7 +237,8 @@ export default {
           .createPost(formData)
           .then(async (res) => {
             await this.posts.unshift(res.data);
-            this.newPost = "";
+            this.newPost.message = "";
+            this.newPost.imageUrl = "";
           })
           .catch((err) => this.handleError.triggerToast(err));
       }
