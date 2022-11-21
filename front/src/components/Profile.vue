@@ -62,7 +62,7 @@
               {{ followButtonText }}
             </div>
           </div>
-          <div class="dropdown">
+          <div v-if="auth.user.isAdmin === false" class="dropdown">
             <div
               role="button"
               id="dropdownMenuLink"
