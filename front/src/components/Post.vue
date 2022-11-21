@@ -1,6 +1,6 @@
 <template>
   <div>
-    <article v-for="post in posts" :key="post._id">
+    <article v-for="(post, index) in posts" :key="post._id">
       <div class="card card-body border-0 mb-3 px-2 p-sm-3">
         <span class="mx-5 border-top border-primary border-3"></span>
         <div
@@ -81,17 +81,16 @@
         <div v-if="post.isUpdating" class="shadow rounded-3 mb-3 p-3">
           <form
             class="card card-body border-0"
-            @submit.prevent="updatePost(post)"
+            @submit.prevent="updatePost(post, index)"
           >
             <div class="d-flex mb-3 border-bottom pb-2">
               <div class="w-100 form-group">
                 <label :for="`updatePost-${post._id}`" aria-label="modifier la publication" class="visuallyhidden">Modifier la publication</label>
                 <textarea
-                  v-model="updatedPost.message"
+                  v-model="updatedPosts[index].message"
                   :id="`updatePost-${post._id}`"
                   name="updatePost"
                   class="form-control border-0 p-2"
-                  :placeholder="post.message"
                   rows="2"
                 ></textarea>
               </div>
@@ -102,7 +101,7 @@
                   <label :for="`updatePostFormFile-${post._id}`">
                     <i class="fa-regular fa-image fa-2x"></i>
                     <input
-                      @change="selectUpdateImage"
+                      @change="selectUpdateImage($event, index)"
                       type="file"
                       class="form-control"
                       name="image"
@@ -127,6 +126,7 @@
                 </button>
               </li>
             </ul>
+            <small>{{updatedPosts[index].imageUrl}}</small>
           </form>
         </div>
 
@@ -208,10 +208,7 @@ export default {
   data() {
     return {
       page: 1,
-      updatedPost: {
-        imageUrl: "",
-        message: "",
-      },
+      updatedPosts: this.posts,
       newComment: "",
     };
   },
@@ -261,30 +258,30 @@ export default {
     },
 
     // selects image for new post
-    selectUpdateImage(event) {
-      this.updatedPost.imageUrl = event.target.files[0];
+    selectUpdateImage(event, index) {
+      this.updatedPosts[index].imageUrl = event.target.files[0].name;
     },
 
     //updates one post
-    updatePost(post) {
+    updatePost(post, index) {
       let formData = new FormData();
-      if (this.updatedPost.message != "") {
-        if (this.updatedPost.message.length > 1500) {
+      if (this.updatedPosts[index].message != "") {
+        if (this.updatedPosts[index].message.length > 1500) {
           return this.handleError.triggerToast(
             "Le message ne doit pas dépasser 1500 mots"
           );
         } else {
-          formData.append("message", this.updatedPost.message);
+          formData.append("message", this.updatedPosts[index].message);
         }
       }
-      if (this.updatedPost.imageUrl) {
+      if (this.updatedPosts[index].imageUrl) {
         //throw an error if the image size is too important (over 500ko)
-        if (this.updatedPost.imageUrl.size > 500000) {
+        if (this.updatedPosts[index].imageUrl.size > 500000) {
           return this.handleError.triggerToast(
             "Attention, la taille de l'image ne doit pas dépasser 500ko"
           );
         } else {
-          formData.append("image", this.updatedPost.imageUrl);
+          formData.append("image", this.updatedPosts[index].imageUrl);
         }
       }
       postServices
@@ -293,8 +290,8 @@ export default {
           post.message = res.data.message;
           post.imageUrl = res.data.imageUrl;
           this.updateToggle(post);
-          this.updatedPost.message = "";
-          this.updatedPost.imageUrl = "";
+          this.updatedPosts[index].message = res.data.message;
+          this.updatedPosts[index].imageUrl = res.data.imageUrl;
         })
         .catch((error) => this.handleError.triggerToast(error));
     },
