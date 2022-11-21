@@ -72,8 +72,7 @@
             >
               ...
             </div>
-          </div>
-          <ul
+            <ul
             class="dropdown-menu dropdown-menu-end"
             aria-labelledby="dropdownMenuLink"
           >
@@ -83,6 +82,7 @@
               </div>
             </li>
           </ul>
+          </div>
         </div>
         <ul
           v-if="!userProfile"
