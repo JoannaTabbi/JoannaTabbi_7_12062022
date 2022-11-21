@@ -1,7 +1,7 @@
 <template>
   <div class="ps-2 border-start">
     <!-- User's comments area -->
-    <div v-for="comment in comments" :key="comment._id" class="mb-2">
+    <div v-for="(comment, i) in comments" :key="comment._id" class="mb-2">
       <!-- display one comment -->
       <div class="d-flex py-2">
         <div class="d-flex img-sm-container me-2 align-items-start">
@@ -77,7 +77,7 @@
             <form
               v-if="comment.isUpdating"
               class="d-flex"
-              @submit.prevent="updateComment(comment)"
+              @submit.prevent="updateComment(comment, i)"
             >
               <label
                 :for="`updateComment-${comment._id}`"
@@ -90,8 +90,7 @@
                 name="updateComment"
                 :id="`updateComment-${comment._id}`"
                 rows="2"
-                v-model="updatedComment"
-                :placeholder="comment.message"
+                v-model="updatedComments[i].message"
               >
               </textarea>
               <button
@@ -184,7 +183,7 @@ export default {
   name: "Comments",
   data() {
     return {
-      updatedComment: "",
+      updatedComments: this.comments,
     };
   },
   props: ["comments", "modelValue", "postId"],
@@ -224,13 +223,13 @@ export default {
     },
 
     //updates one comment
-    updateComment(comment) {
+    updateComment(comment, i) {
       commentServices
-        .updateComment(comment._id, { message: this.updatedComment })
+        .updateComment(comment._id, { message: this.updatedComments[i].message })
         .then((res) => {
           comment.message = res.data.message;
           this.updateCommentToggle(comment);
-          this.updatedComment = "";
+          this.updatedComments[i].message = res.data.message;
         })
         .catch((error) => this.handleError.triggerToast(error));
     },
