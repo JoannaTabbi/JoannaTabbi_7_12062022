@@ -1,6 +1,6 @@
 <template>
   <div>
-    <article v-for="(post, index) in posts" :key="post._id">
+    <article v-for="(post) in posts" :key="post._id">
       <div class="card card-body border-0 mb-3 px-2 p-sm-3">
         <span class="mx-5 border-top border-primary border-3"></span>
         <div
@@ -81,7 +81,7 @@
         <div v-if="post.isUpdating" class="shadow rounded-3 mb-3 p-3">
           <form
             class="card card-body border-0"
-            @submit.prevent="updatePost(post, index)"
+            @submit.prevent="updatePost(post)"
           >
             <div class="d-flex mb-3 border-bottom pb-2">
               <div class="w-100 form-group">
@@ -92,7 +92,7 @@
                   >Modifier la publication</label
                 >
                 <textarea
-                  v-model="updatedPosts[index].message"
+                  v-model="postToUpdate(post._id).message"
                   :id="`updatePost-${post._id}`"
                   name="updatePost"
                   class="form-control border-0 p-2"
@@ -217,7 +217,6 @@ export default {
   data() {
     return {
       page: 1,
-      updatedPosts: this.posts,
       selectedImage: "",
       newComment: "",
     };
@@ -262,6 +261,11 @@ export default {
         .catch((error) => this.handleError.triggerToast(error));
     },
 
+    //  
+    postToUpdate(postId) {
+        return this.posts.find(post => post._id == postId)
+    },
+
     // for one post, toggles between updatePost section and display post section
     updateToggle(post) {
       post.isUpdating = !post.isUpdating;
@@ -273,15 +277,15 @@ export default {
     },
 
     //updates one post
-    updatePost(post, index) {
+    updatePost(post) {
       let formData = new FormData();
-      if (this.updatedPosts[index].message != "") {
-        if (this.updatedPosts[index].message.length > 1500) {
+      if (this.postToUpdate(post._id).message != "") {
+        if (this.postToUpdate(post._id).message.length > 1500) {
           return this.handleError.triggerToast(
             "Le message ne doit pas dépasser 1500 mots"
           );
         } else {
-          formData.append("message", this.updatedPosts[index].message);
+          formData.append("message", this.postToUpdate(post._id).message);
         }
       }
       if (this.selectedImage) {
