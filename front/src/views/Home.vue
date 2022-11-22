@@ -96,7 +96,7 @@
                   <div class="btn">
                     <label for="newPostFormFile">
                       <span class="visuallyhidden"
-                        >Choisir une nouvelle image</span
+                        >Choisir une image</span
                       >
                       <i class="fa-regular fa-image fa-2x"></i>
                       <input
@@ -121,6 +121,7 @@
                   </button>
                 </li>
               </ul>
+              <small>{{newPost.image.name}}</small>
             </form>
           </section>
 
@@ -167,7 +168,7 @@ export default {
       posts: [],
       lastPage: 1,
       newPost: {
-        imageUrl: "",
+        image: "",
         message: "",
       },
       showModal: false,
@@ -204,13 +205,13 @@ export default {
 
     // selects image for new post
     selectImage(event) {
-      this.newPost.imageUrl = event.target.files[0];
+      this.newPost.image = event.target.files[0];
     },
     // creates a new post
     createPost() {
       let formData = new FormData();
       //throw an error if neither message nor image posted
-      if (this.newPost.message == "" && this.newPost.imageUrl == "") {
+      if (this.newPost.message == "" && this.newPost.image == "") {
         return this.handleError.triggerToast(
           "Veuillez saisir un message ou choisir une photo"
         );
@@ -223,14 +224,14 @@ export default {
         } else {
           formData.append("message", this.newPost.message);
         }
-        if (this.newPost.imageUrl) {
+        if (this.newPost.image) {
           //throw an error if the image size is too important (over 500ko)
-          if (this.newPost.imageUrl.size > 500000) {
+          if (this.newPost.image.size > 500000) {
             return this.handleError.triggerToast(
               "Attention, la taille de l'image ne doit pas dépasser 500ko"
             );
           } else {
-            formData.append("image", this.newPost.imageUrl);
+            formData.append("image", this.newPost.image);
           }
         }
         postServices
@@ -238,7 +239,7 @@ export default {
           .then(async (res) => {
             await this.posts.unshift(res.data);
             this.newPost.message = "";
-            this.newPost.imageUrl = "";
+            this.newPost.image = "";
           })
           .catch((err) => this.handleError.triggerToast(err));
       }

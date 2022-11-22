@@ -62,7 +62,7 @@
               {{ followButtonText }}
             </div>
           </div>
-          <div class="dropdown">
+          <div v-if="auth.user.isAdmin === false" class="dropdown">
             <div
               role="button"
               id="dropdownMenuLink"
@@ -72,8 +72,7 @@
             >
               ...
             </div>
-          </div>
-          <ul
+            <ul
             class="dropdown-menu dropdown-menu-end"
             aria-labelledby="dropdownMenuLink"
           >
@@ -83,6 +82,7 @@
               </div>
             </li>
           </ul>
+          </div>
         </div>
         <ul
           v-if="!userProfile"

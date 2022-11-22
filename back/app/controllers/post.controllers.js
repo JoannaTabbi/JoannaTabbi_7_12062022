@@ -148,7 +148,8 @@ exports.readUserPosts = async (req, res, next) => {
  * creates a new post.
  */
 exports.createPost = (req, res, next) => {
-    if (!req.body.message && !req.body.image) {
+    console.log(req.body);
+    if (!req.body.message && !req.file) {
         return res.status(422).json({
             error: "The post is mandatory!"
         });

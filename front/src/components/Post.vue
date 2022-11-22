@@ -1,6 +1,6 @@
 <template>
   <div>
-    <article v-for="post in posts" :key="post._id">
+    <article v-for="(post) in posts" :key="post._id">
       <div class="card card-body border-0 mb-3 px-2 p-sm-3">
         <span class="mx-5 border-top border-primary border-3"></span>
         <div
@@ -85,13 +85,17 @@
           >
             <div class="d-flex mb-3 border-bottom pb-2">
               <div class="w-100 form-group">
-                <label :for="`updatePost-${post._id}`" aria-label="modifier la publication" class="visuallyhidden">Modifier la publication</label>
+                <label
+                  :for="`updatePost-${post._id}`"
+                  aria-label="modifier la publication"
+                  class="visuallyhidden"
+                  >Modifier la publication</label
+                >
                 <textarea
-                  v-model="updatedPost.message"
+                  v-model="postToUpdate(post._id).message"
                   :id="`updatePost-${post._id}`"
                   name="updatePost"
                   class="form-control border-0 p-2"
-                  :placeholder="post.message"
                   rows="2"
                 ></textarea>
               </div>
@@ -122,11 +126,16 @@
                 >
                   <i class="fa-solid fa-xmark fa-2x text-danger"></i>
                 </button>
-                <button type="submit" class="btn" aria-label="soumettre les modifications">
+                <button
+                  type="submit"
+                  class="btn"
+                  aria-label="soumettre les modifications"
+                >
                   <i class="fa-solid fa-check fa-2x text-success"></i>
                 </button>
               </li>
             </ul>
+            <small>{{ selectedImage.name }}</small>
           </form>
         </div>
 
@@ -208,10 +217,7 @@ export default {
   data() {
     return {
       page: 1,
-      updatedPost: {
-        imageUrl: "",
-        message: "",
-      },
+      selectedImage: "",
       newComment: "",
     };
   },
@@ -255,6 +261,11 @@ export default {
         .catch((error) => this.handleError.triggerToast(error));
     },
 
+    //  
+    postToUpdate(postId) {
+        return this.posts.find(post => post._id == postId)
+    },
+
     // for one post, toggles between updatePost section and display post section
     updateToggle(post) {
       post.isUpdating = !post.isUpdating;
@@ -262,29 +273,29 @@ export default {
 
     // selects image for new post
     selectUpdateImage(event) {
-      this.updatedPost.imageUrl = event.target.files[0];
+      this.selectedImage = event.target.files[0];
     },
 
     //updates one post
     updatePost(post) {
       let formData = new FormData();
-      if (this.updatedPost.message != "") {
-        if (this.updatedPost.message.length > 1500) {
+      if (this.postToUpdate(post._id).message != "") {
+        if (this.postToUpdate(post._id).message.length > 1500) {
           return this.handleError.triggerToast(
             "Le message ne doit pas dépasser 1500 mots"
           );
         } else {
-          formData.append("message", this.updatedPost.message);
+          formData.append("message", this.postToUpdate(post._id).message);
         }
       }
-      if (this.updatedPost.imageUrl) {
+      if (this.selectedImage) {
         //throw an error if the image size is too important (over 500ko)
-        if (this.updatedPost.imageUrl.size > 500000) {
+        if (this.selectedImage > 500000) {
           return this.handleError.triggerToast(
             "Attention, la taille de l'image ne doit pas dépasser 500ko"
           );
         } else {
-          formData.append("image", this.updatedPost.imageUrl);
+          formData.append("image", this.selectedImage);
         }
       }
       postServices
@@ -293,10 +304,9 @@ export default {
           post.message = res.data.message;
           post.imageUrl = res.data.imageUrl;
           this.updateToggle(post);
-          this.updatedPost.message = "";
-          this.updatedPost.imageUrl = "";
         })
         .catch((error) => this.handleError.triggerToast(error));
+      this.selectedImage = "";
     },
 
     // emits delete post function for a postId given
@@ -329,15 +339,21 @@ export default {
 
     // deletes one comment
     deleteComment(commentId, postId) {
-      commentServices
-        .deleteComment(commentId)
-        .then(() => {
-          const postFound = this.posts.find((post) => post._id == postId);
-          postFound.comments = postFound.comments.filter(
-            (comment) => comment._id != commentId
-          );
-        })
-        .catch((error) => this.handleError.triggerToast(error));
+      if (
+        confirm(
+          "Ce commentaire sera supprimé définitivement. Etes-vous sûr(e) de vouloir continuer ?"
+        ) == true
+      ) {
+        commentServices
+          .deleteComment(commentId)
+          .then(() => {
+            const postFound = this.posts.find((post) => post._id == postId);
+            postFound.comments = postFound.comments.filter(
+              (comment) => comment._id != commentId
+            );
+          })
+          .catch((error) => this.handleError.triggerToast(error));
+      }
     },
   },
 };
