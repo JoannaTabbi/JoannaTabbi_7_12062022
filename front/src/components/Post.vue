@@ -291,7 +291,6 @@ export default {
           post.message = res.data.message;
           post.imageUrl = res.data.imageUrl;
           this.updateToggle(post);
-          console.log(this.updatedPosts[index].imageUrl)
         })
         .catch((error) => this.handleError.triggerToast(error));
         this.selectedImage = "";
