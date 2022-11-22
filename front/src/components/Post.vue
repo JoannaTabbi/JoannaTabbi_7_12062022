@@ -101,7 +101,7 @@
                   <label :for="`updatePostFormFile-${post._id}`">
                     <i class="fa-regular fa-image fa-2x"></i>
                     <input
-                      @change="selectUpdateImage($event, index)"
+                      @change="selectUpdateImage"
                       type="file"
                       class="form-control"
                       name="image"
@@ -126,7 +126,7 @@
                 </button>
               </li>
             </ul>
-            <small>{{updatedPosts[index].imageUrl}}</small>
+            <small>{{selectedImage.name}}</small>
           </form>
         </div>
 
@@ -209,6 +209,7 @@ export default {
     return {
       page: 1,
       updatedPosts: this.posts,
+      selectedImage: "",
       newComment: "",
     };
   },
@@ -258,8 +259,8 @@ export default {
     },
 
     // selects image for new post
-    selectUpdateImage(event, index) {
-      this.updatedPosts[index].imageUrl = event.target.files[0].name;
+    selectUpdateImage(event) {
+      this.selectedImage = event.target.files[0];
     },
 
     //updates one post
@@ -274,14 +275,14 @@ export default {
           formData.append("message", this.updatedPosts[index].message);
         }
       }
-      if (this.updatedPosts[index].imageUrl) {
+      if (this.selectedImage) {
         //throw an error if the image size is too important (over 500ko)
-        if (this.updatedPosts[index].imageUrl.size > 500000) {
+        if (this.selectedImage > 500000) {
           return this.handleError.triggerToast(
             "Attention, la taille de l'image ne doit pas dépasser 500ko"
           );
         } else {
-          formData.append("image", this.updatedPosts[index].imageUrl);
+          formData.append("image", this.selectedImage);
         }
       }
       postServices
@@ -290,10 +291,10 @@ export default {
           post.message = res.data.message;
           post.imageUrl = res.data.imageUrl;
           this.updateToggle(post);
-          this.updatedPosts[index].message = res.data.message;
-          this.updatedPosts[index].imageUrl = res.data.imageUrl;
+          console.log(this.updatedPosts[index].imageUrl)
         })
         .catch((error) => this.handleError.triggerToast(error));
+        this.selectedImage = "";
     },
 
     // emits delete post function for a postId given
