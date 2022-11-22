@@ -85,7 +85,12 @@
           >
             <div class="d-flex mb-3 border-bottom pb-2">
               <div class="w-100 form-group">
-                <label :for="`updatePost-${post._id}`" aria-label="modifier la publication" class="visuallyhidden">Modifier la publication</label>
+                <label
+                  :for="`updatePost-${post._id}`"
+                  aria-label="modifier la publication"
+                  class="visuallyhidden"
+                  >Modifier la publication</label
+                >
                 <textarea
                   v-model="updatedPosts[index].message"
                   :id="`updatePost-${post._id}`"
@@ -121,12 +126,16 @@
                 >
                   <i class="fa-solid fa-xmark fa-2x text-danger"></i>
                 </button>
-                <button type="submit" class="btn" aria-label="soumettre les modifications">
+                <button
+                  type="submit"
+                  class="btn"
+                  aria-label="soumettre les modifications"
+                >
                   <i class="fa-solid fa-check fa-2x text-success"></i>
                 </button>
               </li>
             </ul>
-            <small>{{selectedImage.name}}</small>
+            <small>{{ selectedImage.name }}</small>
           </form>
         </div>
 
@@ -293,7 +302,7 @@ export default {
           this.updateToggle(post);
         })
         .catch((error) => this.handleError.triggerToast(error));
-        this.selectedImage = "";
+      this.selectedImage = "";
     },
 
     // emits delete post function for a postId given
@@ -326,15 +335,21 @@ export default {
 
     // deletes one comment
     deleteComment(commentId, postId) {
-      commentServices
-        .deleteComment(commentId)
-        .then(() => {
-          const postFound = this.posts.find((post) => post._id == postId);
-          postFound.comments = postFound.comments.filter(
-            (comment) => comment._id != commentId
-          );
-        })
-        .catch((error) => this.handleError.triggerToast(error));
+      if (
+        confirm(
+          "Ce commentaire sera supprimé définitivement. Etes-vous sûr(e) de vouloir continuer ?"
+        ) == true
+      ) {
+        commentServices
+          .deleteComment(commentId)
+          .then(() => {
+            const postFound = this.posts.find((post) => post._id == postId);
+            postFound.comments = postFound.comments.filter(
+              (comment) => comment._id != commentId
+            );
+          })
+          .catch((error) => this.handleError.triggerToast(error));
+      }
     },
   },
 };
